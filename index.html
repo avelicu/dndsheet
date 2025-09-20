@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D 5e Character Sheet Template</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: letter;
+            margin: 0; /* Removed print margin */
+        }
+        body {
+            font-family: 'Lora', serif;
+            color: #2c1e1e;
+            font-size: 13px;
+            /* --- MODIFIED FOR BOOK LOOK --- */
+            background-color: #4a3b2a; /* Darker, leather/wood-like color */
+            background-image: url('https://www.transparenttextures.com/patterns/soft-wallpaper.png'); /* A subtle texture for the background */
+        }
+        .page {
+            width: 8.5in;
+            height: 11in;
+            padding-top: 0.25in;
+            padding-right: 0.25in;
+            padding-bottom: 0.25in;
+            padding-left: 0.25in;
+            margin: 20px auto;
+            /* --- MODIFIED FOR BOOK LOOK --- */
+            background-color: #fdfaf0; /* A warmer, parchment-like color */
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'); /* A subtle paper texture */
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.05); /* Softer drop shadow + subtle inner shadow for depth */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1.3fr 2.7fr; /* Main 2-column layout */
+            gap: 18px;
+            height: 100%;
+        }
+        .header {
+            grid-column: 1 / -1;
+        }
+        .box {
+            border: 2px solid black;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* Prevents box from overflowing its container */
+        }
+        .attacks-box-size {
+            flex-grow: 1;
+        }
+        .inventory-box-size {
+            flex-grow: 1;
+        }
+        .box h3 {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            font-size: 1.2em;
+            border-bottom: 1px solid #2c1e1e;
+            padding-bottom: 4px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 4px 10px;
+        }
+        .stat-box {
+            text-align: center;
+        }
+        .stat-box h3 {
+             margin-bottom: 4px;
+             font-size: 1.1em;
+             border-bottom: none;
+             padding-bottom: 0;
+        }
+        .stat-box .score {
+            font-size: 1.5em;
+            border: 1px solid black;
+            border-radius: 8px;
+            padding: 4px;
+            min-height: 32px;
+        }
+        .ability-scores-grid .stat-box .score {
+            margin-bottom: 0px;
+        }
+
+        .printable-list { list-style: none; padding: 0; font-size: 0.95em; flex-grow: 1; }
+        .printable-list li { display: flex; align-items: center; margin-bottom: 4px; }
+        .printable-list .value-box {
+            display: inline-block;
+            width: 28px;
+            height: 20px;
+            border: 1px solid #555;
+            border-radius: 8px;
+            margin-right: 4px;
+            flex-shrink: 0;
+        }
+        .printable-list .prof-box {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #888;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .printable-list .ability-score { color: #888; font-size: 0.9em; padding-left: 4px; }
+
+        .notes-box {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-height: 0;
+        }
+
+        .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 0px; }
+        .info-field { text-align: center; }
+        .info-field .line {
+             display: block;
+             border-bottom: 1px solid #ccc;
+             min-height: 28px;
+             margin-bottom: 4px;
+             padding-top: 8px;
+        }
+        .info-field .label { font-family: 'Lora', serif; font-size: 0.8em; color: #777; }
+
+        .main-content { display: flex; flex-direction: column; gap: 12px; }
+        .main-content-grid { display: flex; flex-direction: column; gap: 18px; flex-grow: 1; }
+        
+        .top-stats-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0px 8px; text-align: center; }
+        .top-stats-label { font-family: 'Cinzel', serif; font-size: 0.75em; line-height: 1.2; align-self: end; padding-bottom: 0px; min-height: 20px; text-align: left; font-weight: bold; }
+        .top-stats-label-center { font-family: 'Cinzel', serif; font-size: 0.75em; line-height: 1.2; align-self: end; padding-bottom: 0px; min-height: 20px; text-align: center; font-weight: bold; }
+        .top-stats-value {
+            border: 1px solid black;
+            border-radius: 8px;
+            height: 55px;
+            font-size: 1.6em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Resources Section Styles */
+        .resources-container { display: flex; flex-direction: column; gap: 8px; }
+        
+        .resource-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 8px; 
+            margin-top: 8px; 
+        }
+        .resource-tracker-box { 
+            border: 1px solid black; 
+            border-radius: 4px; 
+            height: 55px;
+            display: flex;
+            flex-direction: column;
+            padding: 2px;
+        }
+        .resource-title-line {
+            height: 12px;
+            border-bottom: 1px solid #ccc;
+            margin: 0 4px 4px;
+        }
+        .resource-value-area {
+            flex-grow: 1;
+        }
+        
+        /* Death Saves Box Content */
+        .saves-wrapper {
+            font-size: 10px;
+            font-weight: normal;
+            width: 100%;
+            padding: 0 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-sizing: border-box;
+        }
+        .saves-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .save-circle {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #aaa;
+            border-radius: 50%;
+            margin-left: 3px;
+            vertical-align: baseline;
+        }
+        .saves-wrapper .label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75em;
+            color: #2c1e1e;
+        }
+
+        /* Lined Table Sections */
+        .inventory-header, .attacks-header {
+            display: grid;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .inventory-header > div, .attacks-header > div {
+            padding: 4px 2px;
+            border-bottom: 1px solid #2c1e1e;
+        }
+        .inventory-body, .attacks-body {
+            flex-grow: 1;
+            background-image: repeating-linear-gradient(to bottom, transparent, transparent 21px, #ccc 22px);
+            background-size: 100% 132px; /* 6 rows × 22px = 132px */
+            display: grid;
+            grid-template-rows: repeat(6, 22px);
+        }
+        .inventory-body > div, .attacks-body > div {
+            border-right: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            height: 22px;
+            overflow: hidden;
+        }
+        .inventory-body > div:nth-child(3n), .attacks-body > div:nth-child(4n) {
+            border-right: none;
+        }
+        .inventory-header, .inventory-body {
+            grid-template-columns: 30px 30px 1fr;
+        }
+        .inventory-body-continued {
+            flex-grow: 1;
+            background-image: repeating-linear-gradient(to bottom, transparent, transparent 21px, #ccc 22px);
+            background-size: 100% 330px; /* 15 rows × 22px = 330px */
+            display: grid;
+            grid-template-columns: 30px 30px 1fr;
+            grid-template-rows: repeat(15, 22px);
+        }
+        .inventory-body-continued > div {
+            border-right: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            height: 22px;
+            overflow: hidden;
+        }
+        .inventory-body-continued > div:nth-child(3n) {
+            border-right: none;
+        }
+        .attacks-header, .attacks-body {
+            grid-template-columns: 3fr 1fr 1fr 2fr;
+        }
+
+        .tooltip-indicator {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: #1976d2;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: help;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        
+        .tooltip-indicator:hover {
+            background-color: #1565c0;
+        }
+        
+        .tooltip-popup {
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 6px;
+            font-family: 'Lora', serif;
+            font-size: 0.9em;
+            font-weight: normal;
+            line-height: 1.5;
+            z-index: 10000;
+            max-width: 300px;
+            min-width: 200px;
+            width: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            pointer-events: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .tooltip-popup.show {
+            opacity: 1;
+        }
+
+        
+        .header-section {
+            background-color: #f5f5dc;
+            border: 2px solid #8B4513;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .header-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2em;
+            font-weight: bold;
+            color: #8B4513;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .save-restore-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .save-btn, .restore-btn {
+            padding: 8px 16px;
+            background-color: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .save-btn:hover, .restore-btn:hover {
+            background-color: #A0522D;
+        }
+        
+        .intro-text {
+            font-family: 'Lora', serif;
+            font-size: 0.95em;
+            color: #2c1e1e;
+            text-align: left;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .intro-text strong {
+            text-align: center;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .new-character-btn, .print-btn {
+            padding: 8px 16px;
+            background-color: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .new-character-btn:hover, .print-btn:hover {
+            background-color: #A0522D;
+        }
+        
+        .new-character-btn {
+            background-color: #dc3545;
+        }
+        
+        .new-character-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* Warning Message Styles */
+        .warning-overlay {
+            position: absolute;
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: 'Lora', serif;
+            font-size: 0.95em;
+            color: #856404;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+            z-index: 1000;
+            display: none;
+            max-width: 250px;
+        }
+        .warning-overlay.show {
+            display: block;
+        }
+        
+        @media print {
+            .warning-overlay {
+                display: none !important;
+            }
+        }
+        .warning-overlay::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid #ffc107;
+        }
+
+        /* Box Hint Styles */
+        .box-hint {
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.3em;
+            color: #999;
+            text-align: center;
+            pointer-events: none;
+            font-style: italic;
+            z-index: 1;
+        }
+
+        @media print {
+            body { 
+                margin: 0; 
+                background: white; /* Print with white background */
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+            }
+            .header-section {
+                display: none !important;
+            }
+            .tooltip-indicator, .tooltip-popup {
+                display: none !important;
+            }
+        }
+    </style>
+    <script>
+        function saveCharacterData() {
+            const characterData = {};
+            
+            // Save all input fields and textareas
+            const inputs = document.querySelectorAll('input[type="text"], textarea');
+            inputs.forEach(input => {
+                if (input.id) {
+                    characterData[input.id] = input.value;
+                }
+            });
+            
+            // Save proficiency states
+            const profBoxes = document.querySelectorAll('.prof-box, .save-circle');
+            profBoxes.forEach(box => {
+                if (box.id) {
+                    characterData[box.id] = box.classList.contains('checked');
+                }
+            });
+            
+            // Create JSON format with metadata
+            const saveData = {
+                version: "1.0",
+                timestamp: new Date().toISOString(),
+                characterData: characterData
+            };
+            
+            // Save to localStorage automatically
+            localStorage.setItem('dnd-character-sheet', JSON.stringify(saveData));
+            
+            // Generate filename from character info
+            const characterName = document.getElementById('character-name')?.value || 'Character';
+            const classLevel = document.getElementById('class-level')?.value || 'Class';
+            const race = document.getElementById('race')?.value || 'Race';
+            
+            // Clean up the strings for filename use
+            const cleanName = characterName.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+            const cleanClass = classLevel.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+            const cleanRace = race.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+            
+            // Create filename
+            let filename = `${cleanName}_${cleanClass}_${cleanRace}`.replace(/\s+/g, '_');
+            if (filename === '_' || filename.length < 3) {
+                filename = 'character-sheet';
+            }
+            filename += '.json';
+            
+            // Also download file
+            const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function showTooltip(element, text) {
+            // Remove any existing tooltips
+            document.querySelectorAll('.tooltip-popup').forEach(tooltip => {
+                tooltip.remove();
+            });
+            
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip-popup show';
+            tooltip.textContent = text;
+            
+            // Position tooltip
+            const rect = element.getBoundingClientRect();
+            tooltip.style.left = `${rect.right + 10}px`;
+            tooltip.style.top = `${rect.top + rect.height / 2}px`;
+            tooltip.style.transform = 'translateY(-50%)';
+            
+            document.body.appendChild(tooltip);
+            
+            // Add mouse leave event to remove tooltip
+            const removeTooltip = () => {
+                if (tooltip.parentNode) {
+                    tooltip.remove();
+                }
+            };
+            
+            // Remove tooltip when mouse leaves the indicator
+            element.addEventListener('mouseleave', removeTooltip, { once: true });
+            
+            // Also remove tooltip when mouse leaves the tooltip itself
+            tooltip.addEventListener('mouseleave', removeTooltip, { once: true });
+        }
+        
+        function loadFromLocalStorage() {
+            try {
+                const savedData = localStorage.getItem('dnd-character-sheet');
+                if (savedData) {
+                    const saveData = JSON.parse(savedData);
+                    const characterData = saveData.characterData || saveData;
+                    
+                    Object.keys(characterData).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                                element.value = characterData[key];
+                            } else if (element.classList.contains('prof-box') || element.classList.contains('save-circle')) {
+                                if (characterData[key]) {
+                                    element.classList.add('checked');
+                                } else {
+                                    element.classList.remove('checked');
+                                }
+                            }
+                        }
+                    });
+                    
+                    calculateSkillModifiers();
+                    calculatePassivePerception();
+                    calculateInitiative();
+                    checkProficiencyWarning();
+                    
+                    console.log('Character data loaded from localStorage');
+                }
+            } catch (error) {
+                console.log('No saved character data found in localStorage');
+            }
+        }
+        
+        function autoSaveToLocalStorage() {
+            const characterData = {};
+            const inputs = document.querySelectorAll('input[type="text"], textarea');
+            inputs.forEach(input => {
+                if (input.id) {
+                    characterData[input.id] = input.value;
+                }
+            });
+            const profBoxes = document.querySelectorAll('.prof-box, .save-circle');
+            profBoxes.forEach(box => {
+                if (box.id) {
+                    characterData[box.id] = box.classList.contains('checked');
+                }
+            });
+            const saveData = {
+                version: "1.0",
+                timestamp: new Date().toISOString(),
+                characterData: characterData
+            };
+            localStorage.setItem('dnd-character-sheet', JSON.stringify(saveData));
+        }
+        
+        function restoreCharacterData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json,.txt';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        let characterData;
+                        const content = e.target.result;
+                        
+                        // Try to parse as JSON first
+                        try {
+                            const saveData = JSON.parse(content);
+                            if (saveData.characterData) {
+                                characterData = saveData.characterData;
+                            } else {
+                                characterData = saveData; // Fallback for old format
+                            }
+                        } catch (jsonError) {
+                            // Fallback to text parsing for old .txt files
+                            const lines = content.split('\n');
+                            characterData = {};
+                            
+                            lines.forEach(line => {
+                                line = line.trim();
+                                if (line.includes(':')) {
+                                    const [key, value] = line.split(':').map(s => s.trim());
+                                    if (key && value) {
+                                        const keyMap = {
+                                            'Character Name': 'character-name',
+                                            'Class & Level': 'class-level',
+                                            'Race': 'race',
+                                            'STR': 'str-score',
+                                            'DEX': 'dex-score',
+                                            'CON': 'con-score',
+                                            'INT': 'int-score',
+                                            'WIS': 'wis-score',
+                                            'CHA': 'cha-score',
+                                            'Armor Class': 'armor-class',
+                                            'Initiative': 'initiative',
+                                            'Speed': 'speed',
+                                            'Proficiency Bonus': 'proficiency-bonus',
+                                            'Spell Save DC': 'spell-save-dc',
+                                            'Spell Attack': 'spell-attack',
+                                            'HP': 'hit-points',
+                                            'Temp HP': 'temp-hp',
+                                            'Hit Dice': 'hit-dice'
+                                        };
+                                        
+                                        if (keyMap[key]) {
+                                            characterData[keyMap[key]] = value;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        
+                        // Restore all data
+                        Object.keys(characterData).forEach(key => {
+                            const element = document.getElementById(key);
+                            if (element) {
+                                if (element.tagName === 'INPUT') {
+                                    element.value = characterData[key];
+                                } else if (element.classList.contains('prof-box') || element.classList.contains('save-circle')) {
+                                    if (characterData[key]) {
+                                        element.classList.add('checked');
+                                    } else {
+                                        element.classList.remove('checked');
+                                    }
+                                }
+                            }
+                        });
+                        
+                        // Also save to localStorage
+                        const saveData = {
+                            version: "1.0",
+                            timestamp: new Date().toISOString(),
+                            characterData: characterData
+                        };
+                        localStorage.setItem('dnd-character-sheet', JSON.stringify(saveData));
+                        
+                        // Recalculate all values
+                        calculateSkillModifiers();
+                        calculatePassivePerception();
+                        calculateInitiative();
+                        checkProficiencyWarning();
+                    } catch (error) {
+                        alert('Error restoring character data: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+        
+        function toggleProficiency(element) {
+            element.classList.toggle('checked');
+            calculateSkillModifiers();
+        }
+        
+        function toggleSaveProficiency(element) {
+            element.classList.toggle('checked');
+            calculateSkillModifiers();
+        }
+        
+        function calculateModifier(score) {
+            return Math.floor((score - 10) / 2);
+        }
+        
+        function calculateSkillModifiers() {
+            const abilityScores = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+            const skillMap = {
+                'str': ['athletics'],
+                'dex': ['acrobatics', 'sleight-of-hand', 'stealth'],
+                'con': [],
+                'int': ['arcana', 'history', 'investigation', 'nature', 'religion'],
+                'wis': ['animal-handling', 'insight', 'medicine', 'perception', 'survival'],
+                'cha': ['deception', 'intimidation', 'performance', 'persuasion']
+            };
+            
+            abilityScores.forEach(ability => {
+                const scoreInput = document.getElementById(ability + '-score');
+                const modifierInput = document.getElementById(ability + '-modifier');
+                const saveInput = document.getElementById(ability + '-save');
+                
+                if (scoreInput && scoreInput.value && scoreInput.value.trim() !== '') {
+                    const score = parseInt(scoreInput.value) || 0;
+                    const modifier = calculateModifier(score);
+                    
+                    if (modifierInput) {
+                        modifierInput.value = modifier >= 0 ? '+' + modifier : modifier.toString();
+                    }
+                    
+                    if (saveInput) {
+                        const profBonus = parseInt(document.getElementById('proficiency-bonus')?.value) || 0;
+                        const isProficient = document.getElementById(ability + '-save-prof')?.classList.contains('checked');
+                        const saveModifier = modifier + (isProficient ? profBonus : 0);
+                        saveInput.value = saveModifier >= 0 ? '+' + saveModifier : saveModifier.toString();
+                    }
+                    
+                    // Calculate skill modifiers
+                    skillMap[ability].forEach(skill => {
+                        const skillInput = document.getElementById(skill + '-modifier');
+                        if (skillInput) {
+                            const profBonus = parseInt(document.getElementById('proficiency-bonus')?.value) || 0;
+                            const isProficient = document.getElementById(skill + '-prof')?.classList.contains('checked');
+                            const skillModifier = modifier + (isProficient ? profBonus : 0);
+                            skillInput.value = skillModifier >= 0 ? '+' + skillModifier : skillModifier.toString();
+                        }
+                    });
+                } else {
+                    // Clear fields when ability score is empty
+                    if (modifierInput) {
+                        modifierInput.value = '';
+                    }
+                    if (saveInput) {
+                        saveInput.value = '';
+                    }
+                    // Clear skill modifiers
+                    skillMap[ability].forEach(skill => {
+                        const skillInput = document.getElementById(skill + '-modifier');
+                        if (skillInput) {
+                            skillInput.value = '';
+                        }
+                    });
+                }
+            });
+        }
+        
+        function calculatePassivePerception() {
+            const wisScoreInput = document.getElementById('wis-score');
+            const wisModifier = document.getElementById('wis-modifier')?.value || '0';
+            const profBonus = parseInt(document.getElementById('proficiency-bonus')?.value) || 0;
+            const isProficient = document.getElementById('perception-prof')?.classList.contains('checked');
+            
+            const ppInput = document.getElementById('passive-perception');
+            if (ppInput) {
+                // Only calculate if wisdom score is filled
+                if (wisScoreInput && wisScoreInput.value && wisScoreInput.value.trim() !== '') {
+                    const wisMod = parseInt(wisModifier.replace('+', '')) || 0;
+                    const passivePerception = 10 + wisMod + (isProficient ? profBonus : 0);
+                ppInput.value = passivePerception;
+                } else {
+                    // Leave empty if wisdom score is not filled
+                    ppInput.value = '';
+                }
+            }
+        }
+        
+        function calculateInitiative() {
+            const dexScoreInput = document.getElementById('dex-score');
+            const dexModifier = document.getElementById('dex-modifier')?.value || '0';
+            const initiative = document.getElementById('initiative');
+            
+            if (initiative) {
+                // Only calculate initiative if dex score is actually filled
+                if (dexScoreInput && dexScoreInput.value && dexScoreInput.value.trim() !== '') {
+                const dexMod = parseInt(dexModifier.replace('+', '')) || 0;
+                initiative.value = dexMod >= 0 ? '+' + dexMod : dexMod.toString();
+                } else {
+                    // Leave initiative empty if dex score is not filled
+                    initiative.value = '';
+                }
+            }
+        }
+        
+        function checkProficiencyWarning() {
+            const proficiencyBonus = document.getElementById('proficiency-bonus')?.value;
+            const warningElement = document.getElementById('proficiency-warning');
+            const profBonusElement = document.getElementById('proficiency-bonus');
+            
+            // Check if proficiency bonus is empty
+            if (!proficiencyBonus || proficiencyBonus.trim() === '') {
+                // Check if any ability scores are filled
+                const abilityScores = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+                let hasAbilityScores = false;
+                
+                for (let ability of abilityScores) {
+                    const scoreInput = document.getElementById(ability + '-score');
+                    if (scoreInput && scoreInput.value && scoreInput.value.trim() !== '') {
+                        hasAbilityScores = true;
+                        break;
+                    }
+                }
+                
+                // Check if any proficiency boxes are checked
+                let hasProficiencyBoxes = false;
+                const profBoxes = document.querySelectorAll('.prof-box, .save-circle');
+                for (let box of profBoxes) {
+                    if (box.classList.contains('checked')) {
+                        hasProficiencyBoxes = true;
+                        break;
+                    }
+                }
+                
+                // Show warning if either condition is met
+                if (hasAbilityScores || hasProficiencyBoxes) {
+                    // Position the overlay below the Prof. Bonus box
+                    if (profBonusElement && warningElement) {
+                        const rect = profBonusElement.getBoundingClientRect();
+                        warningElement.style.left = (rect.left + rect.width / 2) + 'px';
+                        warningElement.style.top = (rect.bottom + 2) + 'px';
+                        warningElement.style.transform = 'translateX(-50%)';
+                        warningElement.classList.add('show');
+                    }
+                } else {
+                    warningElement.classList.remove('show');
+                }
+            } else {
+                // Hide warning if proficiency bonus is filled
+                warningElement.classList.remove('show');
+            }
+        }
+        
+        
+        
+        // Initialize proficiency circles and add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const style = document.createElement('style');
+            style.textContent = `
+                .prof-box.checked {
+                    background-color: #000;
+                }
+                .save-circle.checked {
+                    background-color: #000;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Load character data from localStorage on page load
+            loadFromLocalStorage();
+            
+            // Check for proficiency warning on initial load
+            checkProficiencyWarning();
+            
+            // Add event listeners for auto-calculation and auto-save
+            const abilityScoreInputs = document.querySelectorAll('[id$="-score"]');
+            abilityScoreInputs.forEach(input => {
+                input.addEventListener('input', calculateSkillModifiers);
+                input.addEventListener('input', calculatePassivePerception);
+                input.addEventListener('input', calculateInitiative);
+                input.addEventListener('input', autoSaveToLocalStorage);
+                input.addEventListener('input', checkProficiencyWarning);
+            });
+            
+            const profBonusInput = document.getElementById('proficiency-bonus');
+            if (profBonusInput) {
+                profBonusInput.addEventListener('input', calculateSkillModifiers);
+                profBonusInput.addEventListener('input', calculatePassivePerception);
+                profBonusInput.addEventListener('input', autoSaveToLocalStorage);
+                profBonusInput.addEventListener('input', checkProficiencyWarning);
+            }
+            
+            const raceInput = document.getElementById('race');
+            if (raceInput) {
+                raceInput.addEventListener('input', autoSaveToLocalStorage);
+            }
+            
+            // Add auto-save to all other input fields
+            const allInputs = document.querySelectorAll('input[type="text"], textarea');
+            allInputs.forEach(input => {
+                if (!input.id.includes('-score') && input.id !== 'proficiency-bonus' && input.id !== 'race') {
+                    input.addEventListener('input', autoSaveToLocalStorage);
+                }
+            });
+            
+            // Add auto-save to new resource fields and labels
+            const resourceInputs = document.querySelectorAll('[id^="resource"], [id$="-label"], #saving-throw-advantages, #notes-continued');
+            resourceInputs.forEach(input => {
+                input.addEventListener('input', autoSaveToLocalStorage);
+            });
+            
+            // Add auto-save to proficiency toggles
+            const profBoxes = document.querySelectorAll('.prof-box, .save-circle');
+            profBoxes.forEach(box => {
+                box.addEventListener('click', function() {
+                    setTimeout(autoSaveToLocalStorage, 10); // Small delay to ensure class change is processed
+                    setTimeout(checkProficiencyWarning, 10); // Check warning after proficiency change
+                });
+            });
+            
+            // Add tooltip event listeners
+            const tooltipIndicators = document.querySelectorAll('.tooltip-indicator');
+            tooltipIndicators.forEach(indicator => {
+                indicator.addEventListener('mouseenter', function() {
+                    const text = this.getAttribute('data-tooltip');
+                    if (text) {
+                        showTooltip(this, text);
+                    }
+                });
+            });
+        });
+        
+        function newCharacter() {
+            if (confirm('Are you sure you want to create a new character? This will clear all current data.')) {
+                // Clear all input fields
+                const inputs = document.querySelectorAll('input[type="text"], textarea');
+                inputs.forEach(input => {
+                    input.value = '';
+                });
+                
+                // Clear all proficiency states
+                const profBoxes = document.querySelectorAll('.prof-box, .save-circle');
+                profBoxes.forEach(box => {
+                    box.classList.remove('checked');
+                });
+                
+                // Clear localStorage
+                localStorage.removeItem('dnd-character-sheet');
+                
+                // Recalculate all values
+                calculateSkillModifiers();
+                calculatePassivePerception();
+                calculateInitiative();
+                checkProficiencyWarning();
+                
+                alert('New character created! All fields have been cleared.');
+            }
+        }
+        
+        function printCharacter() {
+            window.print();
+        }
+    </script>
+</head>
+<body>
+
+<div class="header-section">
+    <div class="header-title">D&D Character Sheet</div>
+    <div class="intro-text">
+        <strong>Welcome!</strong><br><br>
+        You can either print this page empty and fill everything out manually, or you can fill out a few fields to auto-populate scores and skills. Hover over the hint indicators for more info. Note that these do not appear in the final print.<br><br>
+        Your character is automatically saved in your browser session, but you can use the buttons below to export and import data and create multiple characters.<br><br>
+        Here's a circle emoji you can copy for resources, in case you need it: <span style="font-size: 1.8em;">○</span>
+    </div>
+    <div class="save-restore-buttons">
+        <button class="save-btn" onclick="saveCharacterData()">Save Character</button>
+        <button class="restore-btn" onclick="restoreCharacterData()">Restore Character</button>
+        <button class="new-character-btn" onclick="newCharacter()">New Character</button>
+        <button class="print-btn" onclick="printCharacter()">Print</button>
+    </div>
+</div>
+
+<div class="warning-overlay" id="proficiency-warning">
+    Make sure you fill out the proficiency bonus to auto-calculate modifiers.
+</div>
+
+<div class="page">
+    <div class="container">
+        <div class="left-column" style="display: flex; flex-direction: column; gap: 18px;">
+            <div class="box">
+                <h3>Ability Scores<span class="tooltip-indicator" data-tooltip="Input the raw scores in the invisible textbox to the right of each label. The modifiers are auto-calculated.">?</span></h3>
+                 <div class="stats-grid ability-scores-grid">
+                    <div class="stat-box"><h3>STR <input type="text" id="str-score" style="width: 20px; height: 12px; border: none; border-bottom: 1px solid #333; background: transparent; text-align: center; font-size: 0.9em; font-weight: bold; outline: none; margin-left: 3px; vertical-align: top;"></h3><div class="score"><input type="text" id="str-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                    <div class="stat-box"><h3>DEX <input type="text" id="dex-score" style="width: 20px; height: 12px; border: none; border-bottom: 1px solid #333; background: transparent; text-align: center; font-size: 0.9em; font-weight: bold; outline: none; margin-left: 3px; vertical-align: top;"></h3><div class="score"><input type="text" id="dex-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                    <div class="stat-box"><h3>CON <input type="text" id="con-score" style="width: 20px; height: 12px; border: none; border-bottom: 1px solid #333; background: transparent; text-align: center; font-size: 0.9em; font-weight: bold; outline: none; margin-left: 3px; vertical-align: top;"></h3><div class="score"><input type="text" id="con-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                    <div class="stat-box"><h3>INT <input type="text" id="int-score" style="width: 20px; height: 12px; border: none; border-bottom: 1px solid #333; background: transparent; text-align: center; font-size: 0.9em; font-weight: bold; outline: none; margin-left: 3px; vertical-align: top;"></h3><div class="score"><input type="text" id="int-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                    <div class="stat-box"><h3>WIS <input type="text" id="wis-score" style="width: 20px; height: 12px; border: none; border-bottom: 1px solid #333; background: transparent; text-align: center; font-size: 0.9em; font-weight: bold; outline: none; margin-left: 3px; vertical-align: top;"></h3><div class="score"><input type="text" id="wis-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                    <div class="stat-box"><h3>CHA <input type="text" id="cha-score" style="width: 20px; height: 12px; border: none; border-bottom: 1px solid #333; background: transparent; text-align: center; font-size: 0.9em; font-weight: bold; outline: none; margin-left: 3px; vertical-align: top;"></h3><div class="score"><input type="text" id="cha-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                </div>
+            </div>
+            <div class="box">
+                <h3>Saving Throws<span class="tooltip-indicator" data-tooltip="Fill in the circles for the saving throws that you're proficient in. The modifiers are auto-calculated.">?</span></h3>
+                 <div class="stats-grid">
+                    <div class="stat-box"><h3>STR <span class="save-circle" id="str-save-prof" onclick="toggleSaveProficiency(this)" style="cursor: pointer;"></span></h3><div class="score"><input type="text" id="str-save" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                    <div class="stat-box"><h3>DEX <span class="save-circle" id="dex-save-prof" onclick="toggleSaveProficiency(this)" style="cursor: pointer;"></span></h3><div class="score"><input type="text" id="dex-save" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                    <div class="stat-box"><h3>CON <span class="save-circle" id="con-save-prof" onclick="toggleSaveProficiency(this)" style="cursor: pointer;"></span></h3><div class="score"><input type="text" id="con-save" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                    <div class="stat-box"><h3>INT <span class="save-circle" id="int-save-prof" onclick="toggleSaveProficiency(this)" style="cursor: pointer;"></span></h3><div class="score"><input type="text" id="int-save" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                    <div class="stat-box"><h3>WIS <span class="save-circle" id="wis-save-prof" onclick="toggleSaveProficiency(this)" style="cursor: pointer;"></span></h3><div class="score"><input type="text" id="wis-save" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                    <div class="stat-box"><h3>CHA <span class="save-circle" id="cha-save-prof" onclick="toggleSaveProficiency(this)" style="cursor: pointer;"></span></h3><div class="score"><input type="text" id="cha-save" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.5em; outline: none;" readonly></div></div>
+                </div>
+                <textarea id="saving-throw-advantages" style="width: 100%; height: 30px; border: none; background: transparent; font-family: 'Lora', serif; font-size: 0.9em; outline: none; resize: none; margin-top: 8px; padding: 4px;"></textarea>
+            </div>
+            <div class="box" style="flex-grow: 1;">
+                <h3>Skills<span class="tooltip-indicator" data-tooltip="Fill in the circles for skills that you're proficient in. The modifiers are auto-calculated.">?</span></h3>
+                <ul class="printable-list" style="margin-top: -2px;">
+                    <li><span class="value-box"><input type="text" id="acrobatics-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="acrobatics-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Acrobatics <span class="ability-score">(Dex)</span></li>
+                    <li><span class="value-box"><input type="text" id="animal-handling-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="animal-handling-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Animal Handling <span class="ability-score">(Wis)</span></li>
+                    <li><span class="value-box"><input type="text" id="arcana-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="arcana-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Arcana <span class="ability-score">(Int)</span></li>
+                    <li><span class="value-box"><input type="text" id="athletics-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="athletics-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Athletics <span class="ability-score">(Str)</span></li>
+                    <li><span class="value-box"><input type="text" id="deception-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="deception-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Deception <span class="ability-score">(Cha)</span></li>
+                    <li><span class="value-box"><input type="text" id="history-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="history-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> History <span class="ability-score">(Int)</span></li>
+                    <li><span class="value-box"><input type="text" id="insight-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="insight-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Insight <span class="ability-score">(Wis)</span></li>
+                    <li><span class="value-box"><input type="text" id="intimidation-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="intimidation-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Intimidation <span class="ability-score">(Cha)</span></li>
+                    <li><span class="value-box"><input type="text" id="investigation-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="investigation-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Investigation <span class="ability-score">(Int)</span></li>
+                    <li><span class="value-box"><input type="text" id="medicine-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="medicine-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Medicine <span class="ability-score">(Wis)</span></li>
+                    <li><span class="value-box"><input type="text" id="nature-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="nature-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Nature <span class="ability-score">(Int)</span></li>
+                    <li><span class="value-box"><input type="text" id="perception-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="perception-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Perception <span class="ability-score">(Wis)</span></li>
+                    <li><span class="value-box"><input type="text" id="performance-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="performance-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Performance <span class="ability-score">(Cha)</span></li>
+                    <li><span class="value-box"><input type="text" id="persuasion-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="persuasion-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Persuasion <span class="ability-score">(Cha)</span></li>
+                    <li><span class="value-box"><input type="text" id="religion-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="religion-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Religion <span class="ability-score">(Int)</span></li>
+                    <li><span class="value-box"><input type="text" id="sleight-of-hand-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="sleight-of-hand-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Sleight of Hand <span class="ability-score">(Dex)</span></li>
+                    <li><span class="value-box"><input type="text" id="stealth-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="stealth-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Stealth <span class="ability-score">(Dex)</span></li>
+                    <li><span class="value-box"><input type="text" id="survival-modifier" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none;" readonly></span><span class="prof-box" id="survival-prof" onclick="toggleProficiency(this)" style="cursor: pointer;"></span> Survival <span class="ability-score">(Wis)</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <div class="info-grid">
+                    <div class="info-field">
+                        <input type="text" id="character-name" style="width: 100%; border: none; border-bottom: 1px solid #ccc; background: transparent; font-family: 'Lora', serif; font-size: 13px; padding: 4px 0; outline: none; text-align: center;">
+                        <span class="label">Character Name<span class="tooltip-indicator" data-tooltip="These fields are freeform and will be saved and restored with your character, but don't affect any calculations.">?</span></span>
+                    </div>
+                    <div class="info-field">
+                        <input type="text" id="class-level" style="width: 100%; border: none; border-bottom: 1px solid #ccc; background: transparent; font-family: 'Lora', serif; font-size: 13px; padding: 4px 0; outline: none; text-align: center;">
+                        <span class="label">Class & Level<span class="tooltip-indicator" data-tooltip="These fields are freeform and will be saved and restored with your character, but don't affect any calculations.">?</span></span>
+                    </div>
+                    <div class="info-field">
+                        <input type="text" id="race" style="width: 100%; border: none; border-bottom: 1px solid #ccc; background: transparent; font-family: 'Lora', serif; font-size: 13px; padding: 4px 0; outline: none; text-align: center;">
+                        <span class="label">Race<span class="tooltip-indicator" data-tooltip="These fields are freeform and will be saved and restored with your character, but don't affect any calculations.">?</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="box" style="padding: 5px; position: relative;">
+                <span class="tooltip-indicator" style="position: absolute; top: 5px; right: 5px;" data-tooltip="Fill out the proficiency bonus, as it is used in all other calculations. The rest of the fields are free-form.">?</span>
+                 <div class="top-stats-grid">
+                    <div class="top-stats-label-center">AC</div>
+                    <div class="top-stats-label-center">INITIATIVE</div>
+                    <div class="top-stats-label-center">SPEED</div>
+                    <div class="top-stats-label-center">PROF. BONUS</div>
+                    <div class="top-stats-label-center">SPELL ATTACK</div>
+                    <div class="top-stats-label-center">SAVE DC</div>
+                    <div class="top-stats-value" style="position: relative;"><input type="text" id="armor-class" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"><div class="box-hint">10+Dex+Armor</div></div>
+                    <div class="top-stats-value" style="position: relative;"><input type="text" id="initiative" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;" readonly><div class="box-hint">+Dex</div></div>
+                    <div class="top-stats-value"><input type="text" id="speed" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                    <div class="top-stats-value"><input type="text" id="proficiency-bonus" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                    <div class="top-stats-value" style="position: relative;"><input type="text" id="spell-attack" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"><div class="box-hint">Prof+Ability</div></div>
+                    <div class="top-stats-value" style="position: relative;"><input type="text" id="spell-save-dc" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"><div class="box-hint">8+Prof+Ability</div></div>
+                </div>
+            </div>
+            <div class="main-content-grid">
+                <div class="box" style="position: relative;">
+                    <span class="tooltip-indicator" style="position: absolute; top: 5px; right: 5px;" data-tooltip="These fields are freeform and will be saved and restored with your character, but don't affect any calculations. You can use these boxes to track spell slots or other resources your character has.">?</span>
+                    <div class="resources-container">
+                        <div class="top-stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                            <div class="top-stats-label">HP + TEMP HP</div>
+                            <div class="top-stats-label">MAX HP</div>
+                            <div class="top-stats-label">HIT DICE</div>
+                            <div class="top-stats-label">DEATH SAVES</div>
+                            <div class="top-stats-value"><input type="text" id="hit-points" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="temp-hp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="hit-dice" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value">
+                                <div class="saves-wrapper">
+                                    <div class="saves-row">
+                                        <span class="label">Success</span>
+                                        <div>
+                                            <span class="save-circle" onclick="toggleDeathSave(this)" style="cursor: pointer;"></span><span class="save-circle" onclick="toggleDeathSave(this)" style="cursor: pointer;"></span><span class="save-circle" onclick="toggleDeathSave(this)" style="cursor: pointer;"></span>
+                                        </div>
+                                    </div>
+                                    <div class="saves-row">
+                                        <span class="label">Failure</span>
+                                        <div>
+                                            <span class="save-circle" onclick="toggleDeathSave(this)" style="cursor: pointer;"></span><span class="save-circle" onclick="toggleDeathSave(this)" style="cursor: pointer;"></span><span class="save-circle" onclick="toggleDeathSave(this)" style="cursor: pointer;"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="top-stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                            <div class="top-stats-label"><input type="text" id="resource1-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-label"><input type="text" id="resource2-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-label"><input type="text" id="resource3-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-label"><input type="text" id="resource4-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource1-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource2-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource3-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource4-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                        </div>
+                        <div class="top-stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                            <div class="top-stats-label"><input type="text" id="resource5-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-label"><input type="text" id="resource6-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-label"><input type="text" id="resource7-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-label"><input type="text" id="resource8-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource5-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource6-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource7-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource8-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                        </div>
+                        <div class="top-stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                            <div class="top-stats-label"><input type="text" id="resource9-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-label"><input type="text" id="resource10-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-label"><input type="text" id="resource11-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-label"><input type="text" id="resource12-label" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-family: 'Cinzel', serif; font-size: 1.0em; outline: none; padding: 0; font-weight: bold;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource9-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource10-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource11-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                            <div class="top-stats-value"><input type="text" id="resource12-value" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 1.6em; font-weight: bold; outline: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box attacks-box-size">
+                    <h3>Attacks<span class="tooltip-indicator" data-tooltip="These fields are freeform and will be saved and restored with your character, but don't affect any calculations.">?</span></h3>
+                    <div class="notes-box">
+                       <div class="attacks-header">
+                           <div>Name</div>
+                           <div>Range</div>
+                           <div>Hit/DC</div>
+                           <div>Effect</div>
+                       </div>
+                       <div class="attacks-body">
+                           <div><input type="text" id="attack1-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack1-range" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack1-hit" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack1-effect" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack2-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack2-range" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack2-hit" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack2-effect" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack3-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack3-range" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack3-hit" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack3-effect" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack4-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack4-range" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack4-hit" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack4-effect" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack5-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack5-range" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack5-hit" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack5-effect" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack6-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack6-range" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack6-hit" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack6-effect" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack7-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack7-range" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack7-hit" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="attack7-effect" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                       </div>
+                    </div>
+                </div>
+                <div class="box inventory-box-size">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #2c1e1e; padding-bottom: 4px;">
+                        <h3 style="margin: 0; border-bottom: none;">Inventory<span class="tooltip-indicator" data-tooltip="These fields are freeform and will be saved and restored with your character, but don't affect any calculations.">?</span></h3>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span style="font-size: 0.8em;">PP:</span>
+                            <div style="width: 40px; height: 20px; border: 1px solid black; border-radius: 4px;"><input type="text" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.8em; outline: none;"></div>
+                            <span style="font-size: 0.8em;">GP:</span>
+                            <div style="width: 40px; height: 20px; border: 1px solid black; border-radius: 4px;"><input type="text" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.8em; outline: none;"></div>
+                            <span style="font-size: 0.8em;">SP:</span>
+                            <div style="width: 40px; height: 20px; border: 1px solid black; border-radius: 4px;"><input type="text" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.8em; outline: none;"></div>
+                            <span style="font-size: 0.8em;">CP:</span>
+                            <div style="width: 40px; height: 20px; border: 1px solid black; border-radius: 4px;"><input type="text" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.8em; outline: none;"></div>
+                        </div>
+                    </div>
+                    <div class="notes-box">
+                       <div class="inventory-header">
+                           <div>Qty.</div>
+                           <div>Eqp.</div>
+                           <div>Item</div>
+                       </div>
+                       <div class="inventory-body">
+                           <div><input type="text" id="item1-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item1-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item1-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item2-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item2-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item2-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item3-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item3-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item3-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item4-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item4-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item4-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item5-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item5-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item5-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item6-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item6-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                           <div><input type="text" id="item6-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page">
+    <div style="display: flex; flex-direction: column; gap: 18px; height: 100%;">
+        <div class="box" style="flex-grow: 0; height: fit-content;">
+            <h3>Inventory (Continued)<span class="tooltip-indicator" data-tooltip="These fields are freeform and will be saved and restored with your character, but don't affect any calculations.">?</span></h3>
+            <div class="notes-box">
+               <div class="inventory-header">
+                   <div>Qty.</div>
+                   <div>Eqp.</div>
+                   <div>Item</div>
+               </div>
+               <div class="inventory-body-continued">
+                   <div><input type="text" id="item8-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item8-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item8-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item9-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item9-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item9-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item10-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item10-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item10-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item11-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item11-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item11-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item12-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item12-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item12-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item13-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item13-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item13-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item14-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item14-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item14-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item15-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item15-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item15-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item16-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item16-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item16-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item17-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item17-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item17-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item18-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item18-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item18-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item19-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item19-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item19-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item20-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item20-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item20-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item21-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item21-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item21-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item22-qty" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item22-eqp" style="width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 0.9em; outline: none; padding: 0; margin: 0; line-height: 22px;"></div>
+                   <div><input type="text" id="item22-name" style="width: 100%; height: 100%; border: none; background: transparent; text-align: left; font-size: 0.9em; outline: none; padding: 0 0 0 4px; margin: 0; line-height: 22px;"></div>
+               </div>
+            </div>
+        </div>
+        <div class="box" style="flex-grow: 2;">
+            <div class="notes-box">
+                <textarea id="notes-continued" style="width: 100%; height: 100%; border: none; background: transparent; font-family: 'Lora', serif; font-size: 0.9em; outline: none; resize: none; padding: 8px;"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
