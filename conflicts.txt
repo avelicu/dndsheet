@@ -1,0 +1,254 @@
+Found 9 CSV files: ['Artificer.csv', 'Bard.csv', 'Cleric.csv', 'Druid.csv', 'Paladin.csv', 'Ranger.csv', 'Sorcerer.csv', 'Warlock.csv', 'Wizard.csv']
+
+Processing Artificer.csv...
+Processing Artificer.csv with headers: ['level', 'name', 'school_level', 'casting_time', 'range', 'components', 'duration', 'description', 'class']
+Found 134 spells in Artificer.csv
+
+Processing Bard.csv...
+Processing Bard.csv with headers: ['level', 'name', 'school_level', 'casting_time', 'range', 'components', 'duration', 'description', 'class']
+Found 1 spells in Bard.csv
+
+Processing Cleric.csv...
+Processing Cleric.csv with headers: ['level', 'name', 'school_level', 'casting_time', 'range', 'components', 'duration', 'description', 'class']
+Found 208 spells in Cleric.csv
+
+Processing Druid.csv...
+Processing Druid.csv with headers: ['level', 'name', 'school_level', 'casting_time', 'range', 'components', 'duration', 'description', 'class']
+Found 208 spells in Druid.csv
+
+Processing Paladin.csv...
+Processing Paladin.csv with headers: ['level', 'name', 'school_level', 'casting_time', 'range', 'components', 'duration', 'description', 'class']
+Found 119 spells in Paladin.csv
+
+Processing Ranger.csv...
+Processing Ranger.csv with headers: ['level', 'name', 'school_level', 'casting_time', 'range', 'components', 'duration', 'description', 'class']
+Found 89 spells in Ranger.csv
+
+Processing Sorcerer.csv...
+Processing Sorcerer.csv with headers: ['level', 'name', 'school_level', 'casting_time', 'range', 'components', 'duration', 'description', 'class']
+Found 237 spells in Sorcerer.csv
+
+Processing Warlock.csv...
+Processing Warlock.csv with headers: ['level', 'name', 'school_level', 'casting_time', 'range', 'components', 'duration', 'description', 'class']
+Found 222 spells in Warlock.csv
+
+Processing Wizard.csv...
+Processing Wizard.csv with headers: ['level', 'name', 'school_level', 'casting_time', 'range', 'components', 'duration', 'description', 'class']
+Found 326 spells in Wizard.csv
+
+Total spells collected: 1544
+Unique spell names: 487
+CONFLICT WARNING: Booming Blade has different field values across classes!
+  Field 'range' differs between:
+    Artificer: Self (5-foot radius)
+    Sorcerer: 5 feet
+    Warlock: 5 feet
+    Wizard: 5 feet
+  Field 'components' differs between:
+    Artificer: S, M
+    Sorcerer: V, M
+    Warlock: V, M
+    Wizard: V, M
+  Field 'description' differs between:
+    Artificer: You brandish the weapon used in the spell's casting and make a melee attack with it against one creature within 5 feet of you. On a hit, the target suffers the weapon attack's normal effects and then becomes sheathed in booming energy until the start of your next turn. If the target willingly moves 5 feet or more before then, the target takes 1d8 thunder damage, and the spell ends.<br>At Higher Levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target on a hit, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level (2d8 and 3d8) and again at 17th level (3d8 and 4d8).
+    Sorcerer: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and it becomes sheathed in booming energy until the start of your next turn. If the target willingly moves before then, it immediately takes 1d8 thunder damage, and the spell ends.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level and 17th level.
+    Warlock: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and it becomes sheathed in booming energy until the start of your next turn. If the target willingly moves before then, it immediately takes 1d8 thunder damage, and the spell ends.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level and 17th level.
+    Wizard: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and it becomes sheathed in booming energy until the start of your next turn. If the target willingly moves before then, it immediately takes 1d8 thunder damage, and the spell ends.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level and 17th level.
+  Field 'material_component' differs between:
+    Artificer: a melee weapon worth at least 1 sp
+    Sorcerer: a weapon
+    Warlock: a weapon
+    Wizard: a weapon
+CONFLICT WARNING: Green-Flame Blade has different field values across classes!
+  Field 'range' differs between:
+    Artificer: Self (5-foot radius)
+    Sorcerer: 5 feet
+    Warlock: 5 feet
+    Wizard: 5 feet
+  Field 'components' differs between:
+    Artificer: S, M
+    Sorcerer: V, M
+    Warlock: V, M
+    Wizard: V, M
+  Field 'duration' differs between:
+    Artificer: Instantaneous
+    Sorcerer: 1 round
+    Warlock: 1 round
+    Wizard: 1 round
+  Field 'description' differs between:
+    Artificer: You brandish the weapon used in the spell's casting and make a melee attack with it against one creature within 5 feet of you. On a hit, the target suffers the weapon attack's normal effects, and you can cause green fire to leap from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.<br>At Higher Levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target on a hit, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level (2d8 and 2d8) and 17th level (3d8 and 3d8).
+    Sorcerer: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and green fire leaps from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level and 17th level.
+    Warlock: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and green fire leaps from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level and 17th level.
+    Wizard: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and green fire leaps from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level and 17th level.
+  Field 'material_component' differs between:
+    Artificer: a melee weapon worth at least 1 sp
+    Sorcerer: a weapon
+    Warlock: a weapon
+    Wizard: a weapon
+CONFLICT WARNING: Lightning Lure has different field values across classes!
+  Field 'range' differs between:
+    Artificer: 15 feet
+    Sorcerer: Self (15-foot radius)
+    Warlock: Self (15-foot radius)
+    Wizard: Self (15-foot radius)
+  Field 'description' differs between:
+    Artificer: You create a lash of lightning energy that strikes at one creature of your choice that you can see within range. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.<br> The spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).
+    Sorcerer: You create a lash of lightning energy that strikes at one creature of your choice that you can see within 15 feet of you. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.<br><b>At Higher Levels</b>: This spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).
+    Warlock: You create a lash of lightning energy that strikes at one creature of your choice that you can see within 15 feet of you. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.<br><b>At Higher Levels</b>: This spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).
+    Wizard: You create a lash of lightning energy that strikes at one creature of your choice that you can see within 15 feet of you. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.<br><b>At Higher Levels</b>: This spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).
+CONFLICT WARNING: Mage Hand has different field values across classes!
+  Field 'components' differs between:
+    Artificer: V, S
+    Ranger: V,S
+CONFLICT WARNING: Sword Burst has different field values across classes!
+  Field 'range' differs between:
+    Artificer: 5 feet
+    Sorcerer: Self (5-foot radius)
+    Warlock: Self (5-foot radius)
+    Wizard: Self (5-foot radius)
+  Field 'description' differs between:
+    Artificer: You create a momentary circle of spectral blades that sweep around you. Each creature within range, other than you, must succeed on a Dexterity saving throw or take 1d6 force damage.<br> The spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).
+    Sorcerer: You create a momentary circle of spectral blades that sweep around you. All other creatures within 5 feet of you must succeed on a Dexterity saving throw or take 1d6 force damage.<br><b>At Higher Levels</b>: This spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).
+    Warlock: You create a momentary circle of spectral blades that sweep around you. All other creatures within 5 feet of you must succeed on a Dexterity saving throw or take 1d6 force damage.<br><b>At Higher Levels</b>: This spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).
+    Wizard: You create a momentary circle of spectral blades that sweep around you. All other creatures within 5 feet of you must succeed on a Dexterity saving throw or take 1d6 force damage.<br><b>At Higher Levels</b>: This spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).
+CONFLICT WARNING: Raise Dead has different field values across classes!
+  Field 'material_component' differs between:
+    Artificer: A diamond worth at least 500 gp, Consumed
+    Cleric: a diamond worth at least 500 gp, which the spell consumes
+    Paladin: a diamond worth at least 500 gp, which the spell consumes
+CONFLICT WARNING: Nondetection has different field values across classes!
+  Field 'material_component' differs between:
+    Cleric: a pinch of diamond dust worth 25 gp sprinkled over the target, which the spell consumes
+    Paladin: A pinch of diamond dust worth 25 gp sprinkled over the target, Consumed
+CONFLICT WARNING: Confusion has different field values across classes!
+  Field 'material_component' differs between:
+    Cleric: three nut shells
+    Druid: 3 nut shells
+CONFLICT WARNING: Planar Binding has different field values across classes!
+  Field 'material_component' differs between:
+    Cleric: a jewel worth at least 1,000 gp, which the spell consumes
+    Warlock: A jewel worth at least 1,000 gp, Consumed
+CONFLICT WARNING: Teleportation Circle has different field values across classes!
+  Field 'material_component' differs between:
+    Cleric: rare chalks and inks infused with precious gems with 50 gp, which the spell consumes
+    Warlock: Rare chalks and inks infused with precious gems with 50 gp, Consumed
+CONFLICT WARNING: Symbol has different field values across classes!
+  Field 'description' differs between:
+    Cleric: When you cast this spell, you inscribe a harmful glyph either on a surface (such as a section of floor, a wall, or a table) or within an object that can be closed to conceal the glyph (such as a book, a scroll, or a treasure chest). If you choose a surface, the glyph can cover an area of the surface no larger than 10 feet in diameter. If you choose an object, that object must remain in its place, if the object is moved more than 10 feet from where you cast this spell, the glyph is broken, and the spell ends without being triggered.<br> The glyph is nearly invisible, requiring an Intelligence (Investigation) check against your spell save DC to find it.<br> You decide what triggers the glyph when you cast the spell. For glyphs inscribed on a surface, the most typical triggers include touching or stepping on the glyph, removing another object covering it, approaching within a certain distance of it, or manipulating the object that holds it. For glyphs inscribed within an object, the most common triggers are opening the object, approaching within a certain distance of it, or seeing or reading the glyph.<br> You can further refine the trigger so the spell is activated only under certain circumstances or according to a creature's physical characteristics (such as height or weight), or physical kind (for example, the ward could be set to affect hags or shapechangers). You can also specify creatures that don't trigger the glyph, such as those who say a certain password.<br> When you inscribe the glyph, choose one of the options below for its effect. Once triggered, the glyph glows, filling a 60-foot-radius sphere with dim light for 10 minutes, after which time the spell ends. Each creature in the sphere when the glyph activates is targeted by its effect, as is a creature that enters the sphere for the first time on a turn or ends its turn there.<br> <b>Death</b>: Each target must make a Constitution saving throw, taking 10d10 necrotic damage on a failed save, or half as much damage on a successful save.<br> <b>Discord</b>: Each target must make a Constitution saving throw. On a failed save, a target bickers and argues with other creatures for 1 minute. During this time, it is incapable of meaningful communication and has disadvantage on attack rolls and ability checks.<br> <b>Fear</b>: Each target must make a Wisdom saving throw and becomes frightened for 1 minute on a failed save. While frightened, the target drops whatever it is holding and must move at least 30 feet away from the glyph on each of its turns, if able.<br> <b>Hopelessness</b>: Each target must make a Charisma saving throw. On a failed save, the target is overwhelmed with despair for 1 minute. During this time, it can't attack or target any creature with harmful abilities, spells, or other magical effects.<br> <b>Insanity</b>: Each target must make an Intelligence saving throw. On a failed save, the target is driven insane for 1 minute. An insane creature can't take actions, can't understand what other creatures say, can't read, and speaks only in gibberish. The DM controls its movement, which is erratic.<br> <b>Pain</b>: Each target must make a Constitution saving throw and becomes incapacitated with excruciating pain for 1 minute on a failed save.<br> <b>Sleep</b>: Each target must make a Wisdom saving throw and falls unconscious for 10 minutes on a failed save. A creature awakens if it takes damage or if someone uses an action to shake or slap it awake.<br> <b>Stunning</b>: Each target must make a Wisdom saving throw and becomes stunned for 1 minute on a failed save.
+    Druid: When you cast this spell, you inscribe a harmful glyph either on a surface (such as a section of floor, a wall, or a table) or within an object that can be closed to conceal the glyph (such as a book, a scroll, or a treasure chest). If you choose a surface, the glyph can cover an area of the surface no larger than 10 feet in diameter. If you choose an object, that object must remain in its place, if the object is moved more than 10 feet from where you cast this spell, the glyph is broken, and the spell ends without being triggered.<br> The glyph is nearly invisible, requiring an Intelligence (Investigation) check against your spell save DC to find it. - - - - - You decide what triggers the glyph when you cast the spell. For glyphs inscribed on a surface, the most typical triggers include touching or stepping on the glyph, removing another object covering it, approaching within a certain distance of it, or manipulating the object that holds it. For glyphs inscribed within an object, the most common triggers are opening the object, <br> approaching within a certain distance of it, or seeing or reading the glyph.<br> You can further refine the trigger so the spell is activated only under certain circumstances or according to a creature's physical characteristics (such as height or weight), or physical kind (for example, the ward could be set to affect hags or shapechangers). You can also specify creatures that don't trigger the glyph, such as those who say a certain password.<br> When you inscribe the glyph, choose 1 of the options below for its effect. Once triggered, the glyph glows, filling a 60-foot-radius sphere with dim light for 10 minutes, after which time the spell ends. Each creature in the sphere when the glyph activates is targeted by its effect, as is a creature that enters the sphere for the first time on a turn or ends its turn there.<br> <b>Death</b>: Each target must make a Constitution saving throw, taking 10d10 necrotic damage on a failed save, <br> - <br> - <br> - <br> - <br> or half as much damage on a successful save.<br> <b>Discord</b>: or half as much damage on a successful save.<br> <b>Discord</b>: Each target must make a Constitution saving throw. On a failed save, a target bickers and argues with other creatures for 1 minute. During this time, it is incapable of meaningful communication and has disadvantage on attack rolls and ability checks.<br> <b>Fear</b>: Each target must make a Wisdom saving throw and becomes frightened for 1 minute on a failed save. While frightened, the target drops whatever it is holding and must move at least 30 feet away from the glyph on each of its turns, if able.<br> <b>Hopelessness</b>: Each target must make a Charisma saving throw. On a failed save, the target is overwhelmed with despair for 1 minute. During this time, it can't attack or target any creature with harmful abilities, spells, or other magical effects.<br> <b>Insanity</b>: Each target must make an Intelligence saving throw. On a failed save, the target is driven insane for 1 minute. An insane creature can't take actions, can't understand what other creatures say, can't read, and speaks only in gibberish. The DM controls its movement, which is erratic.<br> <b>Pain</b>: Each target must make a Constitution saving throw and becomes incapacitated with excruciating pain for 1 minute on a failed save.<br> <b>Sleep</b>: Each target must make a Wisdom saving throw and falls unconscious for 10 minutes on a failed save. A creature awakens if it takes damage or if someone uses an action to shake or slap it awake.<br> <b>Stunning</b>: Each target must make a Wisdom saving throw and becomes stunned for 1 minute on a failed save.
+  Field 'material_component' differs between:
+    Cleric: mercury, phosphorus, and powdered diamond and opal with a total value of at least 1,000 gp, which the spell consumes
+    Druid: Mercury, phosphorus, and powdered diamond and opal with a total value of at least 1,000 gp, Consumed
+CONFLICT WARNING: Minor Illusion has different field values across classes!
+  Field 'material_component' differs between:
+    Sorcerer: A bit of fleece
+    Warlock: 
+CONFLICT WARNING: Chromatic Orb has different field values across classes!
+  Field 'description' differs between:
+    Sorcerer: You hurl a 4-inch-diameter sphere of energy at a creature that you can see within range. You choose acid, cold, fire, lightning, poison, or thunder for the type of orb you create, and then make a ranged spell attack against the target. If the attack hits, the creature takes 3d8 damage of the type you chose.<br> <b>At Higher Levels</b>: When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d8 for each slot level above 1st.
+    Wizard: You hurl a 4-inch-diameter sphere of energy at a creature that you can see within range. You choose acid, cold, fire, lightning, poison, or thunder for the type of orb you create, and then make a ranged spell attack against the target. If the attack hits, the creature takes 3d8 damage of the type you chose.<br> <b>At Higher Levels</b>: When you cast this spell using a spell slot of or higher, the damage increases by 1d8 for each slot level above 1st.<br> <b>At Higher Levels</b>: When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d8 for each slot level above 1st.
+
+Conflicts found: 23
+Deduplicated spells: 487
+
+Writing combined CSV to all_spells.csv...
+Headers: ['level', 'name', 'school_of_magic', 'casting_time', 'range', 'components', 'material_component', 'duration', 'description', 'classes']
+Successfully wrote 487 spells to all_spells.csv
+
+All conflicts found:
+  1. Booming Blade: range differs between:
+     Artificer: Self (5-foot radius)
+     Sorcerer: 5 feet
+     Warlock: 5 feet
+     Wizard: 5 feet
+  2. Booming Blade: components differs between:
+     Artificer: S, M
+     Sorcerer: V, M
+     Warlock: V, M
+     Wizard: V, M
+  3. Booming Blade: description differs between:
+     Artificer: You brandish the weapon used in the spell's casting and make a melee attack with it against one creature within 5 feet of you. On a hit, the target suffers the weapon attack's normal effects and then becomes sheathed in booming energy until the start of your next turn. If the target willingly moves 5 feet or more before then, the target takes 1d8 thunder damage, and the spell ends.<br>At Higher Levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target on a hit, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level (2d8 and 3d8) and again at 17th level (3d8 and 4d8).
+     Sorcerer: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and it becomes sheathed in booming energy until the start of your next turn. If the target willingly moves before then, it immediately takes 1d8 thunder damage, and the spell ends.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level and 17th level.
+     Warlock: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and it becomes sheathed in booming energy until the start of your next turn. If the target willingly moves before then, it immediately takes 1d8 thunder damage, and the spell ends.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level and 17th level.
+     Wizard: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and it becomes sheathed in booming energy until the start of your next turn. If the target willingly moves before then, it immediately takes 1d8 thunder damage, and the spell ends.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level and 17th level.
+  4. Booming Blade: material_component differs between:
+     Artificer: a melee weapon worth at least 1 sp
+     Sorcerer: a weapon
+     Warlock: a weapon
+     Wizard: a weapon
+  5. Green-Flame Blade: range differs between:
+     Artificer: Self (5-foot radius)
+     Sorcerer: 5 feet
+     Warlock: 5 feet
+     Wizard: 5 feet
+  6. Green-Flame Blade: components differs between:
+     Artificer: S, M
+     Sorcerer: V, M
+     Warlock: V, M
+     Wizard: V, M
+  7. Green-Flame Blade: duration differs between:
+     Artificer: Instantaneous
+     Sorcerer: 1 round
+     Warlock: 1 round
+     Wizard: 1 round
+  8. Green-Flame Blade: description differs between:
+     Artificer: You brandish the weapon used in the spell's casting and make a melee attack with it against one creature within 5 feet of you. On a hit, the target suffers the weapon attack's normal effects, and you can cause green fire to leap from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.<br>At Higher Levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target on a hit, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level (2d8 and 2d8) and 17th level (3d8 and 3d8).
+     Sorcerer: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and green fire leaps from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level and 17th level.
+     Warlock: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and green fire leaps from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level and 17th level.
+     Wizard: As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and green fire leaps from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.<br> This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level and 17th level.
+  9. Green-Flame Blade: material_component differs between:
+     Artificer: a melee weapon worth at least 1 sp
+     Sorcerer: a weapon
+     Warlock: a weapon
+     Wizard: a weapon
+  10. Lightning Lure: range differs between:
+     Artificer: 15 feet
+     Sorcerer: Self (15-foot radius)
+     Warlock: Self (15-foot radius)
+     Wizard: Self (15-foot radius)
+  11. Lightning Lure: description differs between:
+     Artificer: You create a lash of lightning energy that strikes at one creature of your choice that you can see within range. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.<br> The spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).
+     Sorcerer: You create a lash of lightning energy that strikes at one creature of your choice that you can see within 15 feet of you. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.<br><b>At Higher Levels</b>: This spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).
+     Warlock: You create a lash of lightning energy that strikes at one creature of your choice that you can see within 15 feet of you. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.<br><b>At Higher Levels</b>: This spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).
+     Wizard: You create a lash of lightning energy that strikes at one creature of your choice that you can see within 15 feet of you. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.<br><b>At Higher Levels</b>: This spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).
+  12. Mage Hand: components differs between:
+     Artificer: V, S
+     Ranger: V,S
+  13. Sword Burst: range differs between:
+     Artificer: 5 feet
+     Sorcerer: Self (5-foot radius)
+     Warlock: Self (5-foot radius)
+     Wizard: Self (5-foot radius)
+  14. Sword Burst: description differs between:
+     Artificer: You create a momentary circle of spectral blades that sweep around you. Each creature within range, other than you, must succeed on a Dexterity saving throw or take 1d6 force damage.<br> The spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).
+     Sorcerer: You create a momentary circle of spectral blades that sweep around you. All other creatures within 5 feet of you must succeed on a Dexterity saving throw or take 1d6 force damage.<br><b>At Higher Levels</b>: This spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).
+     Warlock: You create a momentary circle of spectral blades that sweep around you. All other creatures within 5 feet of you must succeed on a Dexterity saving throw or take 1d6 force damage.<br><b>At Higher Levels</b>: This spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).
+     Wizard: You create a momentary circle of spectral blades that sweep around you. All other creatures within 5 feet of you must succeed on a Dexterity saving throw or take 1d6 force damage.<br><b>At Higher Levels</b>: This spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).
+  15. Raise Dead: material_component differs between:
+     Artificer: A diamond worth at least 500 gp, Consumed
+     Cleric: a diamond worth at least 500 gp, which the spell consumes
+     Paladin: a diamond worth at least 500 gp, which the spell consumes
+  16. Nondetection: material_component differs between:
+     Cleric: a pinch of diamond dust worth 25 gp sprinkled over the target, which the spell consumes
+     Paladin: A pinch of diamond dust worth 25 gp sprinkled over the target, Consumed
+  17. Confusion: material_component differs between:
+     Cleric: three nut shells
+     Druid: 3 nut shells
+  18. Planar Binding: material_component differs between:
+     Cleric: a jewel worth at least 1,000 gp, which the spell consumes
+     Warlock: A jewel worth at least 1,000 gp, Consumed
+  19. Teleportation Circle: material_component differs between:
+     Cleric: rare chalks and inks infused with precious gems with 50 gp, which the spell consumes
+     Warlock: Rare chalks and inks infused with precious gems with 50 gp, Consumed
+  20. Symbol: description differs between:
+     Cleric: When you cast this spell, you inscribe a harmful glyph either on a surface (such as a section of floor, a wall, or a table) or within an object that can be closed to conceal the glyph (such as a book, a scroll, or a treasure chest). If you choose a surface, the glyph can cover an area of the surface no larger than 10 feet in diameter. If you choose an object, that object must remain in its place, if the object is moved more than 10 feet from where you cast this spell, the glyph is broken, and the spell ends without being triggered.<br> The glyph is nearly invisible, requiring an Intelligence (Investigation) check against your spell save DC to find it.<br> You decide what triggers the glyph when you cast the spell. For glyphs inscribed on a surface, the most typical triggers include touching or stepping on the glyph, removing another object covering it, approaching within a certain distance of it, or manipulating the object that holds it. For glyphs inscribed within an object, the most common triggers are opening the object, approaching within a certain distance of it, or seeing or reading the glyph.<br> You can further refine the trigger so the spell is activated only under certain circumstances or according to a creature's physical characteristics (such as height or weight), or physical kind (for example, the ward could be set to affect hags or shapechangers). You can also specify creatures that don't trigger the glyph, such as those who say a certain password.<br> When you inscribe the glyph, choose one of the options below for its effect. Once triggered, the glyph glows, filling a 60-foot-radius sphere with dim light for 10 minutes, after which time the spell ends. Each creature in the sphere when the glyph activates is targeted by its effect, as is a creature that enters the sphere for the first time on a turn or ends its turn there.<br> <b>Death</b>: Each target must make a Constitution saving throw, taking 10d10 necrotic damage on a failed save, or half as much damage on a successful save.<br> <b>Discord</b>: Each target must make a Constitution saving throw. On a failed save, a target bickers and argues with other creatures for 1 minute. During this time, it is incapable of meaningful communication and has disadvantage on attack rolls and ability checks.<br> <b>Fear</b>: Each target must make a Wisdom saving throw and becomes frightened for 1 minute on a failed save. While frightened, the target drops whatever it is holding and must move at least 30 feet away from the glyph on each of its turns, if able.<br> <b>Hopelessness</b>: Each target must make a Charisma saving throw. On a failed save, the target is overwhelmed with despair for 1 minute. During this time, it can't attack or target any creature with harmful abilities, spells, or other magical effects.<br> <b>Insanity</b>: Each target must make an Intelligence saving throw. On a failed save, the target is driven insane for 1 minute. An insane creature can't take actions, can't understand what other creatures say, can't read, and speaks only in gibberish. The DM controls its movement, which is erratic.<br> <b>Pain</b>: Each target must make a Constitution saving throw and becomes incapacitated with excruciating pain for 1 minute on a failed save.<br> <b>Sleep</b>: Each target must make a Wisdom saving throw and falls unconscious for 10 minutes on a failed save. A creature awakens if it takes damage or if someone uses an action to shake or slap it awake.<br> <b>Stunning</b>: Each target must make a Wisdom saving throw and becomes stunned for 1 minute on a failed save.
+     Druid: When you cast this spell, you inscribe a harmful glyph either on a surface (such as a section of floor, a wall, or a table) or within an object that can be closed to conceal the glyph (such as a book, a scroll, or a treasure chest). If you choose a surface, the glyph can cover an area of the surface no larger than 10 feet in diameter. If you choose an object, that object must remain in its place, if the object is moved more than 10 feet from where you cast this spell, the glyph is broken, and the spell ends without being triggered.<br> The glyph is nearly invisible, requiring an Intelligence (Investigation) check against your spell save DC to find it. - - - - - You decide what triggers the glyph when you cast the spell. For glyphs inscribed on a surface, the most typical triggers include touching or stepping on the glyph, removing another object covering it, approaching within a certain distance of it, or manipulating the object that holds it. For glyphs inscribed within an object, the most common triggers are opening the object, <br> approaching within a certain distance of it, or seeing or reading the glyph.<br> You can further refine the trigger so the spell is activated only under certain circumstances or according to a creature's physical characteristics (such as height or weight), or physical kind (for example, the ward could be set to affect hags or shapechangers). You can also specify creatures that don't trigger the glyph, such as those who say a certain password.<br> When you inscribe the glyph, choose 1 of the options below for its effect. Once triggered, the glyph glows, filling a 60-foot-radius sphere with dim light for 10 minutes, after which time the spell ends. Each creature in the sphere when the glyph activates is targeted by its effect, as is a creature that enters the sphere for the first time on a turn or ends its turn there.<br> <b>Death</b>: Each target must make a Constitution saving throw, taking 10d10 necrotic damage on a failed save, <br> - <br> - <br> - <br> - <br> or half as much damage on a successful save.<br> <b>Discord</b>: or half as much damage on a successful save.<br> <b>Discord</b>: Each target must make a Constitution saving throw. On a failed save, a target bickers and argues with other creatures for 1 minute. During this time, it is incapable of meaningful communication and has disadvantage on attack rolls and ability checks.<br> <b>Fear</b>: Each target must make a Wisdom saving throw and becomes frightened for 1 minute on a failed save. While frightened, the target drops whatever it is holding and must move at least 30 feet away from the glyph on each of its turns, if able.<br> <b>Hopelessness</b>: Each target must make a Charisma saving throw. On a failed save, the target is overwhelmed with despair for 1 minute. During this time, it can't attack or target any creature with harmful abilities, spells, or other magical effects.<br> <b>Insanity</b>: Each target must make an Intelligence saving throw. On a failed save, the target is driven insane for 1 minute. An insane creature can't take actions, can't understand what other creatures say, can't read, and speaks only in gibberish. The DM controls its movement, which is erratic.<br> <b>Pain</b>: Each target must make a Constitution saving throw and becomes incapacitated with excruciating pain for 1 minute on a failed save.<br> <b>Sleep</b>: Each target must make a Wisdom saving throw and falls unconscious for 10 minutes on a failed save. A creature awakens if it takes damage or if someone uses an action to shake or slap it awake.<br> <b>Stunning</b>: Each target must make a Wisdom saving throw and becomes stunned for 1 minute on a failed save.
+  21. Symbol: material_component differs between:
+     Cleric: mercury, phosphorus, and powdered diamond and opal with a total value of at least 1,000 gp, which the spell consumes
+     Druid: Mercury, phosphorus, and powdered diamond and opal with a total value of at least 1,000 gp, Consumed
+  22. Minor Illusion: material_component differs between:
+     Sorcerer: A bit of fleece
+     Warlock: 
+  23. Chromatic Orb: description differs between:
+     Sorcerer: You hurl a 4-inch-diameter sphere of energy at a creature that you can see within range. You choose acid, cold, fire, lightning, poison, or thunder for the type of orb you create, and then make a ranged spell attack against the target. If the attack hits, the creature takes 3d8 damage of the type you chose.<br> <b>At Higher Levels</b>: When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d8 for each slot level above 1st.
+     Wizard: You hurl a 4-inch-diameter sphere of energy at a creature that you can see within range. You choose acid, cold, fire, lightning, poison, or thunder for the type of orb you create, and then make a ranged spell attack against the target. If the attack hits, the creature takes 3d8 damage of the type you chose.<br> <b>At Higher Levels</b>: When you cast this spell using a spell slot of or higher, the damage increases by 1d8 for each slot level above 1st.<br> <b>At Higher Levels</b>: When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d8 for each slot level above 1st.

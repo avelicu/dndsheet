@@ -220,8 +220,6 @@
         }
         .inventory-body, .attacks-body {
             flex-grow: 1;
-            background-image: repeating-linear-gradient(to bottom, transparent, transparent 21px, #ccc 22px);
-            background-size: 100% 132px; /* 6 rows × 22px = 132px */
             display: grid;
             grid-template-rows: repeat(6, 22px);
         }
@@ -240,8 +238,6 @@
         }
         .inventory-body-continued {
             flex-grow: 1;
-            background-image: repeating-linear-gradient(to bottom, transparent, transparent 21px, #ccc 22px);
-            background-size: 100% 330px; /* 15 rows × 22px = 330px */
             display: grid;
             grid-template-columns: 30px 30px 1fr;
             grid-template-rows: repeat(15, 22px);
@@ -459,6 +455,7 @@
                 display: none !important;
             }
         }
+        
     </style>
     <script>
         function saveCharacterData() {
@@ -986,12 +983,12 @@
         Your character is automatically saved in your browser session, but you can use the buttons below to export and import data and create multiple characters.<br><br>
         Here's a circle emoji you can copy for resources, in case you need it: <span style="font-size: 1.8em;">○</span>
     </div>
-    <div class="save-restore-buttons">
-        <button class="save-btn" onclick="saveCharacterData()">Save Character</button>
-        <button class="restore-btn" onclick="restoreCharacterData()">Restore Character</button>
-        <button class="new-character-btn" onclick="newCharacter()">New Character</button>
-        <button class="print-btn" onclick="printCharacter()">Print</button>
-    </div>
+        <div class="save-restore-buttons">
+            <button class="save-btn" onclick="saveCharacterData()">Save Character</button>
+            <button class="restore-btn" onclick="restoreCharacterData()">Restore Character</button>
+            <button class="new-character-btn" onclick="newCharacter()">New Character</button>
+            <button class="print-btn" onclick="printCharacter()">Print</button>
+        </div>
 </div>
 
 <div class="warning-overlay" id="proficiency-warning">
