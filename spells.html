@@ -54,9 +54,10 @@
         .filter-groups-container {
             display: flex;
             gap: 30px;
+            justify-content: center;
             align-items: flex-start;
             flex-wrap: wrap;
-            justify-content: center;
+            margin-bottom: 20px;
         }
 
         .filter-group {
@@ -64,6 +65,7 @@
             flex-direction: column;
             gap: 10px;
             min-width: 200px;
+            flex: 0 0 auto;
         }
 
         .filter-group h3 {
@@ -74,11 +76,27 @@
             font-family: 'Cinzel Decorative', 'Cinzel', serif;
         }
 
+        .reset-button-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .settings-groups-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+
         .filter-options {
             display: flex;
             flex-direction: column;
             gap: 5px;
-            max-height: 200px;
+            height: 200px;
             overflow-y: auto;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -125,6 +143,30 @@
         .clear-filters:hover {
             background: linear-gradient(135deg, #A0522D, #8B4513);
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .size-selector select, .paper-selector select, .palette-selector select, .font-size-selector select, .body-font-size-selector select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            font-size: 0.9em;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        #customSizeInputs {
+            display: flex;
+            gap: 10px;
+        }
+
+        #customSizeInputs input, #customFontSizeInput input, #customBodyFontSizeInput input {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: 'Cormorant Garamond', serif;
         }
 
         .spell-grid {
@@ -175,7 +217,7 @@
                 grid-template-columns: repeat(3, 2.5in) !important;
                 grid-auto-rows: 3.5in !important;
                 gap: 0 !important;
-                justify-content: start !important;
+                justify-content: center !important;
                 align-content: start !important;
                 page-break-inside: avoid !important;
             }
@@ -294,6 +336,17 @@
             padding-inline-end: 4px;
         }
 
+        .spell-side-text .level-emoji {
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Android Emoji", "EmojiSymbols", "EmojiOne Mozilla", "Twemoji Mozilla", "Segoe UI Symbol", sans-serif;
+            font-size: 1.8em;
+            font-weight: normal;
+            text-shadow: none;
+            margin-left: 8px;
+            margin-right: 8px;
+            display: inline-block;
+            transform: rotate(90deg);
+        }
+
 
         .spell-header {
             background: none !important;
@@ -363,7 +416,7 @@
         }
 
         .spell-description {
-            padding: 12px 0;
+            padding: 12px 0 0 0;
             font-size: 0.9em;
             line-height: 1.3;
             color: #2c1810;
@@ -539,6 +592,7 @@
 
 
     <div class="filters">
+        <!-- Main Filter Groups (Classes, Levels, Additional Spells) -->
         <div class="filter-groups-container">
             <div class="filter-group">
                 <h3>Classes</h3>
@@ -546,20 +600,104 @@
                     <!-- Class checkboxes will be generated here -->
                 </div>
             </div>
+            
             <div class="filter-group">
                 <h3>Levels</h3>
                 <div class="filter-options" id="levelFilters">
                     <!-- Level checkboxes will be generated here -->
                 </div>
             </div>
+            
             <div class="filter-group">
-                <h3>Schools</h3>
-                <div class="filter-options" id="schoolFilters">
-                    <!-- School checkboxes will be generated here -->
+                <h3>Additional Spells</h3>
+                <div class="spell-selector">
+                    <input type="text" id="spellSearch" placeholder="Search spells..." onkeyup="filterSpellDropdown()" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 10px; font-family: 'Cormorant Garamond', serif;">
+                    <div id="spellCheckboxes" style="height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; padding: 8px; background: #f9f9f9;">
+                        <!-- Spell checkboxes will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Reset Button - Centered below the three main filter groups -->
+        <div class="reset-button-container">
+            <button onclick="resetToDefault()" style="padding: 8px 16px; background: #8B4513; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 1em;">Reset</button>
+        </div>
+        
+        <!-- Settings Groups (Card Size & Paper, Appearance) -->
+        <div class="settings-groups-container">
+            <div class="filter-group">
+                <h3>Card Size & Paper</h3>
+                <div class="size-selector">
+                    <select id="cardSizeSelect" onchange="updateCardSize()">
+                        <option value="standard">Standard Trading Cards (2.5" × 3.5")</option>
+                        <option value="mini">Mini Cards (1.5" × 2.5")</option>
+                        <option value="large">Large Cards (3.5" × 5")</option>
+                        <option value="custom">Custom Size</option>
+                    </select>
+                    <div id="customSizeInputs" style="display: none; margin-top: 10px;">
+                        <input type="number" id="customWidth" placeholder="Width (inches)" step="0.1" min="0.5" max="8">
+                        <input type="number" id="customHeight" placeholder="Height (inches)" step="0.1" min="0.5" max="12">
+                    </div>
+                </div>
+                <div class="paper-selector" style="margin-top: 10px;">
+                    <select id="paperSizeSelect" onchange="updatePaperSize()">
+                        <option value="letter">Letter (8.5" × 11")</option>
+                        <option value="a4">A4 (8.27" × 11.69")</option>
+                        <option value="legal">Legal (8.5" × 14")</option>
+                        <option value="tabloid">Tabloid (11" × 17")</option>
+                    </select>
+                    <div style="margin-top: 8px; font-size: 0.85em; color: #666; font-style: italic; font-family: 'Cormorant Garamond', serif;">
+                        💡 When printing, select "No margins" or "Minimum margins" as proper spacing is already included.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <h3>Appearance</h3>
+                <div class="palette-selector">
+                    <select id="paletteSelect" onchange="updatePalette()">
+                        <option value="default">Default Palette</option>
+                        <option value="fire">Fire Theme</option>
+                        <option value="ice">Ice Theme</option>
+                        <option value="nature">Nature Theme</option>
+                        <option value="shadow">Shadow Theme</option>
+                        <option value="arcane">Arcane Theme</option>
+                    </select>
+                </div>
+                <div class="font-size-selector" style="margin-top: 10px;">
+                    <select id="fontSizeSelect" onchange="updateFontSize()">
+                        <option value="auto">Font Size: Auto Scale</option>
+                        <option value="small">Font Size: Small (0.8x)</option>
+                        <option value="normal">Font Size: Normal (1.0x)</option>
+                        <option value="large">Font Size: Large (1.2x)</option>
+                        <option value="custom">Font Size: Custom Scale</option>
+                    </select>
+                    <div id="customFontSizeInput" style="display: none; margin-top: 10px;">
+                        <input type="number" id="customFontScale" placeholder="Scale factor (e.g., 0.9)" step="0.1" min="0.5" max="2.0" value="1.0">
+                    </div>
+                </div>
+                <div class="body-font-size-selector" style="margin-top: 10px;">
+                    <select id="bodyFontSizeSelect" onchange="updateBodyFontSize()">
+                        <option value="auto">Body Text: Auto Scale</option>
+                        <option value="small">Body Text: Small (0.7x)</option>
+                        <option value="normal">Body Text: Normal (0.8x)</option>
+                        <option value="large">Body Text: Large (0.9x)</option>
+                        <option value="custom">Body Text: Custom Scale</option>
+                    </select>
+                    <div id="customBodyFontSizeInput" style="display: none; margin-top: 10px;">
+                        <input type="number" id="customBodyFontScale" placeholder="Scale factor (e.g., 0.8)" step="0.1" min="0.5" max="2.0" value="0.8">
+                    </div>
+                </div>
+                <div class="preview-palette-selector" style="margin-top: 10px;">
+                    <div class="filter-option">
+                        <input type="checkbox" id="previewMode" onchange="togglePreviewMode()">
+                        <label for="previewMode" style="color: #2c1810; font-family: 'Cormorant Garamond', serif;">Preview Palette</label>
+                    </div>
                 </div>
             </div>
         </div>
-        <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
     </div>
 
     <div class="paper-container" id="paperContainer">
@@ -674,55 +812,58 @@
                 schoolSet.add(spell.school_of_magic);
             });
             
+            
             // Populate class filters
             const classFilters = document.getElementById('classFilters');
+            
+            // Add "All Classes" button
+            const allClassesOption = document.createElement('div');
+            allClassesOption.className = 'filter-option';
+            allClassesOption.innerHTML = `
+                <input type="checkbox" id="all_classes" onchange="toggleAllClasses()">
+                <label for="all_classes" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; font-weight: bold;">All Classes</label>
+            `;
+            classFilters.appendChild(allClassesOption);
+            
             Array.from(classSet).sort().forEach(cls => {
                 const option = document.createElement('div');
                 option.className = 'filter-option';
                 option.innerHTML = `
-                    <input type="checkbox" id="class_${cls.replace(/\s+/g, '_')}" value="${cls}" onchange="filterSpells()">
-                    <label for="class_${cls.replace(/\s+/g, '_')}">${cls}</label>
+                    <input type="checkbox" id="class_${cls.replace(/\s+/g, '_')}" value="${cls}" onchange="updateClassAllState(); filterSpells()">
+                    <label for="class_${cls.replace(/\s+/g, '_')}" style="color: #2c1810; font-family: 'Cormorant Garamond', serif;">${cls}</label>
                 `;
                 classFilters.appendChild(option);
             });
             
             // Populate level filters
             const levelFilters = document.getElementById('levelFilters');
+            
+            // Add "All Levels" button
+            const allLevelsOption = document.createElement('div');
+            allLevelsOption.className = 'filter-option';
+            allLevelsOption.innerHTML = `
+                <input type="checkbox" id="all_levels" onchange="toggleAllLevels()">
+                <label for="all_levels" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; font-weight: bold;">All Levels</label>
+            `;
+            levelFilters.appendChild(allLevelsOption);
+            
             const levels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
             levels.forEach(level => {
-                const levelText = level === '0' ? 'Cantrips (0)' : `${level}${getOrdinalSuffix(level)} Level`;
+                const levelText = level === '0' ? 'Cantrip' : `Level ${level}`;
                 const option = document.createElement('div');
                 option.className = 'filter-option';
                 option.innerHTML = `
-                    <input type="checkbox" id="level_${level}" value="${level}" onchange="filterSpells()">
-                    <label for="level_${level}">${levelText}</label>
+                    <input type="checkbox" id="level_${level}" value="${level}" onchange="updateLevelAllState(); filterSpells()">
+                    <label for="level_${level}" style="color: #2c1810; font-family: 'Cormorant Garamond', serif;">${levelText}</label>
                 `;
                 levelFilters.appendChild(option);
             });
             
-            // Add Palette Preview option
-            const paletteOption = document.createElement('div');
-            paletteOption.className = 'filter-option';
-            paletteOption.innerHTML = `
-                <input type="checkbox" id="palette_preview" value="palette_preview" onchange="filterSpells()">
-                <label for="palette_preview">Palette Preview</label>
-            `;
-            levelFilters.appendChild(paletteOption);
-            
-            // Populate school filters
-            const schoolFilters = document.getElementById('schoolFilters');
-            Array.from(schoolSet).sort().forEach(school => {
-                const option = document.createElement('div');
-                option.className = 'filter-option';
-                option.innerHTML = `
-                    <input type="checkbox" id="school_${school.replace(/\s+/g, '_')}" value="${school}" onchange="filterSpells()">
-                    <label for="school_${school.replace(/\s+/g, '_')}">${school}</label>
-                `;
-                schoolFilters.appendChild(option);
-            });
+            // Populate spell dropdown
+            populateSpellDropdown();
             
             // Load saved filter selections
-            loadFilters();
+            loadAllSettings();
             
             // Apply filters after loading saved selections
             filterSpells();
@@ -741,6 +882,30 @@
             };
             
             localStorage.setItem('spellFilters', JSON.stringify(filters));
+        }
+
+        // Save all settings to localStorage
+        function saveAllSettings() {
+            const selectedClasses = Array.from(document.querySelectorAll('#classFilters input:checked:not(#all_classes)')).map(cb => cb.value);
+            const selectedLevels = Array.from(document.querySelectorAll('#levelFilters input:checked:not(#all_levels)')).map(cb => cb.value);
+            
+            const settings = {
+                classes: selectedClasses,
+                levels: selectedLevels,
+                selectedSpells: Array.from(selectedSpells),
+                previewMode: document.getElementById('previewMode').checked,
+                cardSize: document.getElementById('cardSizeSelect').value,
+                customWidth: document.getElementById('customWidth').value,
+                customHeight: document.getElementById('customHeight').value,
+                paperSize: document.getElementById('paperSizeSelect').value,
+                palette: document.getElementById('paletteSelect').value,
+                fontSize: document.getElementById('fontSizeSelect').value,
+                customFontScale: document.getElementById('customFontScale').value,
+                bodyFontSize: document.getElementById('bodyFontSizeSelect').value,
+                customBodyFontScale: document.getElementById('customBodyFontScale').value
+            };
+            
+            localStorage.setItem('spellSettings', JSON.stringify(settings));
         }
 
         // Load filter selections from localStorage
@@ -774,48 +939,812 @@
             }
         }
 
-        // Filter spells based on selected checkboxes
-        function filterSpells() {
-            const selectedClasses = Array.from(document.querySelectorAll('#classFilters input:checked')).map(cb => cb.value);
-            const selectedLevels = Array.from(document.querySelectorAll('#levelFilters input:checked')).map(cb => cb.value);
-            const selectedSchools = Array.from(document.querySelectorAll('#schoolFilters input:checked')).map(cb => cb.value);
-            
-            // Save current filter state
-            saveFilters();
-            
-            // Check if palette preview is selected
-            const palettePreviewSelected = selectedLevels.includes('palette_preview');
-            
-            if (palettePreviewSelected) {
-                // Show one spell per level for palette preview
-                const levelSpells = {};
-                spells.forEach(spell => {
-                    if (!levelSpells[spell.level]) {
-                        levelSpells[spell.level] = spell;
+        // Load all settings from localStorage
+        function loadAllSettings() {
+            const savedSettings = localStorage.getItem('spellSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                
+                // Restore class filters
+                if (settings.classes) {
+                    settings.classes.forEach(className => {
+                        const checkbox = document.getElementById(`class_${className.replace(/\s+/g, '_')}`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+                
+                // Restore level filters
+                if (settings.levels) {
+                    settings.levels.forEach(level => {
+                        const checkbox = document.getElementById(`level_${level}`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+                
+                // Update "All" checkbox states after restoring individual selections
+                updateClassAllState();
+                updateLevelAllState();
+                
+                // Restore card size settings
+                if (settings.cardSize) {
+                    document.getElementById('cardSizeSelect').value = settings.cardSize;
+                    if (settings.cardSize === 'custom' && settings.customWidth && settings.customHeight) {
+                        document.getElementById('customWidth').value = settings.customWidth;
+                        document.getElementById('customHeight').value = settings.customHeight;
+                        document.getElementById('customSizeInputs').style.display = 'flex';
                     }
-                });
-                filteredSpells = Object.values(levelSpells).sort((a, b) => parseInt(a.level) - parseInt(b.level));
-            } else {
-                filteredSpells = spells.filter(spell => {
-                    const classMatch = selectedClasses.length === 0 || selectedClasses.some(cls => spell.classes.includes(cls));
-                    const levelMatch = selectedLevels.length === 0 || selectedLevels.includes(spell.level);
-                    const schoolMatch = selectedSchools.length === 0 || selectedSchools.includes(spell.school_of_magic);
+                }
+                
+                // Restore paper size settings
+                if (settings.paperSize) {
+                    document.getElementById('paperSizeSelect').value = settings.paperSize;
+                }
+                
+                // Restore palette settings
+                if (settings.palette) {
+                    document.getElementById('paletteSelect').value = settings.palette;
+                    currentPalette = palettes[settings.palette];
+                    updatePaletteStyles();
+                }
+                
+                // Restore font size settings
+                if (settings.fontSize) {
+                    document.getElementById('fontSizeSelect').value = settings.fontSize;
+                    if (settings.fontSize === 'custom' && settings.customFontScale) {
+                        document.getElementById('customFontScale').value = settings.customFontScale;
+                        document.getElementById('customFontSizeInput').style.display = 'block';
+                    }
+                }
+                
+                // Restore body font size settings
+                if (settings.bodyFontSize) {
+                    document.getElementById('bodyFontSizeSelect').value = settings.bodyFontSize;
+                    if (settings.bodyFontSize === 'custom' && settings.customBodyFontScale) {
+                        document.getElementById('customBodyFontScale').value = settings.customBodyFontScale;
+                        document.getElementById('customBodyFontSizeInput').style.display = 'block';
+                    }
+                }
+                
+                // Restore selected spells
+                if (settings.selectedSpells) {
+                    selectedSpells.clear();
+                    settings.selectedSpells.forEach(spellName => {
+                        selectedSpells.add(spellName);
+                    });
+                }
+                
+                // Restore preview mode
+                if (settings.previewMode !== undefined) {
+                    document.getElementById('previewMode').checked = settings.previewMode;
+                    // Apply preview mode state to disable/enable controls
+                    const previewMode = settings.previewMode;
+                    const classFilters = document.querySelectorAll('#classFilters input[type="checkbox"]');
+                    const levelFilters = document.querySelectorAll('#levelFilters input[type="checkbox"]');
+                    const spellSearch = document.getElementById('spellSearch');
+                    const spellCheckboxes = document.querySelectorAll('#spellCheckboxes input[type="checkbox"]');
                     
-                    return classMatch && levelMatch && schoolMatch;
+                    classFilters.forEach(checkbox => {
+                        checkbox.disabled = previewMode;
+                    });
+                    
+                    levelFilters.forEach(checkbox => {
+                        checkbox.disabled = previewMode;
+                    });
+                    
+                    spellSearch.disabled = previewMode;
+                    
+                    spellCheckboxes.forEach(checkbox => {
+                        checkbox.disabled = previewMode;
+                    });
+                }
+            } else {
+                // No saved settings - set default state with all levels selected
+                const levelCheckboxes = document.querySelectorAll('#levelFilters input:not(#all_levels)');
+                levelCheckboxes.forEach(checkbox => {
+                    checkbox.checked = true;
                 });
+                updateLevelAllState();
             }
+        }
+
+        // Toggle all classes
+        function toggleAllClasses() {
+            const allClassesCheckbox = document.getElementById('all_classes');
+            const classCheckboxes = document.querySelectorAll('#classFilters input[type="checkbox"]:not(#all_classes)');
             
-            displaySpells();
+            classCheckboxes.forEach(checkbox => {
+                checkbox.checked = allClassesCheckbox.checked;
+            });
+            
+            filterSpells();
+        }
+
+        // Update "All Classes" state based on individual selections
+        function updateClassAllState() {
+            const allClassesCheckbox = document.getElementById('all_classes');
+            const classCheckboxes = document.querySelectorAll('#classFilters input[type="checkbox"]:not(#all_classes)');
+            const checkedCount = Array.from(classCheckboxes).filter(cb => cb.checked).length;
+            
+            if (checkedCount === 0) {
+                allClassesCheckbox.checked = false;
+                allClassesCheckbox.indeterminate = false;
+            } else if (checkedCount === classCheckboxes.length) {
+                allClassesCheckbox.checked = true;
+                allClassesCheckbox.indeterminate = false;
+            } else {
+                allClassesCheckbox.checked = false;
+                allClassesCheckbox.indeterminate = true;
+            }
+        }
+
+        // Toggle all levels
+        function toggleAllLevels() {
+            const allLevelsCheckbox = document.getElementById('all_levels');
+            const levelCheckboxes = document.querySelectorAll('#levelFilters input[type="checkbox"]:not(#all_levels)');
+            
+            levelCheckboxes.forEach(checkbox => {
+                checkbox.checked = allLevelsCheckbox.checked;
+            });
+            
+            filterSpells();
+        }
+
+        // Update "All Levels" state based on individual selections
+        function updateLevelAllState() {
+            const allLevelsCheckbox = document.getElementById('all_levels');
+            const levelCheckboxes = document.querySelectorAll('#levelFilters input[type="checkbox"]:not(#all_levels)');
+            const checkedCount = Array.from(levelCheckboxes).filter(cb => cb.checked).length;
+            
+            if (checkedCount === 0) {
+                allLevelsCheckbox.checked = false;
+                allLevelsCheckbox.indeterminate = false;
+            } else if (checkedCount === levelCheckboxes.length) {
+                allLevelsCheckbox.checked = true;
+                allLevelsCheckbox.indeterminate = false;
+            } else {
+                allLevelsCheckbox.checked = false;
+                allLevelsCheckbox.indeterminate = true;
+            }
         }
 
         // Clear all filters
         function clearAllFilters() {
-            document.querySelectorAll('.filter-options input[type="checkbox"]').forEach(cb => {
-                cb.checked = false;
-            });
+            // Reset to default state
+            resetToDefault();
+            
+            // Reset all settings to defaults
+            document.getElementById('cardSizeSelect').value = 'standard';
+            document.getElementById('customSizeInputs').style.display = 'none';
+            document.getElementById('paperSizeSelect').value = 'letter';
+            document.getElementById('paletteSelect').value = 'default';
+            document.getElementById('fontSizeSelect').value = 'normal';
+            document.getElementById('customFontSizeInput').style.display = 'none';
+            document.getElementById('bodyFontSizeSelect').value = 'normal';
+            document.getElementById('customBodyFontSizeInput').style.display = 'none';
+            
             localStorage.removeItem('spellFilters');
-            filteredSpells = [...spells];
+            localStorage.removeItem('spellSettings');
+            filteredSpells = [];
             displaySpells();
+        }
+
+        // Global variable to store selected spells
+        let selectedSpells = new Set();
+
+        // Filter spells based on selected checkboxes
+        function filterSpells() {
+            // Save current filter state
+            saveAllSettings();
+            
+            // Check if preview mode is enabled
+            const previewMode = document.getElementById('previewMode').checked;
+            
+            if (previewMode) {
+                // In preview mode, show one spell per level in alphabetical order
+                const spellsByLevel = {};
+                spells.forEach(spell => {
+                    if (!spellsByLevel[spell.level]) {
+                        spellsByLevel[spell.level] = [];
+                    }
+                    spellsByLevel[spell.level].push(spell);
+                });
+                
+                // Sort spells within each level alphabetically and take the first one
+                const previewSpells = [];
+                Object.keys(spellsByLevel).sort((a, b) => parseInt(a) - parseInt(b)).forEach(level => {
+                    const levelSpells = spellsByLevel[level].sort((a, b) => a.title.localeCompare(b.title));
+                    if (levelSpells.length > 0) {
+                        previewSpells.push(levelSpells[0]);
+                    }
+                });
+                
+                filteredSpells = previewSpells;
+                displaySpells();
+                return;
+            }
+            
+            // Get selected classes and levels (excluding "All" checkboxes)
+            const selectedClasses = Array.from(document.querySelectorAll('#classFilters input:checked:not(#all_classes)')).map(cb => cb.value);
+            const selectedLevels = Array.from(document.querySelectorAll('#levelFilters input:checked:not(#all_levels)')).map(cb => cb.value);
+            
+            // If "All Classes" is checked, treat it as if all classes are selected
+            const allClassesChecked = document.getElementById('all_classes').checked;
+            const allLevelsChecked = document.getElementById('all_levels').checked;
+            
+            // If "All" is checked, we need to get all available classes/levels
+            let finalSelectedClasses = selectedClasses;
+            let finalSelectedLevels = selectedLevels;
+            
+            if (allClassesChecked) {
+                // Get all available classes from the spells data
+                const allAvailableClasses = new Set();
+                spells.forEach(spell => {
+                    const spellClasses = spell.classes.split(', ').map(c => c.trim());
+                    spellClasses.forEach(cls => allAvailableClasses.add(cls));
+                });
+                finalSelectedClasses = Array.from(allAvailableClasses);
+            }
+            
+            if (allLevelsChecked) {
+                // Get all available levels
+                const allAvailableLevels = new Set();
+                spells.forEach(spell => allAvailableLevels.add(spell.level));
+                finalSelectedLevels = Array.from(allAvailableLevels);
+            }
+            
+            // Start with spells from selected classes and levels using AND logic
+            let baseSpells = [];
+            if (finalSelectedClasses.length > 0 && finalSelectedLevels.length > 0) {
+                baseSpells = spells.filter(spell => {
+                    // If "All Classes" is selected, spell just needs to belong to ANY class
+                    // Otherwise, spell must belong to ALL selected classes
+                    const classMatch = allClassesChecked ? 
+                        true : // All classes selected, so any spell qualifies
+                        finalSelectedClasses.every(cls => spell.classes.includes(cls));
+                    
+                    // Spell must match ANY selected level (since spells can only have one level)
+                    const levelMatch = finalSelectedLevels.includes(spell.level);
+                    return classMatch && levelMatch;
+                });
+            }
+            
+            // Add additional spells
+            const additionalSpells = Array.from(selectedSpells);
+            const additionalSpellObjects = spells.filter(spell => additionalSpells.includes(spell.title));
+            
+            // Combine and deduplicate
+            const allSpells = [...baseSpells, ...additionalSpellObjects];
+            const uniqueSpells = [];
+            const seenTitles = new Set();
+            
+            allSpells.forEach(spell => {
+                if (!seenTitles.has(spell.title)) {
+                    seenTitles.add(spell.title);
+                    uniqueSpells.push(spell);
+                }
+            });
+            
+            filteredSpells = uniqueSpells;
+            
+            // Update the additional spells list to remove covered spells
+            populateSpellDropdown();
+            
+            displaySpells();
+        }
+
+        // Populate spell checkboxes
+        function populateSpellDropdown() {
+            const spellCheckboxes = document.getElementById('spellCheckboxes');
+            spellCheckboxes.innerHTML = '';
+            
+            // Get currently selected classes and levels (excluding "All" checkboxes)
+            const selectedClasses = Array.from(document.querySelectorAll('#classFilters input:checked:not(#all_classes)')).map(cb => cb.value);
+            const selectedLevels = Array.from(document.querySelectorAll('#levelFilters input:checked:not(#all_levels)')).map(cb => cb.value);
+            
+            // If "All Classes" is checked, treat it as if all classes are selected
+            const allClassesChecked = document.getElementById('all_classes').checked;
+            const allLevelsChecked = document.getElementById('all_levels').checked;
+            
+            // If "All" is checked, we need to get all available classes/levels
+            let finalSelectedClasses = selectedClasses;
+            let finalSelectedLevels = selectedLevels;
+            
+            if (allClassesChecked) {
+                // Get all available classes from the spells data
+                const allAvailableClasses = new Set();
+                spells.forEach(spell => {
+                    const spellClasses = spell.classes.split(', ').map(c => c.trim());
+                    spellClasses.forEach(cls => allAvailableClasses.add(cls));
+                });
+                finalSelectedClasses = Array.from(allAvailableClasses);
+            }
+            
+            if (allLevelsChecked) {
+                // Get all available levels
+                const allAvailableLevels = new Set();
+                spells.forEach(spell => allAvailableLevels.add(spell.level));
+                finalSelectedLevels = Array.from(allAvailableLevels);
+            }
+            
+            spells.forEach(spell => {
+                const checkboxDiv = document.createElement('div');
+                checkboxDiv.style.marginBottom = '4px';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `spell_${spell.title.replace(/\s+/g, '_')}`;
+                checkbox.value = spell.title;
+                
+                // Check if this spell is covered by class/level filters (requires BOTH class AND level to be selected)
+                // If "All Classes" is selected, spell just needs to belong to ANY class
+                // Otherwise, spell must belong to ALL selected classes
+                const isCoveredByClass = allClassesChecked ? 
+                    true : // All classes selected, so any spell qualifies
+                    (finalSelectedClasses.length > 0 && finalSelectedClasses.every(cls => spell.classes.includes(cls)));
+                
+                const isCoveredByLevel = finalSelectedLevels.length > 0 && finalSelectedLevels.includes(spell.level);
+                const isCoveredByFilters = isCoveredByClass && isCoveredByLevel;
+                
+                if (isCoveredByFilters) {
+                    // Show as checked but disabled
+                    checkbox.checked = true;
+                    checkbox.disabled = true;
+                    checkboxDiv.style.opacity = '0.6';
+                } else {
+                    // Regular checkbox that can be toggled
+                    checkbox.onchange = updateSelectedSpells;
+                    checkbox.checked = selectedSpells.has(spell.title);
+                }
+                
+                const label = document.createElement('label');
+                label.htmlFor = checkbox.id;
+                label.textContent = `${spell.title} (${spell.level === '0' ? 'Cantrip' : `Level ${spell.level}`})`;
+                label.style.marginLeft = '6px';
+                label.style.fontSize = '0.9em';
+                label.style.fontFamily = "'Cormorant Garamond', serif";
+                label.style.color = '#2c1810';
+                
+                checkboxDiv.appendChild(checkbox);
+                checkboxDiv.appendChild(label);
+                spellCheckboxes.appendChild(checkboxDiv);
+            });
+        }
+
+        // Filter spell checkboxes based on search
+        function filterSpellDropdown() {
+            const searchTerm = document.getElementById('spellSearch').value.toLowerCase();
+            const checkboxDivs = document.getElementById('spellCheckboxes').children;
+            
+            for (let i = 0; i < checkboxDivs.length; i++) {
+                const div = checkboxDivs[i];
+                const label = div.querySelector('label');
+                const spellName = label.textContent.toLowerCase();
+                div.style.display = spellName.includes(searchTerm) ? 'block' : 'none';
+            }
+        }
+
+        // Update selected spells
+        function updateSelectedSpells() {
+            selectedSpells.clear();
+            
+            const checkboxes = document.querySelectorAll('#spellCheckboxes input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                selectedSpells.add(checkbox.value);
+            });
+            
+            saveAllSettings();
+            filterSpells();
+        }
+
+        // Toggle preview mode
+        function togglePreviewMode() {
+            const previewMode = document.getElementById('previewMode').checked;
+            
+            // Enable/disable other filter controls
+            const classFilters = document.querySelectorAll('#classFilters input[type="checkbox"]');
+            const levelFilters = document.querySelectorAll('#levelFilters input[type="checkbox"]');
+            const spellSearch = document.getElementById('spellSearch');
+            const spellCheckboxes = document.querySelectorAll('#spellCheckboxes input[type="checkbox"]');
+            
+            classFilters.forEach(checkbox => {
+                checkbox.disabled = previewMode;
+            });
+            
+            levelFilters.forEach(checkbox => {
+                checkbox.disabled = previewMode;
+            });
+            
+            spellSearch.disabled = previewMode;
+            
+            spellCheckboxes.forEach(checkbox => {
+                checkbox.disabled = previewMode;
+            });
+            
+            // Save preview mode state
+            saveAllSettings();
+            
+            // Apply filters
+            filterSpells();
+        }
+
+        // Reset to default state
+        function resetToDefault() {
+            // Clear all class selections
+            const classCheckboxes = document.querySelectorAll('#classFilters input[type="checkbox"]');
+            classCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Select all levels (default state)
+            const levelCheckboxes = document.querySelectorAll('#levelFilters input[type="checkbox"]');
+            levelCheckboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            
+            // Clear all additional spell selections
+            const spellCheckboxes = document.querySelectorAll('#spellCheckboxes input[type="checkbox"]');
+            spellCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            selectedSpells.clear();
+            
+            // Reset preview mode
+            document.getElementById('previewMode').checked = false;
+            
+            // Update "All" checkbox states
+            updateClassAllState();
+            updateLevelAllState();
+            
+            // Save settings and refresh display
+            saveAllSettings();
+            filterSpells();
+        }
+
+        // Card size presets
+        const cardSizes = {
+            standard: { width: 2.5, height: 3.5 },
+            mini: { width: 1.5, height: 2.5 },
+            large: { width: 3.5, height: 5.0 },
+            custom: { width: 2.5, height: 3.5 } // Default fallback
+        };
+
+        // Paper size presets
+        const paperSizes = {
+            letter: { width: 8.5, height: 11.0 },
+            a4: { width: 8.27, height: 11.69 },
+            legal: { width: 8.5, height: 14.0 },
+            tabloid: { width: 11.0, height: 17.0 }
+        };
+
+        // Palette presets
+        const palettes = {
+            default: {
+                cardBg: 'linear-gradient(135deg, #e6d8a3 0%, #d4c4a0 50%, #c2b08d 100%)',
+                sidePanel: {
+                    0: '#f0f0f0', 1: '#ffebee', 2: '#fff3e0', 3: '#fffde7',
+                    4: '#f1f8e9', 5: '#e8f5e8', 6: '#e3f2fd', 7: '#f3e5f5',
+                    8: '#fce4ec', 9: '#ffebee'
+                },
+                textColor: '#2c1810',
+                sideTextColor: '#2c1810'
+            },
+            fire: {
+                cardBg: 'linear-gradient(135deg, #ffe8d6 0%, #ffd4b3 50%, #ffc090 100%)',
+                sidePanel: {
+                    0: '#fff5f5', 1: '#ffebee', 2: '#ffcdd2', 3: '#ffcdd2',
+                    4: '#ff8a80', 5: '#ff5722', 6: '#d32f2f', 7: '#b71c1c',
+                    8: '#8d0000', 9: '#4a0000'
+                },
+                textColor: '#3e2723',
+                sideTextColor: '#3e2723'
+            },
+            ice: {
+                cardBg: 'linear-gradient(135deg, #e3f2fd 0%, #d1e7ff 50%, #bfdcff 100%)',
+                sidePanel: {
+                    0: '#f5f5f5', 1: '#e8f4fd', 2: '#bbdefb', 3: '#90caf9',
+                    4: '#64b5f6', 5: '#42a5f5', 6: '#2196f3', 7: '#1976d2',
+                    8: '#0d47a1', 9: '#01579b'
+                },
+                textColor: '#1a237e',
+                sideTextColor: '#1a237e'
+            },
+            nature: {
+                cardBg: 'linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 50%, #dcedc8 100%)',
+                sidePanel: {
+                    0: '#dcedc8', 1: '#c8e6c9', 2: '#a5d6a7', 3: '#81c784',
+                    4: '#66bb6a', 5: '#4caf50', 6: '#388e3c', 7: '#2e7d32',
+                    8: '#1b5e20', 9: '#0d4a0d'
+                },
+                textColor: '#1b5e20',
+                sideTextColor: '#1b5e20'
+            },
+            shadow: {
+                cardBg: 'linear-gradient(135deg, #f3e5f5 0%, #e8d5f0 50%, #ddc5eb 100%)',
+                sidePanel: {
+                    0: '#f5f5f5', 1: '#f3e5f5', 2: '#e1bee7', 3: '#ce93d8',
+                    4: '#ba68c8', 5: '#ab47bc', 6: '#9c27b0', 7: '#7b1fa2',
+                    8: '#4a148c', 9: '#2e1065'
+                },
+                textColor: '#4a148c',
+                sideTextColor: '#4a148c'
+            },
+            arcane: {
+                cardBg: 'linear-gradient(135deg, #fff3e0 0%, #ffe8cc 50%, #ffddb8 100%)',
+                sidePanel: {
+                    0: '#f5f5f5', 1: '#fff3e0', 2: '#ffe0b2', 3: '#ffcc80',
+                    4: '#ffb74d', 5: '#ff9800', 6: '#f57c00', 7: '#ef6c00',
+                    8: '#e65100', 9: '#bf360c'
+                },
+                textColor: '#e65100',
+                sideTextColor: '#e65100'
+            }
+        };
+
+        // Font size presets
+        const fontSizes = {
+            auto: null, // Will calculate based on card size
+            small: 0.8,
+            normal: 1.0,
+            large: 1.2,
+            custom: 1.0 // Default fallback
+        };
+
+        const bodyFontSizes = {
+            auto: null, // Will calculate based on card size
+            small: 0.7,
+            normal: 0.8,
+            large: 0.9,
+            custom: 0.8 // Default fallback
+        };
+
+        // Current settings
+        let currentCardSize = cardSizes.standard;
+        let currentPaperSize = paperSizes.letter;
+        let currentPalette = palettes.default;
+        let currentFontSize = fontSizes.normal;
+        let currentBodyFontSize = bodyFontSizes.normal;
+
+        // Update card size
+        function updateCardSize() {
+            const select = document.getElementById('cardSizeSelect');
+            const customInputs = document.getElementById('customSizeInputs');
+            
+            if (select.value === 'custom') {
+                customInputs.style.display = 'flex';
+                const width = parseFloat(document.getElementById('customWidth').value) || 2.5;
+                const height = parseFloat(document.getElementById('customHeight').value) || 3.5;
+                currentCardSize = { width, height };
+            } else {
+                customInputs.style.display = 'none';
+                currentCardSize = cardSizes[select.value];
+            }
+            
+            updateCardStyles();
+            updateFontStyles();
+            displaySpells();
+            saveAllSettings();
+        }
+
+        // Update paper size
+        function updatePaperSize() {
+            const select = document.getElementById('paperSizeSelect');
+            currentPaperSize = paperSizes[select.value];
+            updatePaperStyles();
+            displaySpells();
+            saveAllSettings();
+        }
+
+        // Update palette
+        function updatePalette() {
+            const select = document.getElementById('paletteSelect');
+            currentPalette = palettes[select.value];
+            updatePaletteStyles();
+            displaySpells();
+            saveAllSettings();
+        }
+
+        // Update font size
+        function updateFontSize() {
+            const select = document.getElementById('fontSizeSelect');
+            const customInput = document.getElementById('customFontSizeInput');
+            
+            if (select.value === 'custom') {
+                customInput.style.display = 'block';
+                const scale = parseFloat(document.getElementById('customFontScale').value) || 1.0;
+                currentFontSize = scale;
+            } else {
+                customInput.style.display = 'none';
+                currentFontSize = fontSizes[select.value];
+            }
+            
+            updateFontStyles();
+            displaySpells();
+            saveAllSettings();
+        }
+
+        // Update body font size
+        function updateBodyFontSize() {
+            const select = document.getElementById('bodyFontSizeSelect');
+            const customInput = document.getElementById('customBodyFontSizeInput');
+            
+            if (select.value === 'custom') {
+                customInput.style.display = 'block';
+                const scale = parseFloat(document.getElementById('customBodyFontScale').value) || 0.8;
+                currentBodyFontSize = scale;
+            } else {
+                customInput.style.display = 'none';
+                currentBodyFontSize = bodyFontSizes[select.value];
+            }
+            
+            updateFontStyles();
+            displaySpells();
+            saveAllSettings();
+        }
+
+        // Update card CSS styles
+        function updateCardStyles() {
+            const style = document.getElementById('dynamicCardStyles') || document.createElement('style');
+            style.id = 'dynamicCardStyles';
+            
+            style.textContent = `
+                .spell-card {
+                    width: ${currentCardSize.width}in !important;
+                    height: ${currentCardSize.height}in !important;
+                }
+                
+                .spell-grid {
+                    grid-template-columns: repeat(auto-fit, ${currentCardSize.width}in) !important;
+                    grid-auto-rows: ${currentCardSize.height}in !important;
+                }
+            `;
+            
+            if (!document.getElementById('dynamicCardStyles')) {
+                document.head.appendChild(style);
+            }
+        }
+
+        // Update font CSS styles
+        function updateFontStyles() {
+            const style = document.getElementById('dynamicFontStyles') || document.createElement('style');
+            style.id = 'dynamicFontStyles';
+            
+            // Calculate general font scale
+            let fontScale = currentFontSize;
+            
+            // If auto scaling is enabled, calculate based on card size
+            if (currentFontSize === null) {
+                const standardArea = 2.5 * 3.5;
+                const currentArea = currentCardSize.width * currentCardSize.height;
+                fontScale = Math.sqrt(currentArea / standardArea);
+                // Clamp font scale between 0.6 and 1.2 for readability
+                fontScale = Math.max(0.6, Math.min(1.2, fontScale));
+            }
+            
+            // Calculate body font scale
+            let bodyFontScale = currentBodyFontSize;
+            
+            // If auto scaling is enabled for body text, calculate based on card size
+            if (currentBodyFontSize === null) {
+                const standardArea = 2.5 * 3.5;
+                const currentArea = currentCardSize.width * currentCardSize.height;
+                bodyFontScale = Math.sqrt(currentArea / standardArea);
+                // Clamp body font scale between 0.5 and 1.0 for readability
+                bodyFontScale = Math.max(0.5, Math.min(1.0, bodyFontScale));
+            }
+            
+            style.textContent = `
+                .spell-name {
+                    font-size: ${1.1 * fontScale}em !important;
+                }
+                
+                .spell-subtitle {
+                    font-size: ${0.8 * fontScale}em !important;
+                }
+                
+                .spell-description {
+                    font-size: ${0.8 * bodyFontScale}em !important;
+                }
+                
+                .spell-level, .spell-school {
+                    font-size: ${0.7 * fontScale}em !important;
+                }
+                
+                .spell-side-text {
+                    font-size: ${0.6 * fontScale}em !important;
+                }
+            `;
+            
+            if (!document.getElementById('dynamicFontStyles')) {
+                document.head.appendChild(style);
+            }
+        }
+
+        // Update paper CSS styles
+        function updatePaperStyles() {
+            const style = document.getElementById('dynamicPaperStyles') || document.createElement('style');
+            style.id = 'dynamicPaperStyles';
+            
+            const availableWidth = currentPaperSize.width - 0.5; // Account for margins
+            const availableHeight = currentPaperSize.height - 0.5;
+            const cardsPerRow = Math.floor(availableWidth / currentCardSize.width);
+            const cardsPerCol = Math.floor(availableHeight / currentCardSize.height);
+            const cardsPerPage = cardsPerRow * cardsPerCol;
+            
+            style.textContent = `
+                .spell-grid {
+                    max-width: ${currentPaperSize.width}in !important;
+                    height: ${currentPaperSize.height}in !important;
+                }
+                
+                @media print {
+                    @page {
+                        size: ${currentPaperSize.width}in ${currentPaperSize.height}in !important;
+                    }
+                    
+                    .spell-grid {
+                        width: ${availableWidth}in !important;
+                        height: ${availableHeight}in !important;
+                        grid-template-columns: repeat(${cardsPerRow}, ${currentCardSize.width}in) !important;
+                        grid-auto-rows: ${currentCardSize.height}in !important;
+                    }
+                }
+            `;
+            
+            if (!document.getElementById('dynamicPaperStyles')) {
+                document.head.appendChild(style);
+            }
+        }
+
+        // Update palette CSS styles
+        function updatePaletteStyles() {
+            const style = document.getElementById('dynamicPaletteStyles') || document.createElement('style');
+            style.id = 'dynamicPaletteStyles';
+            
+            // Helper function to determine if a color is dark
+            function isDarkColor(color) {
+                // Convert hex to RGB
+                const hex = color.replace('#', '');
+                const r = parseInt(hex.substr(0, 2), 16);
+                const g = parseInt(hex.substr(2, 2), 16);
+                const b = parseInt(hex.substr(4, 2), 16);
+                
+                // Calculate luminance
+                const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                return luminance < 0.5;
+            }
+            
+            // Generate CSS for card background
+            let css = `
+                .spell-card {
+                    background: ${currentPalette.cardBg} !important;
+                }
+                
+                .spell-name, .spell-subtitle, .spell-description, .spell-level, .spell-school {
+                    color: ${currentPalette.textColor} !important;
+                }
+            `;
+            
+            // Generate CSS for side panel colors by level with dynamic text color
+            for (let level = 0; level <= 9; level++) {
+                const bgColor = currentPalette.sidePanel[level];
+                const textColor = isDarkColor(bgColor) ? '#ffffff' : '#2c1810';
+                
+                css += `
+                    .spell-side-band.level-${level} {
+                        background: ${bgColor} !important;
+                    }
+                    
+                    .spell-side-band.level-${level} .spell-side-text {
+                        color: ${textColor} !important;
+                    }
+                `;
+            }
+            
+            style.textContent = css;
+            
+            if (!document.getElementById('dynamicPaletteStyles')) {
+                document.head.appendChild(style);
+            }
         }
 
         // Display spells
@@ -825,15 +1754,12 @@
             if (filteredSpells.length === 0) {
                 paperContainer.innerHTML = '<div class="spell-grid"><div class="no-spells">No spells found matching your criteria.</div></div>';
             } else {
-                // Calculate how many cards fit per page dynamically
-                // Available height: 11in - 0.5in (0.25in top + 0.25in bottom padding) = 10.5in
-                // Card height: 3.5in
-                // Max rows that fit: Math.floor(10.5 / 3.5) = 3 rows
-                // Available width: 8.5in - 0.5in (0.25in left + 0.25in right padding) = 8in
-                // Card width: 2.5in
-                // Max columns that fit: Math.floor(8 / 2.5) = 3 columns
-                // Cards per page: 3 columns × 3 rows = 9 cards per page
-                const cardsPerPage = 9;
+                // Calculate how many cards fit per page dynamically based on current settings
+                const availableWidth = currentPaperSize.width - 0.5; // Account for margins
+                const availableHeight = currentPaperSize.height - 0.5;
+                const cardsPerRow = Math.floor(availableWidth / currentCardSize.width);
+                const cardsPerCol = Math.floor(availableHeight / currentCardSize.height);
+                const cardsPerPage = cardsPerRow * cardsPerCol;
                 const totalPages = Math.ceil(filteredSpells.length / cardsPerPage);
                 
                 let html = '';
@@ -882,7 +1808,7 @@
             return `
                 <div class="spell-card">
                     <div class="spell-side-band level-${spell.level}">
-                        <div class="spell-side-text">${spell.title} (${spell.level === '0' ? '0' : spell.level})</div>
+                        <div class="spell-side-text">${spell.title}&nbsp;&nbsp;<span class="level-emoji">${getLevelEmoji(spell.level)}</span></div>
                     </div>
                     <div class="spell-header">
                         <div class="spell-name">${spell.title}</div>
@@ -915,6 +1841,12 @@
                 case 3: return 'rd';
                 default: return 'th';
             }
+        }
+
+        function getLevelEmoji(level) {
+            const levelNum = parseInt(level);
+            const emojis = ['⓪', '①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨'];
+            return emojis[levelNum] || '⓪';
         }
 
         // Adjust font sizes to fit content
@@ -952,8 +1884,26 @@
             });
         }
 
+        // Initialize size settings
+        function initializeSizeSettings() {
+            // Set up custom size input event listeners
+            document.getElementById('customWidth').addEventListener('input', updateCardSize);
+            document.getElementById('customHeight').addEventListener('input', updateCardSize);
+            document.getElementById('customFontScale').addEventListener('input', updateFontSize);
+            document.getElementById('customBodyFontScale').addEventListener('input', updateBodyFontSize);
+            
+            // Initialize styles
+            updateCardStyles();
+            updatePaperStyles();
+            updatePaletteStyles();
+            updateFontStyles();
+        }
+
         // Load spells when page loads
-        window.addEventListener('load', loadSpells);
+        window.addEventListener('load', () => {
+            initializeSizeSettings();
+            loadSpells();
+        });
     </script>
 </body>
 </html>
