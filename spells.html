@@ -1587,11 +1587,28 @@
             style.id = 'customBackgroundStyles';
             style.textContent = `
                 .spell-card {
+                    position: relative;
+                }
+                
+                .spell-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 24px;
+                    right: 0;
+                    bottom: 0;
                     background-image: url('${imageUrl}');
                     background-size: cover;
                     background-position: center;
                     background-repeat: no-repeat;
                     opacity: ${opacity};
+                    pointer-events: none;
+                    z-index: 1;
+                }
+                
+                .spell-card > * {
+                    position: relative;
+                    z-index: 2;
                 }
             `;
             document.head.appendChild(style);
