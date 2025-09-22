@@ -378,7 +378,7 @@
         }
 
         .spell-subtitle span {
-            white-space: nowrap;
+            white-space: normal;
             display: inline-block;
         }
 
@@ -626,24 +626,31 @@
             
             <div class="filter-group">
                 <h3>Appearance</h3>
-                <div class="palette-selector">
-                    <select id="paletteSelect" onchange="updatePalette()">
-                        <option value="default">Default Palette</option>
-                        <option value="fire">Fire Theme</option>
-                        <option value="ice">Ice Theme</option>
-                        <option value="nature">Nature Theme</option>
-                        <option value="shadow">Shadow Theme</option>
-                        <option value="arcane">Arcane Theme</option>
-                    </select>
-                </div>
+                 <div class="palette-selector">
+                     <select id="paletteSelect" onchange="updatePalette()">
+                         <option value="default">Default Palette</option>
+                         <option value="fire">Fire Theme</option>
+                         <option value="ice">Ice Theme</option>
+                         <option value="nature">Nature Theme</option>
+                         <option value="shadow">Shadow Theme</option>
+                         <option value="arcane">Arcane Theme</option>
+                     </select>
+                 </div>
+                 <div style="margin-top: 10px;">
+                     <label style="color: #2c1810; font-family: 'Cormorant Garamond', serif; display: flex; align-items: center;">
+                         <input type="checkbox" id="transparentSidebar" checked style="margin-right: 5px;">
+                         Transparent Sidebar
+                     </label>
+                 </div>
                 <div id="customBackgroundUpload" style="margin-top: 10px;">
                     <label for="backgroundUpload" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; display: block; margin-bottom: 5px;">Custom Background:</label>
                     <input type="file" id="backgroundUpload" accept="image/*" style="margin-bottom: 5px;">
                     <div id="backgroundControls" style="display: none;">
-                        <label for="backgroundOpacity" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; display: block; margin-bottom: 5px;">Opacity:</label>
-                        <input type="range" id="backgroundOpacity" min="0" max="100" value="50" style="width: 100%; margin-bottom: 5px;">
-                        <span id="opacityValue" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">50%</span>
-                        <button id="removeBackground" style="display: block; margin-top: 5px; padding: 4px 8px; background: #8B4513; color: white; border: none; border-radius: 3px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Remove Background</button>
+                         <label for="backgroundOpacity" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; display: block; margin-bottom: 5px;">Opacity:</label>
+                         <input type="range" id="backgroundOpacity" min="0" max="100" value="50" style="width: 100%; margin-bottom: 5px;">
+                         <span id="opacityValue" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">50%</span>
+                         
+                         <button id="removeBackground" style="display: block; margin-top: 5px; padding: 4px 8px; background: #8B4513; color: white; border: none; border-radius: 3px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Remove Background</button>
                     </div>
                 </div>
                 <div class="font-size-selector" style="margin-top: 10px;">
@@ -872,23 +879,24 @@
             const customBackgroundData = customBackgroundStyle ? customBackgroundStyle.textContent : null;
             const backgroundOpacity = document.getElementById('backgroundOpacity') ? document.getElementById('backgroundOpacity').value : 50;
             
-            const settings = {
-                classes: selectedClasses,
-                levels: selectedLevels,
-                selectedSpells: Array.from(selectedSpells),
-                previewMode: document.getElementById('previewMode').checked,
-                cardSize: document.getElementById('cardSizeSelect').value,
-                customWidth: document.getElementById('customWidth').value,
-                customHeight: document.getElementById('customHeight').value,
-                paperSize: document.getElementById('paperSizeSelect').value,
-                palette: document.getElementById('paletteSelect').value,
-                fontSize: document.getElementById('fontSizeSelect').value,
-                customFontScale: document.getElementById('customFontScale').value,
-                bodyFontSize: document.getElementById('bodyFontSizeSelect').value,
-                customBodyFontScale: document.getElementById('customBodyFontScale').value,
-                customBackground: customBackgroundData,
-                backgroundOpacity: backgroundOpacity
-            };
+             const settings = {
+                 classes: selectedClasses,
+                 levels: selectedLevels,
+                 selectedSpells: Array.from(selectedSpells),
+                 previewMode: document.getElementById('previewMode').checked,
+                 cardSize: document.getElementById('cardSizeSelect').value,
+                 customWidth: document.getElementById('customWidth').value,
+                 customHeight: document.getElementById('customHeight').value,
+                 paperSize: document.getElementById('paperSizeSelect').value,
+                 palette: document.getElementById('paletteSelect').value,
+                 fontSize: document.getElementById('fontSizeSelect').value,
+                 customFontScale: document.getElementById('customFontScale').value,
+                 bodyFontSize: document.getElementById('bodyFontSizeSelect').value,
+                 customBodyFontScale: document.getElementById('customBodyFontScale').value,
+                 customBackground: customBackgroundData,
+                 backgroundOpacity: backgroundOpacity,
+                 transparentSidebar: document.getElementById('transparentSidebar') ? document.getElementById('transparentSidebar').checked : true
+             };
             
             localStorage.setItem('spellSettings', JSON.stringify(settings));
         }
@@ -1031,12 +1039,19 @@
                     document.head.appendChild(style);
                     document.getElementById('backgroundControls').style.display = 'block';
                     
-                    // Restore opacity value
-                    if (settings.backgroundOpacity) {
-                        document.getElementById('backgroundOpacity').value = settings.backgroundOpacity;
-                        document.getElementById('opacityValue').textContent = settings.backgroundOpacity + '%';
-                    }
-                }
+                     // Restore opacity value
+                     if (settings.backgroundOpacity) {
+                         document.getElementById('backgroundOpacity').value = settings.backgroundOpacity;
+                         document.getElementById('opacityValue').textContent = settings.backgroundOpacity + '%';
+                     }
+                     
+                     // Restore transparent sidebar setting
+                     if (settings.transparentSidebar !== undefined) {
+                         document.getElementById('transparentSidebar').checked = settings.transparentSidebar;
+                         // Apply the transparent sidebar setting after background is restored
+                         updateSidebarTransparency(settings.transparentSidebar);
+                     }
+                 }
             } else {
                 // No saved settings - set default state with all levels selected
                 const levelCheckboxes = document.querySelectorAll('#levelFilters input:not(#all_levels)');
@@ -1550,6 +1565,7 @@
             const backgroundControls = document.getElementById('backgroundControls');
             const opacitySlider = document.getElementById('backgroundOpacity');
             const opacityValue = document.getElementById('opacityValue');
+            const transparentSidebarCheckbox = document.getElementById('transparentSidebar');
             
             fileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
@@ -1558,7 +1574,8 @@
                     reader.onload = function(e) {
                         const imageUrl = e.target.result;
                         const opacity = opacitySlider.value / 100;
-                        applyCustomBackground(imageUrl, opacity);
+                        const transparentSidebar = transparentSidebarCheckbox.checked;
+                        applyCustomBackground(imageUrl, opacity, transparentSidebar);
                         backgroundControls.style.display = 'block';
                         saveAllSettings();
                     };
@@ -1573,6 +1590,13 @@
                 saveAllSettings();
             });
             
+            transparentSidebarCheckbox.addEventListener('change', function() {
+                const opacity = opacitySlider.value / 100;
+                const transparentSidebar = this.checked;
+                updateSidebarTransparency(transparentSidebar);
+                saveAllSettings();
+            });
+            
             removeButton.addEventListener('click', function() {
                 removeCustomBackground();
                 fileInput.value = '';
@@ -1582,9 +1606,15 @@
         }
 
         // Apply custom background to all cards
-        function applyCustomBackground(imageUrl, opacity = 0.5) {
+        function applyCustomBackground(imageUrl, opacity = 0.5, transparentSidebar = true) {
             const style = document.getElementById('customBackgroundStyles') || document.createElement('style');
             style.id = 'customBackgroundStyles';
+            
+            // Determine the left position based on transparent sidebar setting
+            // When transparent sidebar is checked, image spans whole card (left: 0px)
+            // When unchecked, image excludes sidebar (left: 24px)
+            const leftPosition = transparentSidebar ? '0px' : '24px';
+            
             style.textContent = `
                 .spell-card {
                     position: relative;
@@ -1594,7 +1624,7 @@
                     content: '';
                     position: absolute;
                     top: 0;
-                    left: 24px;
+                    left: ${leftPosition};
                     right: 0;
                     bottom: 0;
                     background-image: url('${imageUrl}');
@@ -1607,14 +1637,29 @@
                 }
                 
                 .spell-card > * {
-                    position: relative;
                     z-index: 2;
                 }
             `;
             document.head.appendChild(style);
             
-            // Update palette styles to make side panels transparent
-            updatePaletteStyles();
+            // Update palette styles based on sidebar transparency setting
+            updatePaletteStyles(transparentSidebar);
+        }
+
+        // Update sidebar transparency
+        function updateSidebarTransparency(transparentSidebar) {
+            updatePaletteStyles(transparentSidebar);
+            
+            // Also update the background image positioning
+            const style = document.getElementById('customBackgroundStyles');
+            if (style) {
+                const leftPosition = transparentSidebar ? '0px' : '24px';
+                const newContent = style.textContent.replace(
+                    /left: [^;]+/g,
+                    `left: ${leftPosition}`
+                );
+                style.textContent = newContent;
+            }
         }
 
         // Update background opacity
@@ -1793,7 +1838,7 @@
         }
 
         // Update palette CSS styles
-        function updatePaletteStyles() {
+        function updatePaletteStyles(transparentSidebar = null) {
             const style = document.getElementById('dynamicPaletteStyles') || document.createElement('style');
             style.id = 'dynamicPaletteStyles';
             
@@ -1822,12 +1867,38 @@
             `;
             
             // Generate CSS for side panel colors by level with dynamic text color
-            // Only apply side panel backgrounds if no custom background is active
             const hasCustomBackground = document.getElementById('customBackgroundStyles');
+            
+            // Determine if sidebar should be transparent
+            const shouldBeTransparent = transparentSidebar !== null ? transparentSidebar : (hasCustomBackground ? true : false);
+            
+            // Adjust spell level positioning based on transparent sidebar setting
+            if (shouldBeTransparent) {
+                css += `
+                    .spell-footer {
+                        padding-left: 8px !important;
+                    }
+                `;
+            } else {
+                css += `
+                    .spell-footer {
+                        padding-left: 32px !important;
+                    }
+                `;
+            }
             
             for (let level = 0; level <= 9; level++) {
                 const bgColor = currentPalette.sidePanel[level];
-                const textColor = isDarkColor(bgColor) ? '#ffffff' : '#2c1810';
+                
+                // Only use dynamic text color when sidebar is not transparent
+                let textColor;
+                if (shouldBeTransparent) {
+                    // When transparent, use consistent color
+                    textColor = '#2c1810';
+                } else {
+                    // When not transparent, use color based on background
+                    textColor = isDarkColor(bgColor) ? '#ffffff' : '#2c1810';
+                }
                 
                 css += `
                     .spell-side-band.level-${level} .spell-side-text {
@@ -1835,18 +1906,17 @@
                     }
                 `;
                 
-                // Only apply background if no custom background is active
-                if (!hasCustomBackground) {
-                    css += `
-                        .spell-side-band.level-${level} {
-                            background: ${bgColor} !important;
-                        }
-                    `;
-                } else {
-                    // When custom background is active, explicitly set side panel to transparent
+                // Apply background based on transparency setting
+                if (shouldBeTransparent) {
                     css += `
                         .spell-side-band.level-${level} {
                             background: transparent !important;
+                        }
+                    `;
+                } else {
+                    css += `
+                        .spell-side-band.level-${level} {
+                            background: ${bgColor} !important;
                         }
                     `;
                 }
