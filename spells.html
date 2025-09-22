@@ -1870,19 +1870,28 @@
             if (filteredSpells.length === 0) {
                 paperContainer.innerHTML = '<div class="spell-grid"><div class="no-spells">No spells found matching your criteria.</div></div>';
             } else {
+                // Sort spells by level first, then alphabetically by name
+                const sortedSpells = [...filteredSpells].sort((a, b) => {
+                    const levelA = parseInt(a.level);
+                    const levelB = parseInt(b.level);
+                    if (levelA !== levelB) {
+                        return levelA - levelB;
+                    }
+                    return a.title.localeCompare(b.title);
+                });
                 // Calculate how many cards fit per page dynamically based on current settings
                 const availableWidth = currentPaperSize.width - 0.5; // Account for margins
                 const availableHeight = currentPaperSize.height - 0.5;
                 const cardsPerRow = Math.floor(availableWidth / currentCardSize.width);
                 const cardsPerCol = Math.floor(availableHeight / currentCardSize.height);
                 const cardsPerPage = cardsPerRow * cardsPerCol;
-                const totalPages = Math.ceil(filteredSpells.length / cardsPerPage);
+                const totalPages = Math.ceil(sortedSpells.length / cardsPerPage);
                 
                 let html = '';
                 for (let page = 0; page < totalPages; page++) {
                     const startIndex = page * cardsPerPage;
-                    const endIndex = Math.min(startIndex + cardsPerPage, filteredSpells.length);
-                    const pageSpells = filteredSpells.slice(startIndex, endIndex);
+                    const endIndex = Math.min(startIndex + cardsPerPage, sortedSpells.length);
+                    const pageSpells = sortedSpells.slice(startIndex, endIndex);
                     
                     html += `<div class="spell-grid">${pageSpells.map(spell => createSpellCard(spell)).join('')}</div>`;
                 }
