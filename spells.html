@@ -623,6 +623,9 @@
                     <div style="margin-top: 8px; font-size: 0.85em; color: #666; font-style: italic; font-family: 'Cormorant Garamond', serif;">
                         💡 When printing, select "No margins" or "Minimum margins" as proper spacing is already included.
                     </div>
+                    <div id="customBackgroundPrintHint" style="margin-top: 8px; font-size: 0.85em; color: #666; font-style: italic; font-family: 'Cormorant Garamond', serif; display: none;">
+                        ⚠️ Very slow printing due to custom background? Try printing to PDF, then "Print as image" from Adobe Acrobat.
+                    </div>
                 </div>
             </div>
             
@@ -964,6 +967,7 @@
                         document.getElementById('customHeight').value = settings.customHeight;
                         document.getElementById('customSizeInputs').style.display = 'flex';
                     }
+                    updateCardSize(); // Apply the restored card size
                 }
                 
                 // Restore paper size settings
@@ -985,6 +989,7 @@
                         document.getElementById('customFontScale').value = settings.customFontScale;
                         document.getElementById('customFontSizeInput').style.display = 'block';
                     }
+                    updateFontSize(); // Apply the restored font size
                 }
                 
                 // Restore body font size settings
@@ -994,6 +999,7 @@
                         document.getElementById('customBodyFontScale').value = settings.customBodyFontScale;
                         document.getElementById('customBodyFontSizeInput').style.display = 'block';
                     }
+                    updateBodyFontSize(); // Apply the restored body font size
                 }
                 
                 // Restore selected spells
@@ -1011,6 +1017,9 @@
                     style.textContent = settings.customBackground;
                     document.head.appendChild(style);
                     document.getElementById('backgroundControls').style.display = 'block';
+                    
+                    // Show the custom background print hint
+                    document.getElementById('customBackgroundPrintHint').style.display = 'block';
                     
                      // Restore opacity value
                      if (settings.backgroundOpacity) {
@@ -1555,6 +1564,9 @@
             `;
             document.head.appendChild(style);
             
+            // Show the custom background print hint
+            document.getElementById('customBackgroundPrintHint').style.display = 'block';
+            
             // Update palette styles based on sidebar transparency setting
             updatePaletteStyles(transparentSidebar);
         }
@@ -1599,6 +1611,9 @@
             if (style) {
                 style.remove();
             }
+            
+            // Hide the custom background print hint
+            document.getElementById('customBackgroundPrintHint').style.display = 'none';
             
             // Update palette styles to restore side panel backgrounds
             updatePaletteStyles();
