@@ -55,7 +55,7 @@
             display: flex;
             gap: 30px;
             justify-content: center;
-            align-items: flex-start;
+            align-items: stretch;
             flex-wrap: wrap;
             margin-bottom: 20px;
         }
@@ -64,8 +64,10 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            min-width: 200px;
-            flex: 0 0 auto;
+            min-width: 180px;
+            flex: 1 1 0;
+            height: 100%; /* Fill container height */
+            justify-content: center; /* Vertically center content */
         }
 
         .filter-group h3 {
@@ -582,7 +584,7 @@
                 <h3>Additional Spells</h3>
                 <div class="spell-selector">
                     <input type="text" id="spellSearch" placeholder="Search spells..." onkeyup="filterSpellDropdown()" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 10px; font-family: 'Cormorant Garamond', serif;">
-                    <div id="spellCheckboxes" style="height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; padding: 8px; background: #f9f9f9;">
+                    <div id="spellCheckboxes" style="height: 158px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; padding: 8px; background: #f9f9f9;">
                         <!-- Spell checkboxes will be populated by JavaScript -->
                     </div>
                 </div>
@@ -595,7 +597,7 @@
             <button onclick="resetToDefault()" style="padding: 8px 16px; background: #8B4513; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 1em;">Reset</button>
         </div>
         
-        <!-- Settings Groups (Card Size & Paper, Appearance) -->
+        <!-- Settings Groups - All in one row with equal widths -->
         <div class="settings-groups-container">
             <div class="filter-group">
                 <h3>Card Size & Paper</h3>
@@ -626,34 +628,37 @@
             
             <div class="filter-group">
                 <h3>Appearance</h3>
-                 <div class="palette-selector">
-                     <select id="paletteSelect" onchange="updatePalette()">
-                         <option value="default">Default Palette</option>
-                         <option value="fire">Fire Theme</option>
-                         <option value="ice">Ice Theme</option>
-                         <option value="nature">Nature Theme</option>
-                         <option value="shadow">Shadow Theme</option>
-                         <option value="arcane">Arcane Theme</option>
-                     </select>
-                 </div>
-                 <div style="margin-top: 10px;">
-                     <label style="color: #2c1810; font-family: 'Cormorant Garamond', serif; display: flex; align-items: center;">
-                         <input type="checkbox" id="transparentSidebar" checked style="margin-right: 5px;">
-                         Transparent Sidebar
-                     </label>
-                 </div>
+                <div class="palette-selector">
+                    <select id="paletteSelect" onchange="updatePalette()">
+                        <option value="default">Default Palette</option>
+                        <option value="fire">Fire Theme</option>
+                        <option value="ice">Ice Theme</option>
+                        <option value="nature">Nature Theme</option>
+                        <option value="shadow">Shadow Theme</option>
+                        <option value="arcane">Arcane Theme</option>
+                    </select>
+                </div>
+                <div style="margin-top: 10px;">
+                    <select id="sidebarTransparency" onchange="updateSidebarTransparencyFromDropdown()" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: white; font-size: 0.9em; font-family: 'Cormorant Garamond', serif;">
+                        <option value="transparent">Transparent Sidebar</option>
+                        <option value="opaque">Opaque Sidebar</option>
+                    </select>
+                </div>
                 <div id="customBackgroundUpload" style="margin-top: 10px;">
-                    <label for="backgroundUpload" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; display: block; margin-bottom: 5px;">Custom Background:</label>
-                    <input type="file" id="backgroundUpload" accept="image/*" style="margin-bottom: 5px;">
-                    <div id="backgroundControls" style="display: none;">
-                         <label for="backgroundOpacity" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; display: block; margin-bottom: 5px;">Opacity:</label>
-                         <input type="range" id="backgroundOpacity" min="0" max="100" value="50" style="width: 100%; margin-bottom: 5px;">
-                         <span id="opacityValue" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">50%</span>
+                    <button id="chooseBackgroundBtn" style="width: 100%; padding: 8px; background: #8B4513; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 0.9em; margin-bottom: 5px;">Choose Custom Background</button>
+                    <input type="file" id="backgroundUpload" accept="image/*" style="display: none;">
+                    <div id="backgroundControls" style="display: none; text-align: center;">
+                         <label for="backgroundOpacity" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; display: block; margin-bottom: 5px;">Opacity: <span id="opacityValue" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">50%</span></label>
+                         <input type="range" id="backgroundOpacity" min="0" max="100" value="50" style="width: 100%; margin-bottom: 10px;">
                          
-                         <button id="removeBackground" style="display: block; margin-top: 5px; padding: 4px 8px; background: #8B4513; color: white; border: none; border-radius: 3px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Remove Background</button>
+                         <button id="removeBackground" style="width: 100%; padding: 8px; background: #8B4513; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Remove Background</button>
                     </div>
                 </div>
-                <div class="font-size-selector" style="margin-top: 10px;">
+            </div>
+            
+            <div class="filter-group">
+                <h3>Font Settings</h3>
+                <div class="font-size-selector">
                     <select id="fontSizeSelect" onchange="updateFontSize()">
                         <option value="auto">Font Size: Auto Scale</option>
                         <option value="small">Font Size: Small (0.8x)</option>
@@ -675,12 +680,6 @@
                     </select>
                     <div id="customBodyFontSizeInput" style="display: none; margin-top: 10px;">
                         <input type="number" id="customBodyFontScale" placeholder="Scale factor (e.g., 0.8)" step="0.1" min="0.5" max="2.0" value="0.8">
-                    </div>
-                </div>
-                <div class="preview-palette-selector" style="margin-top: 10px;">
-                    <div class="filter-option">
-                        <input type="checkbox" id="previewMode" onchange="togglePreviewMode()">
-                        <label for="previewMode" style="color: #2c1810; font-family: 'Cormorant Garamond', serif;">Preview Palette</label>
                     </div>
                 </div>
             </div>
@@ -883,7 +882,6 @@
                  classes: selectedClasses,
                  levels: selectedLevels,
                  selectedSpells: Array.from(selectedSpells),
-                 previewMode: document.getElementById('previewMode').checked,
                  cardSize: document.getElementById('cardSizeSelect').value,
                  customWidth: document.getElementById('customWidth').value,
                  customHeight: document.getElementById('customHeight').value,
@@ -895,7 +893,7 @@
                  customBodyFontScale: document.getElementById('customBodyFontScale').value,
                  customBackground: customBackgroundData,
                  backgroundOpacity: backgroundOpacity,
-                 transparentSidebar: document.getElementById('transparentSidebar') ? document.getElementById('transparentSidebar').checked : true
+                 transparentSidebar: document.getElementById('sidebarTransparency') ? document.getElementById('sidebarTransparency').value === 'transparent' : true
              };
             
             localStorage.setItem('spellSettings', JSON.stringify(settings));
@@ -1006,31 +1004,6 @@
                     });
                 }
                 
-                // Restore preview mode
-                if (settings.previewMode !== undefined) {
-                    document.getElementById('previewMode').checked = settings.previewMode;
-                    // Apply preview mode state to disable/enable controls
-                    const previewMode = settings.previewMode;
-                    const classFilters = document.querySelectorAll('#classFilters input[type="checkbox"]');
-                    const levelFilters = document.querySelectorAll('#levelFilters input[type="checkbox"]');
-                    const spellSearch = document.getElementById('spellSearch');
-                    const spellCheckboxes = document.querySelectorAll('#spellCheckboxes input[type="checkbox"]');
-                    
-                    classFilters.forEach(checkbox => {
-                        checkbox.disabled = previewMode;
-                    });
-                    
-                    levelFilters.forEach(checkbox => {
-                        checkbox.disabled = previewMode;
-                    });
-                    
-                    spellSearch.disabled = previewMode;
-                    
-                    spellCheckboxes.forEach(checkbox => {
-                        checkbox.disabled = previewMode;
-                    });
-                }
-                
                 // Restore custom background
                 if (settings.customBackground) {
                     const style = document.createElement('style');
@@ -1047,7 +1020,7 @@
                      
                      // Restore transparent sidebar setting
                      if (settings.transparentSidebar !== undefined) {
-                         document.getElementById('transparentSidebar').checked = settings.transparentSidebar;
+                         document.getElementById('sidebarTransparency').value = settings.transparentSidebar ? 'transparent' : 'opaque';
                          // Apply the transparent sidebar setting after background is restored
                          updateSidebarTransparency(settings.transparentSidebar);
                      }
@@ -1150,33 +1123,6 @@
         function filterSpells() {
             // Save current filter state
             saveAllSettings();
-            
-            // Check if preview mode is enabled
-            const previewMode = document.getElementById('previewMode').checked;
-            
-            if (previewMode) {
-                // In preview mode, show one spell per level in alphabetical order
-                const spellsByLevel = {};
-                spells.forEach(spell => {
-                    if (!spellsByLevel[spell.level]) {
-                        spellsByLevel[spell.level] = [];
-                    }
-                    spellsByLevel[spell.level].push(spell);
-                });
-                
-                // Sort spells within each level alphabetically and take the first one
-                const previewSpells = [];
-                Object.keys(spellsByLevel).sort((a, b) => parseInt(a) - parseInt(b)).forEach(level => {
-                    const levelSpells = spellsByLevel[level].sort((a, b) => a.title.localeCompare(b.title));
-                    if (levelSpells.length > 0) {
-                        previewSpells.push(levelSpells[0]);
-                    }
-                });
-                
-                filteredSpells = previewSpells;
-                displaySpells();
-                return;
-            }
             
             // Get selected classes and levels (excluding "All" checkboxes)
             const selectedClasses = Array.from(document.querySelectorAll('#classFilters input:checked:not(#all_classes)')).map(cb => cb.value);
@@ -1313,7 +1259,7 @@
                 
                 const label = document.createElement('label');
                 label.htmlFor = checkbox.id;
-                label.textContent = `${spell.title} (${spell.level === '0' ? 'Cantrip' : `Level ${spell.level}`})`;
+                label.textContent = spell.title;
                 label.style.marginLeft = '6px';
                 label.style.fontSize = '0.9em';
                 label.style.fontFamily = "'Cormorant Garamond', serif";
@@ -1352,35 +1298,6 @@
         }
 
         // Toggle preview mode
-        function togglePreviewMode() {
-            const previewMode = document.getElementById('previewMode').checked;
-            
-            // Enable/disable other filter controls
-            const classFilters = document.querySelectorAll('#classFilters input[type="checkbox"]');
-            const levelFilters = document.querySelectorAll('#levelFilters input[type="checkbox"]');
-            const spellSearch = document.getElementById('spellSearch');
-            const spellCheckboxes = document.querySelectorAll('#spellCheckboxes input[type="checkbox"]');
-            
-            classFilters.forEach(checkbox => {
-                checkbox.disabled = previewMode;
-            });
-            
-            levelFilters.forEach(checkbox => {
-                checkbox.disabled = previewMode;
-            });
-            
-            spellSearch.disabled = previewMode;
-            
-            spellCheckboxes.forEach(checkbox => {
-                checkbox.disabled = previewMode;
-            });
-            
-            // Save preview mode state
-            saveAllSettings();
-            
-            // Apply filters
-            filterSpells();
-        }
 
         // Reset to default state
         function resetToDefault() {
@@ -1402,9 +1319,6 @@
                 checkbox.checked = false;
             });
             selectedSpells.clear();
-            
-            // Reset preview mode
-            document.getElementById('previewMode').checked = false;
             
             // Update "All" checkbox states
             updateClassAllState();
@@ -1561,11 +1475,17 @@
         // Handle background image upload
         function handleBackgroundUpload() {
             const fileInput = document.getElementById('backgroundUpload');
+            const chooseBtn = document.getElementById('chooseBackgroundBtn');
             const removeButton = document.getElementById('removeBackground');
             const backgroundControls = document.getElementById('backgroundControls');
             const opacitySlider = document.getElementById('backgroundOpacity');
             const opacityValue = document.getElementById('opacityValue');
-            const transparentSidebarCheckbox = document.getElementById('transparentSidebar');
+            const sidebarTransparencyDropdown = document.getElementById('sidebarTransparency');
+            
+            // Button click triggers file input
+            chooseBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
             
             fileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
@@ -1574,7 +1494,7 @@
                     reader.onload = function(e) {
                         const imageUrl = e.target.result;
                         const opacity = opacitySlider.value / 100;
-                        const transparentSidebar = transparentSidebarCheckbox.checked;
+                        const transparentSidebar = sidebarTransparencyDropdown.value === 'transparent';
                         applyCustomBackground(imageUrl, opacity, transparentSidebar);
                         backgroundControls.style.display = 'block';
                         saveAllSettings();
@@ -1587,13 +1507,6 @@
                 const opacity = this.value / 100;
                 opacityValue.textContent = this.value + '%';
                 updateBackgroundOpacity(opacity);
-                saveAllSettings();
-            });
-            
-            transparentSidebarCheckbox.addEventListener('change', function() {
-                const opacity = opacitySlider.value / 100;
-                const transparentSidebar = this.checked;
-                updateSidebarTransparency(transparentSidebar);
                 saveAllSettings();
             });
             
@@ -1646,7 +1559,13 @@
             updatePaletteStyles(transparentSidebar);
         }
 
-        // Update sidebar transparency
+        // Update sidebar transparency from dropdown
+        function updateSidebarTransparencyFromDropdown() {
+            const dropdown = document.getElementById('sidebarTransparency');
+            const transparentSidebar = dropdown.value === 'transparent';
+            updateSidebarTransparency(transparentSidebar);
+            saveAllSettings();
+        }
         function updateSidebarTransparency(transparentSidebar) {
             updatePaletteStyles(transparentSidebar);
             
