@@ -46,9 +46,17 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             border: 2px solid #8B4513;
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .filter-groups-container {
+            display: flex;
             gap: 30px;
             align-items: flex-start;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .filter-group {
@@ -121,19 +129,89 @@
 
         .spell-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+            grid-template-columns: repeat(auto-fit, 2.5in);
+            grid-auto-rows: 3.5in;
+            gap: 0;
+            padding: 0.25in;
+            max-width: 8.5in;
+            margin: 20px auto;
+            justify-content: start;
+            background: #fefefe;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+            height: 11in;
+            position: relative;
+            page-break-after: always;
+        }
+
+        .spell-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(90deg, transparent 98%, rgba(0,0,0,0.1) 100%),
+                linear-gradient(0deg, transparent 98%, rgba(0,0,0,0.1) 100%);
+            background-size: 1in 1in;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        @media print {
+            @page {
+                margin: 0.25in !important;
+                size: 8.5in 11in !important;
+            }
+
+            .spell-grid {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                max-width: none !important;
+                display: grid !important;
+                grid-template-columns: repeat(3, 2.5in) !important;
+                grid-auto-rows: 3.5in !important;
+                gap: 0 !important;
+                justify-content: start !important;
+                align-content: start !important;
+                page-break-inside: avoid !important;
+            }
+
+            .spell-grid::before {
+                display: none !important;
+            }
+
+            .paper-container {
+                gap: 0 !important;
+                padding: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                min-height: 11in !important;
+            }
+
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        }
+
+        .paper-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: center;
+            padding: 20px 0;
         }
 
         .spell-card {
-            background: #f5f5dc;
+            background: #e6d8a3;
             border: 1px solid #ccc;
             padding: 0;
-            margin: 8px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+            margin: 0;
             width: 2.5in;
             height: 3.5in;
             display: flex;
@@ -142,13 +220,52 @@
             overflow: hidden;
         }
 
+        .spell-side-band.level-0 {
+            background: #f0f0f0;
+        }
+
+        .spell-side-band.level-1 {
+            background: #ffebee;
+        }
+
+        .spell-side-band.level-2 {
+            background: #fff3e0;
+        }
+
+        .spell-side-band.level-3 {
+            background: #fffde7;
+        }
+
+        .spell-side-band.level-4 {
+            background: #f1f8e9;
+        }
+
+        .spell-side-band.level-5 {
+            background: #e8f5e8;
+        }
+
+        .spell-side-band.level-6 {
+            background: #e3f2fd;
+        }
+
+        .spell-side-band.level-7 {
+            background: #f3e5f5;
+        }
+
+        .spell-side-band.level-8 {
+            background: #fce4ec;
+        }
+
+        .spell-side-band.level-9 {
+            background: #ffebee;
+        }
+
         .spell-side-band {
             position: absolute;
             left: 0;
             top: 0;
             bottom: 0;
             width: 24px;
-            background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
             writing-mode: vertical-lr;
             text-orientation: sideways;
             transform: rotate(180deg);
@@ -162,18 +279,19 @@
 
         .spell-side-text {
             font-size: 0.6em;
-            color: #f4e4bc;
+            color: #2c1810;
             font-family: 'Cinzel', serif;
             font-weight: bold;
             text-align: center;
             line-height: 1.1;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
             margin-top: 8px;
             width: 100%;
             height: 100%;
             display: flex;
-            justify-content: center;
+            justify-content: end;
             align-items: center;
+            padding-inline-end: 4px;
         }
 
 
@@ -228,7 +346,6 @@
 
         .spell-body {
             padding: 0 8px 8px 32px;
-            background: rgba(255,255,255,0.1);
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -293,7 +410,6 @@
             padding: 4px 8px 4px 32px;
             margin-top: auto;
             font-size: 0.7em;
-            background: rgba(255,255,255,0.1);
             flex-shrink: 0;
             min-height: 20px;
         }
@@ -386,6 +502,7 @@
         .school-necromancy { background-color: #98D8C8; }
         .school-transmutation { background-color: #F7DC6F; }
 
+
         @media print {
             body {
                 background: white;
@@ -420,32 +537,35 @@
         <p>Complete spell reference with filtering and pagination</p>
     </div>
 
+
     <div class="filters">
-        <div class="filter-group">
-            <h3>Classes</h3>
-            <div class="filter-options" id="classFilters">
-                <!-- Class checkboxes will be generated here -->
+        <div class="filter-groups-container">
+            <div class="filter-group">
+                <h3>Classes</h3>
+                <div class="filter-options" id="classFilters">
+                    <!-- Class checkboxes will be generated here -->
+                </div>
+            </div>
+            <div class="filter-group">
+                <h3>Levels</h3>
+                <div class="filter-options" id="levelFilters">
+                    <!-- Level checkboxes will be generated here -->
+                </div>
+            </div>
+            <div class="filter-group">
+                <h3>Schools</h3>
+                <div class="filter-options" id="schoolFilters">
+                    <!-- School checkboxes will be generated here -->
+                </div>
             </div>
         </div>
-        <div class="filter-group">
-            <h3>Levels</h3>
-            <div class="filter-options" id="levelFilters">
-                <!-- Level checkboxes will be generated here -->
-            </div>
-        </div>
-        <div class="filter-group">
-            <h3>Schools</h3>
-            <div class="filter-options" id="schoolFilters">
-                <!-- School checkboxes will be generated here -->
-            </div>
-        </div>
-        <div class="filter-group">
-            <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
-        </div>
+        <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
     </div>
 
-    <div class="spell-grid" id="spellGrid">
-        <!-- Spell cards will be generated here -->
+    <div class="paper-container" id="paperContainer">
+        <div class="spell-grid" id="spellGrid">
+            <!-- Spell cards will be generated here -->
+        </div>
     </div>
 
 
@@ -466,6 +586,7 @@
         };
 
         // Load spells from CSV
+
         async function loadSpells() {
             try {
                 const response = await fetch('all_spells.csv');
@@ -579,6 +700,15 @@
                 levelFilters.appendChild(option);
             });
             
+            // Add Palette Preview option
+            const paletteOption = document.createElement('div');
+            paletteOption.className = 'filter-option';
+            paletteOption.innerHTML = `
+                <input type="checkbox" id="palette_preview" value="palette_preview" onchange="filterSpells()">
+                <label for="palette_preview">Palette Preview</label>
+            `;
+            levelFilters.appendChild(paletteOption);
+            
             // Populate school filters
             const schoolFilters = document.getElementById('schoolFilters');
             Array.from(schoolSet).sort().forEach(school => {
@@ -590,6 +720,58 @@
                 `;
                 schoolFilters.appendChild(option);
             });
+            
+            // Load saved filter selections
+            loadFilters();
+            
+            // Apply filters after loading saved selections
+            filterSpells();
+        }
+
+        // Save filter selections to localStorage
+        function saveFilters() {
+            const selectedClasses = Array.from(document.querySelectorAll('#classFilters input:checked')).map(cb => cb.value);
+            const selectedLevels = Array.from(document.querySelectorAll('#levelFilters input:checked')).map(cb => cb.value);
+            const selectedSchools = Array.from(document.querySelectorAll('#schoolFilters input:checked')).map(cb => cb.value);
+            
+            const filters = {
+                classes: selectedClasses,
+                levels: selectedLevels,
+                schools: selectedSchools
+            };
+            
+            localStorage.setItem('spellFilters', JSON.stringify(filters));
+        }
+
+        // Load filter selections from localStorage
+        function loadFilters() {
+            const savedFilters = localStorage.getItem('spellFilters');
+            if (savedFilters) {
+                const filters = JSON.parse(savedFilters);
+                
+                // Restore class filters
+                filters.classes.forEach(className => {
+                    const checkbox = document.getElementById(`class_${className.replace(/\s+/g, '_')}`);
+                    if (checkbox) checkbox.checked = true;
+                });
+                
+                // Restore level filters (including palette preview)
+                filters.levels.forEach(level => {
+                    let checkbox;
+                    if (level === 'palette_preview') {
+                        checkbox = document.getElementById('palette_preview');
+                    } else {
+                        checkbox = document.getElementById(`level_${level}`);
+                    }
+                    if (checkbox) checkbox.checked = true;
+                });
+                
+                // Restore school filters
+                filters.schools.forEach(school => {
+                    const checkbox = document.getElementById(`school_${school.replace(/\s+/g, '_')}`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
         }
 
         // Filter spells based on selected checkboxes
@@ -598,13 +780,30 @@
             const selectedLevels = Array.from(document.querySelectorAll('#levelFilters input:checked')).map(cb => cb.value);
             const selectedSchools = Array.from(document.querySelectorAll('#schoolFilters input:checked')).map(cb => cb.value);
             
-            filteredSpells = spells.filter(spell => {
-                const classMatch = selectedClasses.length === 0 || selectedClasses.some(cls => spell.classes.includes(cls));
-                const levelMatch = selectedLevels.length === 0 || selectedLevels.includes(spell.level);
-                const schoolMatch = selectedSchools.length === 0 || selectedSchools.includes(spell.school_of_magic);
-                
-                return classMatch && levelMatch && schoolMatch;
-            });
+            // Save current filter state
+            saveFilters();
+            
+            // Check if palette preview is selected
+            const palettePreviewSelected = selectedLevels.includes('palette_preview');
+            
+            if (palettePreviewSelected) {
+                // Show one spell per level for palette preview
+                const levelSpells = {};
+                spells.forEach(spell => {
+                    if (!levelSpells[spell.level]) {
+                        levelSpells[spell.level] = spell;
+                    }
+                });
+                filteredSpells = Object.values(levelSpells).sort((a, b) => parseInt(a.level) - parseInt(b.level));
+            } else {
+                filteredSpells = spells.filter(spell => {
+                    const classMatch = selectedClasses.length === 0 || selectedClasses.some(cls => spell.classes.includes(cls));
+                    const levelMatch = selectedLevels.length === 0 || selectedLevels.includes(spell.level);
+                    const schoolMatch = selectedSchools.length === 0 || selectedSchools.includes(spell.school_of_magic);
+                    
+                    return classMatch && levelMatch && schoolMatch;
+                });
+            }
             
             displaySpells();
         }
@@ -614,18 +813,39 @@
             document.querySelectorAll('.filter-options input[type="checkbox"]').forEach(cb => {
                 cb.checked = false;
             });
+            localStorage.removeItem('spellFilters');
             filteredSpells = [...spells];
             displaySpells();
         }
 
         // Display spells
         function displaySpells() {
-            const spellGrid = document.getElementById('spellGrid');
+            const paperContainer = document.getElementById('paperContainer');
             
             if (filteredSpells.length === 0) {
-                spellGrid.innerHTML = '<div class="no-spells">No spells found matching your criteria.</div>';
+                paperContainer.innerHTML = '<div class="spell-grid"><div class="no-spells">No spells found matching your criteria.</div></div>';
             } else {
-                spellGrid.innerHTML = filteredSpells.map(spell => createSpellCard(spell)).join('');
+                // Calculate how many cards fit per page dynamically
+                // Available height: 11in - 0.5in (0.25in top + 0.25in bottom padding) = 10.5in
+                // Card height: 3.5in
+                // Max rows that fit: Math.floor(10.5 / 3.5) = 3 rows
+                // Available width: 8.5in - 0.5in (0.25in left + 0.25in right padding) = 8in
+                // Card width: 2.5in
+                // Max columns that fit: Math.floor(8 / 2.5) = 3 columns
+                // Cards per page: 3 columns × 3 rows = 9 cards per page
+                const cardsPerPage = 9;
+                const totalPages = Math.ceil(filteredSpells.length / cardsPerPage);
+                
+                let html = '';
+                for (let page = 0; page < totalPages; page++) {
+                    const startIndex = page * cardsPerPage;
+                    const endIndex = Math.min(startIndex + cardsPerPage, filteredSpells.length);
+                    const pageSpells = filteredSpells.slice(startIndex, endIndex);
+                    
+                    html += `<div class="spell-grid">${pageSpells.map(spell => createSpellCard(spell)).join('')}</div>`;
+                }
+                
+                paperContainer.innerHTML = html;
                 adjustFontSizes();
             }
         }
@@ -660,8 +880,8 @@
             const levelText = spell.level === '0' ? 'Cantrip' : `${spell.level}${getOrdinalSuffix(spell.level)} Level`;
             
             return `
-                <div class="spell-card level-${spell.level}">
-                    <div class="spell-side-band">
+                <div class="spell-card">
+                    <div class="spell-side-band level-${spell.level}">
                         <div class="spell-side-text">${spell.title} (${spell.level === '0' ? '0' : spell.level})</div>
                     </div>
                     <div class="spell-header">
