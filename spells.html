@@ -262,45 +262,6 @@
             overflow: hidden;
         }
 
-        .spell-side-band.level-0 {
-            background: #f0f0f0;
-        }
-
-        .spell-side-band.level-1 {
-            background: #ffebee;
-        }
-
-        .spell-side-band.level-2 {
-            background: #fff3e0;
-        }
-
-        .spell-side-band.level-3 {
-            background: #fffde7;
-        }
-
-        .spell-side-band.level-4 {
-            background: #f1f8e9;
-        }
-
-        .spell-side-band.level-5 {
-            background: #e8f5e8;
-        }
-
-        .spell-side-band.level-6 {
-            background: #e3f2fd;
-        }
-
-        .spell-side-band.level-7 {
-            background: #f3e5f5;
-        }
-
-        .spell-side-band.level-8 {
-            background: #fce4ec;
-        }
-
-        .spell-side-band.level-9 {
-            background: #ffebee;
-        }
 
         .spell-side-band {
             position: absolute;
@@ -407,26 +368,33 @@
 
         .spell-subtitle {
             font-size: 0.8em;
-            color: #2c1810;
+            color: #000000;
             text-align: center;
             margin-bottom: 0;
             padding: 0;
             font-style: italic;
             font-family: 'Cormorant Garamond', serif;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .spell-subtitle span {
+            white-space: nowrap;
+            display: inline-block;
         }
 
         .spell-description {
             padding: 12px 0 0 0;
-            font-size: 0.9em;
+            font-size: 0.8em;
             line-height: 1.3;
-            color: #2c1810;
-            font-family: 'Cormorant Garamond', serif;
+            color: #000000;
+            font-family: 'Arial', 'Helvetica', sans-serif;
             font-weight: 400;
             flex: 1;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             min-height: 0;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .spell-description br {
@@ -478,17 +446,19 @@
         .spell-level {
             text-align: left;
             font-style: italic;
-            color: #8B4513;
+            color: #000000;
             font-family: 'MedievalSharp', 'Cinzel', serif;
             font-size: 0.7em;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .spell-school {
             text-align: right;
             font-style: italic;
-            color: #8B4513;
+            color: #000000;
             font-family: 'MedievalSharp', 'Cinzel', serif;
             font-size: 0.7em;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
 
@@ -666,6 +636,16 @@
                         <option value="arcane">Arcane Theme</option>
                     </select>
                 </div>
+                <div id="customBackgroundUpload" style="margin-top: 10px;">
+                    <label for="backgroundUpload" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; display: block; margin-bottom: 5px;">Custom Background:</label>
+                    <input type="file" id="backgroundUpload" accept="image/*" style="margin-bottom: 5px;">
+                    <div id="backgroundControls" style="display: none;">
+                        <label for="backgroundOpacity" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; display: block; margin-bottom: 5px;">Opacity:</label>
+                        <input type="range" id="backgroundOpacity" min="0" max="100" value="50" style="width: 100%; margin-bottom: 5px;">
+                        <span id="opacityValue" style="color: #2c1810; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">50%</span>
+                        <button id="removeBackground" style="display: block; margin-top: 5px; padding: 4px 8px; background: #8B4513; color: white; border: none; border-radius: 3px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Remove Background</button>
+                    </div>
+                </div>
                 <div class="font-size-selector" style="margin-top: 10px;">
                     <select id="fontSizeSelect" onchange="updateFontSize()">
                         <option value="auto">Font Size: Auto Scale</option>
@@ -755,8 +735,6 @@
                 filteredSpells = [...spells];
                 populateFilters();
                 displaySpells();
-                // Adjust font sizes after initial load
-                setTimeout(adjustFontSizes, 100);
             } catch (error) {
                 console.error('Error loading spells:', error);
                 document.getElementById('spellGrid').innerHTML = '<div class="no-spells">Error loading spells. Please make sure all_spells.csv is available.</div>';
@@ -889,6 +867,11 @@
             const selectedClasses = Array.from(document.querySelectorAll('#classFilters input:checked:not(#all_classes)')).map(cb => cb.value);
             const selectedLevels = Array.from(document.querySelectorAll('#levelFilters input:checked:not(#all_levels)')).map(cb => cb.value);
             
+            // Get custom background data if it exists
+            const customBackgroundStyle = document.getElementById('customBackgroundStyles');
+            const customBackgroundData = customBackgroundStyle ? customBackgroundStyle.textContent : null;
+            const backgroundOpacity = document.getElementById('backgroundOpacity') ? document.getElementById('backgroundOpacity').value : 50;
+            
             const settings = {
                 classes: selectedClasses,
                 levels: selectedLevels,
@@ -902,7 +885,9 @@
                 fontSize: document.getElementById('fontSizeSelect').value,
                 customFontScale: document.getElementById('customFontScale').value,
                 bodyFontSize: document.getElementById('bodyFontSizeSelect').value,
-                customBodyFontScale: document.getElementById('customBodyFontScale').value
+                customBodyFontScale: document.getElementById('customBodyFontScale').value,
+                customBackground: customBackgroundData,
+                backgroundOpacity: backgroundOpacity
             };
             
             localStorage.setItem('spellSettings', JSON.stringify(settings));
@@ -1036,6 +1021,21 @@
                     spellCheckboxes.forEach(checkbox => {
                         checkbox.disabled = previewMode;
                     });
+                }
+                
+                // Restore custom background
+                if (settings.customBackground) {
+                    const style = document.createElement('style');
+                    style.id = 'customBackgroundStyles';
+                    style.textContent = settings.customBackground;
+                    document.head.appendChild(style);
+                    document.getElementById('backgroundControls').style.display = 'block';
+                    
+                    // Restore opacity value
+                    if (settings.backgroundOpacity) {
+                        document.getElementById('backgroundOpacity').value = settings.backgroundOpacity;
+                        document.getElementById('opacityValue').textContent = settings.backgroundOpacity + '%';
+                    }
                 }
             } else {
                 // No saved settings - set default state with all levels selected
@@ -1543,6 +1543,86 @@
             saveAllSettings();
         }
 
+        // Handle background image upload
+        function handleBackgroundUpload() {
+            const fileInput = document.getElementById('backgroundUpload');
+            const removeButton = document.getElementById('removeBackground');
+            const backgroundControls = document.getElementById('backgroundControls');
+            const opacitySlider = document.getElementById('backgroundOpacity');
+            const opacityValue = document.getElementById('opacityValue');
+            
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageUrl = e.target.result;
+                        const opacity = opacitySlider.value / 100;
+                        applyCustomBackground(imageUrl, opacity);
+                        backgroundControls.style.display = 'block';
+                        saveAllSettings();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            opacitySlider.addEventListener('input', function() {
+                const opacity = this.value / 100;
+                opacityValue.textContent = this.value + '%';
+                updateBackgroundOpacity(opacity);
+                saveAllSettings();
+            });
+            
+            removeButton.addEventListener('click', function() {
+                removeCustomBackground();
+                fileInput.value = '';
+                backgroundControls.style.display = 'none';
+                saveAllSettings();
+            });
+        }
+
+        // Apply custom background to all cards
+        function applyCustomBackground(imageUrl, opacity = 0.5) {
+            const style = document.getElementById('customBackgroundStyles') || document.createElement('style');
+            style.id = 'customBackgroundStyles';
+            style.textContent = `
+                .spell-card {
+                    background-image: url('${imageUrl}');
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    opacity: ${opacity};
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Update palette styles to make side panels transparent
+            updatePaletteStyles();
+        }
+
+        // Update background opacity
+        function updateBackgroundOpacity(opacity) {
+            const style = document.getElementById('customBackgroundStyles');
+            if (style) {
+                const newContent = style.textContent.replace(
+                    /opacity: [^;]+/g,
+                    `opacity: ${opacity}`
+                );
+                style.textContent = newContent;
+            }
+        }
+
+        // Remove custom background
+        function removeCustomBackground() {
+            const style = document.getElementById('customBackgroundStyles');
+            if (style) {
+                style.remove();
+            }
+            
+            // Update palette styles to restore side panel backgrounds
+            updatePaletteStyles();
+        }
+
         // Update font size
         function updateFontSize() {
             const select = document.getElementById('fontSizeSelect');
@@ -1720,24 +1800,39 @@
                 }
                 
                 .spell-name, .spell-subtitle, .spell-description, .spell-level, .spell-school {
-                    color: ${currentPalette.textColor} !important;
+                    color: #000000 !important;
                 }
             `;
             
             // Generate CSS for side panel colors by level with dynamic text color
+            // Only apply side panel backgrounds if no custom background is active
+            const hasCustomBackground = document.getElementById('customBackgroundStyles');
+            
             for (let level = 0; level <= 9; level++) {
                 const bgColor = currentPalette.sidePanel[level];
                 const textColor = isDarkColor(bgColor) ? '#ffffff' : '#2c1810';
                 
                 css += `
-                    .spell-side-band.level-${level} {
-                        background: ${bgColor} !important;
-                    }
-                    
                     .spell-side-band.level-${level} .spell-side-text {
                         color: ${textColor} !important;
                     }
                 `;
+                
+                // Only apply background if no custom background is active
+                if (!hasCustomBackground) {
+                    css += `
+                        .spell-side-band.level-${level} {
+                            background: ${bgColor} !important;
+                        }
+                    `;
+                } else {
+                    // When custom background is active, explicitly set side panel to transparent
+                    css += `
+                        .spell-side-band.level-${level} {
+                            background: transparent !important;
+                        }
+                    `;
+                }
             }
             
             style.textContent = css;
@@ -1772,33 +1867,9 @@
                 }
                 
                 paperContainer.innerHTML = html;
-                adjustFontSizes();
             }
         }
 
-        // Adjust font sizes for descriptions to fit content
-        function adjustFontSizes() {
-            const descriptions = document.querySelectorAll('.spell-description');
-            descriptions.forEach(desc => {
-                const textLength = desc.textContent.length;
-                let fontSize = 0.8; // Default font size
-                
-                // Reduce font size based on text length
-                if (textLength > 300) {
-                    fontSize = 0.7; // Minimum font size
-                } else if (textLength > 250) {
-                    fontSize = 0.72;
-                } else if (textLength > 200) {
-                    fontSize = 0.75;
-                } else if (textLength > 150) {
-                    fontSize = 0.78;
-                } else if (textLength > 100) {
-                    fontSize = 0.8;
-                }
-                
-                desc.style.fontSize = fontSize + 'em';
-            });
-        }
 
         // Create spell card HTML
         function createSpellCard(spell) {
@@ -1815,7 +1886,7 @@
                     </div>
                     <div class="spell-body">
                         <div class="spell-subtitle">
-                            ${spell.casting_time} • ${spell.range} • ${spell.components} • ${spell.duration}
+                            <span>${spell.casting_time}</span> • <span>${spell.range}</span> • <span>${spell.components}</span> • <span>${spell.duration}</span>
                         </div>
                         <div class="spell-description level-${spell.level}">
                             <div class="spell-description-content">
@@ -1849,41 +1920,6 @@
             return emojis[levelNum] || '⓪';
         }
 
-        // Adjust font sizes to fit content
-        function adjustFontSizes() {
-            const spellCards = document.querySelectorAll('.spell-card');
-            spellCards.forEach(card => {
-                const description = card.querySelector('.spell-description');
-                if (description) {
-                    const textLength = description.textContent.length;
-                    const cardHeight = card.offsetHeight;
-                    const availableHeight = cardHeight - 120; // Account for header and footer
-                    
-                    // Calculate font size based on text length and available space
-                    let fontSize = 0.9; // Base font size
-                    
-                    if (textLength > 500) {
-                        fontSize = 0.7;
-                    } else if (textLength > 300) {
-                        fontSize = 0.75;
-                    } else if (textLength > 200) {
-                        fontSize = 0.8;
-                    } else if (textLength > 100) {
-                        fontSize = 0.85;
-                    }
-                    
-                    // Additional adjustment based on available height
-                    if (availableHeight < 200) {
-                        fontSize = Math.min(fontSize, 0.7);
-                    } else if (availableHeight < 250) {
-                        fontSize = Math.min(fontSize, 0.75);
-                    }
-                    
-                    description.style.fontSize = fontSize + 'em';
-                }
-            });
-        }
-
         // Initialize size settings
         function initializeSizeSettings() {
             // Set up custom size input event listeners
@@ -1891,6 +1927,9 @@
             document.getElementById('customHeight').addEventListener('input', updateCardSize);
             document.getElementById('customFontScale').addEventListener('input', updateFontSize);
             document.getElementById('customBodyFontScale').addEventListener('input', updateBodyFontSize);
+            
+            // Initialize file upload handler
+            handleBackgroundUpload();
             
             // Initialize styles
             updateCardStyles();
