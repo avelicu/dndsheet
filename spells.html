@@ -2305,17 +2305,22 @@
             let right = fullContent.length;
             let bestSplit = Math.floor(fullContent.length / 2);
             
+            const isSnare = spell.title === 'Snare';
+            if (isSnare) console.log(`Starting binary search for ${spell.title}, fullContent length: ${fullContent.length}`);
+            
             while (left < right - 10) { // Stop when we're within 10 characters
                 const mid = Math.floor((left + right) / 2);
                 
                 // Create a test card with content up to 'mid'
-                const testCardData = { ...cardData };
                 const testContent = fullContent.substring(0, mid);
                 
                 // Create modified spell object with truncated description
-                const testSpell = { ...spell };
-                testSpell.description = testContent;
-                testSpell.material_component = ''; // Already included in testContent
+                // Important: set material_component to empty since it's already in fullContent
+                const testSpell = { 
+                    ...spell,
+                    description: testContent,
+                    material_component: '' // Already included in testContent/fullContent
+                };
                 
                 // Generate the test card data
                 const testGeneratedData = generateSpellCardData(testSpell);
@@ -2329,9 +2334,30 @@
                 testTemp.innerHTML = testHTML;
                 document.body.appendChild(testTemp);
                 
-                const testCardHeight = testTemp.querySelector('.spell-card')?.offsetHeight || 0;
-                const targetHeight = testTemp.querySelector('.spell-card')?.style.height || '3.5in';
-                const targetHeightPx = parseFloat(targetHeight) * 96; // Convert inches to pixels
+                // Don't measure the card height - measure if content is overflowing
+                // We need to force the card to expand and see its natural height
+                const testCard = testTemp.querySelector('.spell-card');
+                if (testCard) {
+                    testCard.style.setProperty('height', 'auto', 'important');
+                }
+                const testContentDiv = testTemp.querySelector('.spell-content');
+                if (testContentDiv) {
+                    testContentDiv.style.setProperty('height', 'auto', 'important');
+                }
+                const testBody = testTemp.querySelector('.spell-body');
+                if (testBody) {
+                    testBody.style.setProperty('height', 'auto', 'important');
+                }
+                
+                // Force reflow
+                void testTemp.offsetHeight;
+                
+                const testCardHeight = testCard?.offsetHeight || 0;
+                const targetHeightPx = currentCardSize.height * 96; // Use the actual card size setting
+                
+                if (isSnare) {
+                    console.log(`  mid=${mid}, testCardHeight=${testCardHeight}px, targetHeight=${targetHeightPx}px, fits=${testCardHeight <= targetHeightPx}`);
+                }
                 
                 document.body.removeChild(testTemp);
                 
@@ -2345,43 +2371,56 @@
                 }
             }
             
+            if (isSnare) {
+                console.log(`Binary search complete. bestSplit=${bestSplit}, text at split: "${fullContent.substring(bestSplit - 20, bestSplit + 20)}"`);
+            }
+            
             // Split at the best point, ensuring we're outside of HTML tags
             let splitPoint = bestSplit;
             
-            // Move backwards to find a safe split point (not inside a tag)
-            let inTag = false;
-            let tagDepth = 0;
-            for (let i = splitPoint; i >= 0; i--) {
+            // Check if we're inside a tag - if so, move to just after the tag
+            let insideTag = false;
+            for (let i = splitPoint - 1; i >= 0; i--) {
                 if (fullContent[i] === '>') {
-                    inTag = true;
+                    insideTag = false;
+                    break;
                 } else if (fullContent[i] === '<') {
-                    inTag = false;
-                    // Check if this is an opening or closing tag
-                    if (i + 1 < fullContent.length && fullContent[i + 1] === '/') {
-                        tagDepth++;
-                    } else {
-                        tagDepth--;
-                    }
-                }
-                
-                // Found a safe spot outside tags and at balanced tag depth
-                if (!inTag && tagDepth === 0 && (fullContent[i] === ' ' || fullContent[i] === '.' || fullContent[i] === '>' || fullContent[i] === '<')) {
-                    splitPoint = i + 1;
+                    insideTag = true;
                     break;
                 }
             }
             
-            // Ensure we're not cutting in the middle of a word
-            while (splitPoint > 0 && splitPoint < fullContent.length && 
-                   fullContent[splitPoint] !== ' ' && 
-                   fullContent[splitPoint] !== '<' &&
-                   fullContent[splitPoint] !== '>') {
-                splitPoint--;
+            if (insideTag) {
+                // Move forward to the end of the tag
+                while (splitPoint < fullContent.length && fullContent[splitPoint] !== '>') {
+                    splitPoint++;
+                }
+                if (splitPoint < fullContent.length) splitPoint++; // Move past the '>'
+            }
+            
+            // Now ensure we're at a word boundary - always move backwards to avoid overflow
+            if (splitPoint < fullContent.length && fullContent[splitPoint] !== ' ' && fullContent[splitPoint] !== '<') {
+                // We're in the middle of a word, go backwards to the start of the word
+                while (splitPoint > 0 && 
+                       fullContent[splitPoint - 1] !== ' ' && 
+                       fullContent[splitPoint - 1] !== '<' &&
+                       fullContent[splitPoint - 1] !== '>') {
+                    splitPoint--;
+                }
+            }
+            
+            if (isSnare) {
+                console.log(`After adjustment, splitPoint=${splitPoint}, text at split: "${fullContent.substring(splitPoint - 20, splitPoint + 20)}"`);
             }
             
             // Create first card with partial content
             let firstContent = fullContent.substring(0, splitPoint).trim();
             let secondContent = fullContent.substring(splitPoint).trim();
+            
+            if (isSnare) {
+                console.log(`First card ends with: "...${firstContent.substring(firstContent.length - 50)}"`);
+                console.log(`Second card starts with: "${secondContent.substring(0, 50)}..."`);
+            }
             
             // Close any unclosed tags in first content
             const openTags = [];
