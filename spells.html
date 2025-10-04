@@ -2141,6 +2141,33 @@
             // Use description exactly as provided
             let description = spell.description;
             
+            // Bold dice expressions and color damage types
+            const damageTypes = {
+                'fire': '#DC2626',      // red
+                'cold': '#3B82F6',      // blue  
+                'lightning': '#F59E0B',  // amber
+                'thunder': '#8B5CF6',    // purple
+                'acid': '#10B981',      // emerald
+                'poison': '#059669',     // green
+                'necrotic': '#6B7280',   // gray
+                'radiant': '#FBBF24',    // yellow
+                'psychic': '#EC4899',   // pink
+                'force': '#6366F1',     // indigo
+                'bludgeoning': '#92400E', // brown
+                'piercing': '#374151',   // dark gray
+                'slashing': '#7C2D12'    // dark red
+            };
+            
+            // First, handle dice + damage type combinations
+            description = description.replace(/\b(\d*d\d+(?:\+\d+)?)\s+(fire|cold|lightning|thunder|acid|poison|necrotic|radiant|psychic|force|bludgeoning|piercing|slashing)\b/gi, 
+                (match, dice, damageType) => {
+                    const color = damageTypes[damageType.toLowerCase()] || '#000000';
+                    return `<strong style="color: ${color};">${dice} ${damageType}</strong>`;
+                });
+            
+            // Then handle standalone dice expressions
+            description = description.replace(/\b(\d*d\d+(?:\+\d+)?)\b/g, '<strong>$1</strong>');
+            
             // Format components 
             let formattedComponents = spell.components;
             
