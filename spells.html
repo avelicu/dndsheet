@@ -309,20 +309,24 @@
             background: white;
             border: 2px solid black;
             border-radius: 16px;
-            padding: 4px 24px;
+            padding: 4px 28px;
             position: absolute;
             top: 8px;
             left: 8px;
             right: 8px;
             z-index: 2;
             width: calc(100% - 16px);
-            height: 32px;
-            max-height: 32px;
+            height: 35px;
+            max-height: 35px;
             overflow: hidden;
         }
 
         .spell-name-with-ritual {
             justify-content: center;
+        }
+
+        .spell-title-text {
+            line-height: 0.9;
         }
 
         .spell-name-with-ritual .spell-title-text {
@@ -352,33 +356,32 @@
             display: inline-block;
         }
 
-        .spell-level-hexagon {
+        .spell-level-circle {
             position: absolute;
-            top: 5px;
-            right: 8px;
-            width: 33px;
-            height: calc(33px * 1.1547);
-            background: black;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            top: 50%;
+            right: 4px;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            border: 2px solid black;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 3;
-        }
-
-        .spell-level-hexagon-inner {
-            width: 29px;
-            height: calc(29px * 1.1547);
-            background: white;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            font-weight: 600;
+            font-size: 0.7em;
+            font-weight: bold;
             font-family: 'Crimson Text', 'Times New Roman', serif;
             color: black;
+            line-height: 1;
+            text-align: center;
         }
+
+        .spell-level-circle span {
+            display: block;
+            transform: translateX(-0.5px) translateY(0.5px);
+        }
+
 
 
 
@@ -1353,8 +1356,8 @@
                     }
                 });
                 
-                // Filter to only show spells that overflow
-                filteredSpells = filteredSpells.filter(spell => spell._hasOverflow);
+                // Filter to only show spells that overflow or had font size reduced
+                filteredSpells = filteredSpells.filter(spell => spell._hasOverflow || spell._fontSizeReduced);
             }
             
             // Update the additional spells list to remove covered spells
@@ -2206,19 +2209,16 @@
                             </div>
                         </div>`;
             
-            // Build the level hexagon HTML only if not a continuation card
-            const hexagonHTML = isContinuation ? '' : `
-                    <div class="spell-level-hexagon" style="${styleOverrides.hexagonStyle || ''}">
-                        <div class="spell-level-hexagon-inner">${levelText}</div>
-                    </div>`;
+            // Build the level circle HTML only if not a continuation card
+            const levelCircleHTML = isContinuation ? '' : `
+                    <div class="spell-level-circle"><span>${levelText}</span></div>`;
             
             // Add minimal padding to spell-body if continuation card (just enough so text doesn't touch title)
             const bodyPadding = isContinuation ? 'padding-top: 8px;' : 'position: relative;';
             
             return `
                 <div class="spell-card" style="${styleOverrides.cardStyle || ''}">
-                    <div class="${spellNameClass}" style="${styleOverrides.nameStyle || ''}">${ritualIndicator}<span class="spell-title-text">${spellTitle}</span></div>
-                    ${hexagonHTML}
+                    <div class="${spellNameClass}" style="${styleOverrides.nameStyle || ''}">${ritualIndicator}<span class="spell-title-text">${spellTitle}</span>${levelCircleHTML}</div>
                     <div class="spell-content" style="${styleOverrides.contentStyle || ''}">
                         <div class="spell-header">
                         </div>
@@ -2247,23 +2247,99 @@
             // First, render the card normally
             const normalCardHTML = renderSpellCard(spell, cardData);
             
-            // Create temporary containers to measure both versions
-            const constrainedTemp = document.createElement('div');
-            constrainedTemp.style.position = 'absolute';
-            constrainedTemp.style.visibility = 'hidden';
-            constrainedTemp.style.top = '-9999px';
-            constrainedTemp.style.left = '-9999px';
-            constrainedTemp.innerHTML = normalCardHTML;
-            document.body.appendChild(constrainedTemp);
+            // Get or create reusable temporary divs
+            let constrainedTemp = document.getElementById('reusable-constrained-temp');
+            let unconstrainedTemp = document.getElementById('reusable-unconstrained-temp');
             
-            // Create unconstrained version by cloning the constrained one
-            const unconstrainedTemp = document.createElement('div');
-            unconstrainedTemp.style.position = 'absolute';
-            unconstrainedTemp.style.visibility = 'hidden';
-            unconstrainedTemp.style.top = '-9999px';
-            unconstrainedTemp.style.left = '-9999px';
-            unconstrainedTemp.innerHTML = normalCardHTML;
-            document.body.appendChild(unconstrainedTemp);
+            if (!constrainedTemp) {
+                constrainedTemp = document.createElement('div');
+                constrainedTemp.id = 'reusable-constrained-temp';
+                constrainedTemp.style.position = 'absolute';
+                constrainedTemp.style.visibility = 'hidden';
+                constrainedTemp.style.top = '-9999px';
+                constrainedTemp.style.left = '-9999px';
+                document.body.appendChild(constrainedTemp);
+            }
+            
+            if (!unconstrainedTemp) {
+                unconstrainedTemp = document.createElement('div');
+                unconstrainedTemp.id = 'reusable-unconstrained-temp';
+                unconstrainedTemp.style.position = 'absolute';
+                unconstrainedTemp.style.visibility = 'hidden';
+                unconstrainedTemp.style.top = '-9999px';
+                unconstrainedTemp.style.left = '-9999px';
+                document.body.appendChild(unconstrainedTemp);
+            }
+            
+            // Check if title fits and adjust letter spacing if needed
+            let finalCardHTML = normalCardHTML;
+            
+            // Create a temporary card to measure title height
+            const titleTestTemp = document.createElement('div');
+            titleTestTemp.style.position = 'absolute';
+            titleTestTemp.style.visibility = 'hidden';
+            titleTestTemp.style.top = '-9999px';
+            titleTestTemp.style.left = '-9999px';
+            titleTestTemp.innerHTML = normalCardHTML;
+            document.body.appendChild(titleTestTemp);
+            
+            const titleElement = titleTestTemp.querySelector('.spell-title-text');
+            if (titleElement) {
+                const titleText = titleElement.textContent;
+                
+                // Force a reflow to get accurate measurements
+                void titleElement.offsetHeight;
+                
+                let titleHeight = titleElement.offsetHeight;
+                let targetHeight = 16; // Prefer single row (approximately 16px)
+                let letterSpacing = -1; // Start with current letter spacing
+                let bestLetterSpacing = -1; // Track the best working letter spacing
+                
+                console.log(`Title "${titleText}": height=${titleHeight}px, target=${targetHeight}px, needsAdjustment=${titleHeight > targetHeight}`);
+                
+                // If title is taller than single row, progressively reduce letter spacing
+                while (titleHeight > targetHeight && letterSpacing > -3) {
+                    letterSpacing -= 0.1;
+                    titleElement.style.letterSpacing = letterSpacing + 'px';
+                    void titleElement.offsetHeight; // Force reflow
+                    titleHeight = titleElement.offsetHeight;
+                    console.log(`  Trying letterSpacing=${letterSpacing}px: height=${titleHeight}px`);
+                    
+                    // If this letter spacing works, save it as the best
+                    if (titleHeight <= targetHeight) {
+                        bestLetterSpacing = letterSpacing;
+                        console.log(`  Found working letterSpacing=${bestLetterSpacing}px for "${titleText}"`);
+                        break; // Found a working solution, stop here
+                    }
+                }
+                
+                // Apply the best working letter spacing
+                if (bestLetterSpacing !== -1) {
+                    console.log(`  Applying letterSpacing=${bestLetterSpacing}px to "${titleText}"`);
+                    const finalDiv = document.createElement('div');
+                    finalDiv.innerHTML = normalCardHTML;
+                    const finalTitleElement = finalDiv.querySelector('.spell-title-text');
+                    if (finalTitleElement) {
+                        console.log(`  Found title element:`, finalTitleElement);
+                        console.log(`  Before setting style:`, finalTitleElement.style.letterSpacing);
+                        finalTitleElement.style.letterSpacing = bestLetterSpacing + 'px';
+                        console.log(`  After setting style:`, finalTitleElement.style.letterSpacing);
+                        console.log(`  Element outerHTML:`, finalTitleElement.outerHTML);
+                    } else {
+                        console.log(`  ERROR: Could not find .spell-title-text element in finalDiv`);
+                    }
+                    finalCardHTML = finalDiv.innerHTML;
+                    console.log(`  Final HTML contains letter-spacing:`, finalCardHTML.includes('letter-spacing'));
+                } else {
+                    console.log(`  No letter spacing adjustment needed for "${titleText}"`);
+                }
+            }
+            
+            document.body.removeChild(titleTestTemp);
+            
+            // Update content with potentially adjusted title
+            constrainedTemp.innerHTML = finalCardHTML;
+            unconstrainedTemp.innerHTML = finalCardHTML;
             
             // Force unconstrained card to actually be unconstrained by setting all heights to auto with !important
             const unconstrainedCard = unconstrainedTemp.querySelector('.spell-card');
@@ -2306,17 +2382,24 @@
             if (hasOverflow) {
                 let bestFontSize = null;
                 
-                // Try font sizes from 100% down to 80% in 2% increments
-                for (let fontSizePercent = 100; fontSizePercent >= 80; fontSizePercent -= 2) {
-                    const fontSizeMultiplier = fontSizePercent / 100;
-                    
-                    const smallerFontTemp = document.createElement('div');
+                // Get or create reusable font test temp div
+                let smallerFontTemp = document.getElementById('reusable-font-test-temp');
+                if (!smallerFontTemp) {
+                    smallerFontTemp = document.createElement('div');
+                    smallerFontTemp.id = 'reusable-font-test-temp';
                     smallerFontTemp.style.position = 'absolute';
                     smallerFontTemp.style.visibility = 'hidden';
                     smallerFontTemp.style.top = '-9999px';
                     smallerFontTemp.style.left = '-9999px';
-                    smallerFontTemp.innerHTML = normalCardHTML;
                     document.body.appendChild(smallerFontTemp);
+                }
+                
+                // Try font sizes from 100% down to 80% in 2% increments
+                for (let fontSizePercent = 100; fontSizePercent >= 80; fontSizePercent -= 2) {
+                    const fontSizeMultiplier = fontSizePercent / 100;
+                    
+                    // Update content
+                    smallerFontTemp.innerHTML = finalCardHTML;
                     
                     // Apply the font size multiplier to the description content
                     const smallerDescContent = smallerFontTemp.querySelector('.spell-description-content');
@@ -2354,8 +2437,6 @@
                         console.log(`${spell.title}: trying font size ${fontSizePercent}% (${fontSizeMultiplier}em): smallerCardHeight=${smallerCardHeight}px, target=${constrainedCardHeight}px, fits=${fitsWithSmallerFont}`);
                     }
                     
-                    document.body.removeChild(smallerFontTemp);
-                    
                     if (fitsWithSmallerFont) {
                         bestFontSize = fontSizeMultiplier;
                         if (isDebugSpell) {
@@ -2366,22 +2447,18 @@
                 }
                 
                 if (bestFontSize !== null) {
-                    // Smaller font works! Re-render with the best font size
-                    const styleOverrides = {
-                        bodyStyle: 'position: relative;'
-                    };
-                    const smallerCardHTML = renderSpellCard(spell, cardData, styleOverrides);
-                    
-                    // Apply the best font size to the description content
+                    // Smaller font works! Apply the best font size to the existing finalCardHTML
                     const finalDiv = document.createElement('div');
-                    finalDiv.innerHTML = smallerCardHTML;
+                    finalDiv.innerHTML = finalCardHTML;
                     const finalDescContent = finalDiv.querySelector('.spell-description-content');
                     if (finalDescContent) {
                         finalDescContent.style.fontSize = `${bestFontSize}em`;
                     }
+                    finalCardHTML = finalDiv.innerHTML;
                     
                     // Store that it doesn't overflow (since we fixed it with smaller font)
                     spell._hasOverflow = false;
+                    spell._fontSizeReduced = true;
                     
                     // Clean up temporary elements
                     document.body.removeChild(constrainedTemp);
@@ -2395,27 +2472,21 @@
                 } else {
                     // No font size reduction helps, split the card
                     spell._hasOverflow = true;
-                    
-                    // Clean up temporary elements
-                    document.body.removeChild(constrainedTemp);
-                    document.body.removeChild(unconstrainedTemp);
+                    spell._fontSizeReduced = false;
                     
                     if (isDebugSpell) {
                         console.log(`${spell.title}: No font size reduction helps, splitting card`);
                     }
                     
-                    return splitCardContent(spell, cardData, normalCardHTML);
+                    return splitCardContent(spell, cardData, finalCardHTML);
                 }
             }
             
             // No overflow, use normal card
             spell._hasOverflow = false;
+            spell._fontSizeReduced = false;
             
-            // Clean up temporary elements
-            document.body.removeChild(constrainedTemp);
-            document.body.removeChild(unconstrainedTemp);
-            
-            return normalCardHTML;
+            return finalCardHTML;
         }
 
         // Split overflowing card content into two cards
@@ -2438,6 +2509,18 @@
             let splitPoint = fullContent.length;
             let iterations = 0;
             
+            // Get or create reusable test temp div
+            let testTemp = document.getElementById('reusable-test-temp');
+            if (!testTemp) {
+                testTemp = document.createElement('div');
+                testTemp.id = 'reusable-test-temp';
+                testTemp.style.position = 'absolute';
+                testTemp.style.visibility = 'hidden';
+                testTemp.style.top = '-9999px';
+                testTemp.style.left = '-9999px';
+                document.body.appendChild(testTemp);
+            }
+            
             // Start from the end and work backwards, removing one word at a time
             while (splitPoint > 0) {
                 iterations++;
@@ -2453,12 +2536,8 @@
                 const testGeneratedData = generateSpellCardData(testSpell);
                 const testHTML = renderSpellCard(testSpell, testGeneratedData, {}, isContinuation);
                 
-                const testTemp = document.createElement('div');
-                testTemp.style.position = 'absolute';
-                testTemp.style.visibility = 'hidden';
-                testTemp.style.top = '-9999px';
+                // Update content
                 testTemp.innerHTML = testHTML;
-                document.body.appendChild(testTemp);
                 
                 const testCard = testTemp.querySelector('.spell-card');
                 if (testCard) {
@@ -2475,7 +2554,6 @@
                 
                 void testTemp.offsetHeight;
                 const testCardHeight = testCard?.offsetHeight || 0;
-                document.body.removeChild(testTemp);
                 
                 if (isDebugSpell && iterations <= 5) {
                     console.log(`  Iteration ${iterations}, splitPoint=${splitPoint}: height=${testCardHeight}px, target=${targetHeightPx}px, fits=${testCardHeight <= targetHeightPx}`);
@@ -2721,8 +2799,8 @@
                         counter.className = 'card-counter';
                         counter.textContent = `${index + 1}/${cardCount}`;
                         counter.style.position = 'absolute';
-                        counter.style.bottom = '4px';
-                        counter.style.right = '8px';
+                        counter.style.bottom = '2px';
+                        counter.style.right = '4px';
                         counter.style.fontSize = '0.5em';
                         counter.style.color = 'rgba(0, 0, 0, 0.4)';
                         counter.style.zIndex = '10';
@@ -2754,8 +2832,8 @@
                     counter.className = 'card-counter';
                     counter.textContent = `${index + 1}/${cardCount}`;
                     counter.style.position = 'absolute';
-                    counter.style.bottom = '4px';
-                    counter.style.right = '8px';
+                    counter.style.bottom = '2px';
+                    counter.style.right = '4px';
                     counter.style.fontSize = '0.5em';
                     counter.style.color = 'rgba(0, 0, 0, 0.4)';
                     counter.style.zIndex = '10';
