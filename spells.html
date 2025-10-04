@@ -266,6 +266,24 @@
             padding-top: 23px;
         }
 
+        .debug-popup {
+            position: fixed;
+            max-width: 80vw;
+            max-height: 80vh;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid red;
+            z-index: 1000;
+            pointer-events: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            padding: 8px;
+            overflow: auto;
+            box-sizing: border-box;
+        }
+
+        .spell-card.overflow-highlight {
+            border: 4px solid red !important;
+        }
+
         .spell-content {
             background: white;
             border: 2px solid black;
@@ -780,6 +798,7 @@
     <script>
         let spells = [];
         let filteredSpells = [];
+        let filtersInitialized = false;
 
         // School colors mapping
         const schoolColors = {
@@ -822,9 +841,8 @@
                     return a.title.localeCompare(b.title);
                 });
                 
-                filteredSpells = [...spells];
+                // Don't set filteredSpells here - let populateFilters() -> filterSpells() handle it
                 populateFilters();
-                displaySpells();
             } catch (error) {
                 console.error('Error loading spells:', error);
                 document.getElementById('spellGrid').innerHTML = '<div class="no-spells">Error loading spells. Please make sure all_spells.csv is available.</div>';
@@ -932,6 +950,9 @@
             
             // Load saved filter selections
             loadAllSettings();
+            
+            // Mark filters as initialized
+            filtersInitialized = true;
             
             // Apply filters after loading saved selections
             filterSpells();
@@ -1048,7 +1069,7 @@
                         document.getElementById('customHeight').value = settings.customHeight;
                         document.getElementById('customSizeInputs').style.display = 'flex';
                     }
-                    updateCardSize(); // Apply the restored card size
+                    updateCardSize(true); // Apply the restored card size, skip display
                 }
                 
                 // Restore paper size settings
@@ -1070,7 +1091,7 @@
                         document.getElementById('customFontScale').value = settings.customFontScale;
                         document.getElementById('customFontSizeInput').style.display = 'block';
                     }
-                    updateFontSize(); // Apply the restored font size
+                    updateFontSize(true); // Apply the restored font size, skip display
                 }
                 
                 // Restore body font size settings
@@ -1080,7 +1101,7 @@
                         document.getElementById('customBodyFontScale').value = settings.customBodyFontScale;
                         document.getElementById('customBodyFontSizeInput').style.display = 'block';
                     }
-                    updateBodyFontSize(); // Apply the restored body font size
+                    updateBodyFontSize(true); // Apply the restored body font size, skip display
                 }
                 
                 // Restore selected spells
@@ -1116,7 +1137,13 @@
                      }
                  }
             } else {
-                // No saved settings - set default state with all levels selected
+                // No saved settings - set default state with all classes and levels selected
+                const classCheckboxes = document.querySelectorAll('#classFilters input:not(#all_classes)');
+                classCheckboxes.forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+                updateClassAllState();
+                
                 const levelCheckboxes = document.querySelectorAll('#levelFilters input:not(#all_levels)');
                 levelCheckboxes.forEach(checkbox => {
                     checkbox.checked = true;
@@ -1211,8 +1238,10 @@
 
         // Filter spells based on selected checkboxes
         function filterSpells() {
-            // Save current filter state
-            saveAllSettings();
+            // Save current filter state (but not during initial load)
+            if (filtersInitialized) {
+                saveAllSettings();
+            }
             
             // Get selected classes and levels (excluding "All" checkboxes)
             const selectedClasses = Array.from(document.querySelectorAll('#classFilters input:checked:not(#all_classes)')).map(cb => cb.value);
@@ -1533,7 +1562,7 @@
         let currentBodyFontSize = bodyFontSizes.normal;
 
         // Update card size
-        function updateCardSize() {
+        function updateCardSize(skipDisplay = false) {
             const select = document.getElementById('cardSizeSelect');
             const customInputs = document.getElementById('customSizeInputs');
             
@@ -1549,8 +1578,12 @@
             
             updateCardStyles();
             updateFontStyles();
-            displaySpells();
-            saveAllSettings();
+            if (!skipDisplay) {
+                displaySpells();
+            }
+            if (!skipDisplay) {
+                saveAllSettings();
+            }
         }
 
         // Update paper size
@@ -1710,7 +1743,7 @@
         }
 
         // Update font size
-        function updateFontSize() {
+        function updateFontSize(skipDisplay = false) {
             const select = document.getElementById('fontSizeSelect');
             const customInput = document.getElementById('customFontSizeInput');
             
@@ -1724,12 +1757,16 @@
             }
             
             updateFontStyles();
-            displaySpells();
-            saveAllSettings();
+            if (!skipDisplay) {
+                displaySpells();
+            }
+            if (!skipDisplay) {
+                saveAllSettings();
+            }
         }
 
         // Update body font size
-        function updateBodyFontSize() {
+        function updateBodyFontSize(skipDisplay = false) {
             const select = document.getElementById('bodyFontSizeSelect');
             const customInput = document.getElementById('customBodyFontSizeInput');
             
@@ -1743,8 +1780,12 @@
             }
             
             updateFontStyles();
-            displaySpells();
-            saveAllSettings();
+            if (!skipDisplay) {
+                displaySpells();
+            }
+            if (!skipDisplay) {
+                saveAllSettings();
+            }
         }
 
         // Update card CSS styles
@@ -1899,8 +1940,8 @@
             const shouldBeTransparent = transparentSidebar !== null ? transparentSidebar : (hasCustomBackground ? true : false);
             
             // Footer padding is consistent regardless of sidebar transparency
-            css += `
-                .spell-footer {
+                css += `
+                    .spell-footer {
                     padding: 6px 8px !important;
                 }
             `;
@@ -1948,11 +1989,16 @@
         }
 
         // Display spells
-        function displaySpells() {
+        async function displaySpells() {
             const paperContainer = document.getElementById('paperContainer');
             
+            // Show progress indicator
+            paperContainer.innerHTML = '<div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;"><div style="font-size: 18px; margin-bottom: 20px;">Generating Spell Cards...</div><div style="width: 300px; height: 20px; background: #e0e0e0; border-radius: 10px; margin: 0 auto;"><div id="progressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #4CAF50; transition: width 0.3s ease; border-radius: 10px;"></div></div></div>';
+            
             if (filteredSpells.length === 0) {
-                paperContainer.innerHTML = '<div class="spell-grid"><div class="no-spells">No spells found matching your criteria.</div></div>';
+                setTimeout(() => {
+                    paperContainer.innerHTML = '<div class="spell-grid"><div class="no-spells">No spells found matching your criteria.</div></div>';
+                }, 100);
             } else {
                 // Sort spells by level first, then alphabetically by name
                 const sortedSpells = [...filteredSpells].sort((a, b) => {
@@ -1969,24 +2015,72 @@
                 const cardsPerRow = Math.floor(availableWidth / currentCardSize.width);
                 const cardsPerCol = Math.floor(availableHeight / currentCardSize.height);
                 const cardsPerPage = cardsPerRow * cardsPerCol;
-                const totalPages = Math.ceil(sortedSpells.length / cardsPerPage);
+                
+                // Generate all cards first to count actual cards (some spells may generate 2 cards)
+                const allCards = [];
+                const totalSpells = sortedSpells.length;
+                
+                for (let i = 0; i < sortedSpells.length; i++) {
+                    const spell = sortedSpells[i];
+                    const cardHTML = createSpellCard(spell);
+                    
+                    // Update progress bar
+                    const progress = Math.round(((i + 1) / totalSpells) * 100);
+                    const progressBar = document.getElementById('progressBar');
+                    if (progressBar) {
+                        progressBar.style.width = progress + '%';
+                    }
+                    
+                    // Count how many cards this spell generated (look for spell-card class)
+                    const cardMatches = cardHTML.match(/class="spell-card"/g);
+                    const cardCount = cardMatches ? cardMatches.length : 1;
+                    
+                    // Split the HTML into individual cards if needed
+                    if (cardCount > 1) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = cardHTML;
+                        const cards = tempDiv.querySelectorAll('.spell-card');
+                        cards.forEach(card => {
+                            allCards.push(card.outerHTML);
+                        });
+                    } else {
+                        allCards.push(cardHTML);
+                    }
+                }
+                
+                const totalPages = Math.ceil(allCards.length / cardsPerPage);
                 
                 let html = '';
                 for (let page = 0; page < totalPages; page++) {
                     const startIndex = page * cardsPerPage;
-                    const endIndex = Math.min(startIndex + cardsPerPage, sortedSpells.length);
-                    const pageSpells = sortedSpells.slice(startIndex, endIndex);
+                    const endIndex = Math.min(startIndex + cardsPerPage, allCards.length);
+                    const pageCards = allCards.slice(startIndex, endIndex);
                     
-                    html += `<div class="spell-grid">${pageSpells.map(spell => createSpellCard(spell)).join('')}</div>`;
+                    html += `<div class="spell-grid">${pageCards.join('')}</div>`;
                 }
                 
                 paperContainer.innerHTML = html;
+                
+                // Attach debug hover event listeners to all cards
+                attachDebugHoverListeners();
             }
+        }
+        
+        // Attach debug hover listeners to all spell cards
+        function attachDebugHoverListeners() {
+            const allCards = document.querySelectorAll('.spell-card[data-unconstrained]');
+            allCards.forEach(card => {
+                card.addEventListener('mouseenter', (e) => {
+                    const unconstrainedHTML = card.getAttribute('data-unconstrained');
+                    showDebugPopup(unconstrainedHTML, e);
+                });
+                card.addEventListener('mouseleave', hideDebugPopup);
+            });
         }
 
 
-        // Create spell card HTML
-        function createSpellCard(spell) {
+        // Generate spell card data (shared between actual and measurement rendering)
+        function generateSpellCardData(spell) {
             const levelText = spell.level === '0' ? '0' : spell.level;
             
             // Check if it's a cantrip and add upgrade text
@@ -1995,45 +2089,74 @@
                 description += '<br><br><span class="cantrip-upgrade">Cantrip Upgrade.</span> The damage increases by 1d6 when you reach levels 5 (2d6), 11 (3d6), and 17 (4d6).';
             }
             
-            // Format duration for concentration spells
+            // Format components 
+            let formattedComponents = spell.components;
+            
+            // Format duration with concentration indicator
             let formattedDuration = spell.duration;
-            if (spell.duration.includes('Concentration, up to')) {
-                // Extract the time part after "up to"
-                const timeMatch = spell.duration.match(/up to (.+)/);
-                if (timeMatch) {
-                    const timeText = timeMatch[1];
-                    formattedDuration = `<span class="concentration-indicator">C</span> ≤ ${timeText}`;
+            if (spell.duration.includes('Concentration')) {
+                const match = spell.duration.match(/Concentration, (up to \d+ \w+)/);
+                if (match) {
+                    formattedDuration = `<span class="concentration-indicator">C</span> ≤ ${match[1].replace('up to ', '').replace(/^(an?|the)\s+/i, '')}`;
+                } else {
+                    formattedDuration = `<span class="concentration-indicator">C</span> ${spell.duration.replace('Concentration, ', '')}`;
                 }
             }
             
-            // Format range to replace "feet" with "ft"
-            const formattedRange = spell.range.replace(/feet/g, 'ft');
-            
             // Format casting time
             let formattedCastingTime = spell.casting_time;
-            // Replace "1 bonus action" with "bonus action"
-            if (formattedCastingTime === '1 bonus action') {
-                formattedCastingTime = 'bonus action';
-            }
-            // Capitalize first letter of each word
+            // Replace "feet" with "ft"
+            formattedCastingTime = formattedCastingTime.replace(/\bfeet\b/g, 'ft');
             
-            // Handle ritual spells
+            // Format range
+            let formattedRange = spell.range;
+            formattedRange = formattedRange.replace(/\bfeet\b/g, 'ft');
+            
+            // Handle ritual spells - add ritual indicator and remove (ritual) from title
             let spellTitle = spell.title;
             let ritualIndicator = '';
             let spellNameClass = 'spell-name';
+            
             if (spellTitle.includes('(ritual)') || spellTitle.includes('(Ritual)')) {
-                spellTitle = spellTitle.replace(' (ritual)', '').replace(' (Ritual)', '');
-                ritualIndicator = '<span class="ritual-indicator"><span>R</span></span>';
+                ritualIndicator = '<div class="ritual-indicator"><span>R</span></div>';
+                spellTitle = spellTitle.replace(/\([Rr]itual\)/g, '').trim();
                 spellNameClass = 'spell-name spell-name-with-ritual';
             }
             
+            return {
+                levelText,
+                description,
+                formattedComponents,
+                formattedDuration,
+                formattedCastingTime,
+                formattedRange,
+                spellTitle,
+                ritualIndicator,
+                spellNameClass
+            };
+        }
+        
+        // Render spell card to HTML
+        function renderSpellCard(spell, cardData, styleOverrides = {}) {
+            const {
+                levelText,
+                description,
+                formattedComponents,
+                formattedDuration,
+                formattedCastingTime,
+                formattedRange,
+                spellTitle,
+                ritualIndicator,
+                spellNameClass
+            } = cardData;
+            
             return `
-                <div class="spell-card">
-                    <div class="${spellNameClass}">${ritualIndicator}<span class="spell-title-text">${spellTitle}</span></div>
-                    <div class="spell-level-hexagon">
+                <div class="spell-card" style="${styleOverrides.cardStyle || ''}">
+                    <div class="${spellNameClass}" style="${styleOverrides.nameStyle || ''}">${ritualIndicator}<span class="spell-title-text">${spellTitle}</span></div>
+                    <div class="spell-level-hexagon" style="${styleOverrides.hexagonStyle || ''}">
                         <div class="spell-level-hexagon-inner">${levelText}</div>
                     </div>
-                    <div class="spell-content">
+                    <div class="spell-content" style="${styleOverrides.contentStyle || ''}">
                         <div class="spell-header">
                         </div>
                         <div class="spell-header-bar">
@@ -2043,7 +2166,7 @@
                             </div>
                             <div class="spell-header-column">
                                 <div class="spell-header-label">COMPONENTS</div>
-                                <div class="spell-header-value">${spell.components}</div>
+                                <div class="spell-header-value">${formattedComponents}</div>
                             </div>
                             <div class="spell-header-column">
                                 <div class="spell-header-label">DURATION</div>
@@ -2054,7 +2177,7 @@
                                 <div class="spell-header-value">${formattedCastingTime}</div>
                             </div>
                         </div>
-                        <div class="spell-body">
+                        <div class="spell-body" style="${styleOverrides.bodyStyle || 'position: relative;'}">
                             <div class="spell-description">
                                 <div class="spell-description-content">
                                     ${spell.material_component ? `<em>Material Component:</em> ${spell.material_component}<br/><br/>` : ''}${description}
@@ -2062,12 +2185,147 @@
                             </div>
                         </div>
                     </div>
-                    <div class="spell-footer">
+                    <div class="spell-footer" style="${styleOverrides.footerStyle || ''}">
                         <div class="spell-school">${spell.school_of_magic}</div>
                         <div class="spell-classes">${spell.classes}</div>
                     </div>
                 </div>
             `;
+        }
+        
+        // Create spell card HTML with overflow detection
+        function createSpellCard(spell) {
+            // Generate card data
+            const cardData = generateSpellCardData(spell);
+            
+            // First, render the card normally
+            const normalCardHTML = renderSpellCard(spell, cardData);
+            
+            // Create temporary containers to measure both versions
+            const constrainedTemp = document.createElement('div');
+            constrainedTemp.style.position = 'absolute';
+            constrainedTemp.style.visibility = 'hidden';
+            constrainedTemp.style.top = '-9999px';
+            constrainedTemp.style.left = '-9999px';
+            constrainedTemp.innerHTML = normalCardHTML;
+            document.body.appendChild(constrainedTemp);
+            
+            // Create unconstrained version by cloning the constrained one
+            const unconstrainedTemp = document.createElement('div');
+            unconstrainedTemp.style.position = 'absolute';
+            unconstrainedTemp.style.visibility = 'hidden';
+            unconstrainedTemp.style.top = '-9999px';
+            unconstrainedTemp.style.left = '-9999px';
+            unconstrainedTemp.innerHTML = normalCardHTML;
+            document.body.appendChild(unconstrainedTemp);
+            
+            // Force unconstrained card to actually be unconstrained by setting all heights to auto with !important
+            const unconstrainedCard = unconstrainedTemp.querySelector('.spell-card');
+            if (unconstrainedCard) {
+                unconstrainedCard.style.setProperty('height', 'auto', 'important');
+                unconstrainedCard.style.setProperty('max-height', 'none', 'important');
+            }
+            const unconstrainedContent = unconstrainedTemp.querySelector('.spell-content');
+            if (unconstrainedContent) {
+                unconstrainedContent.style.setProperty('height', 'auto', 'important');
+                unconstrainedContent.style.setProperty('flex', '0 0 auto', 'important');
+            }
+            const unconstrainedBodyDiv = unconstrainedTemp.querySelector('.spell-body');
+            if (unconstrainedBodyDiv) {
+                unconstrainedBodyDiv.style.setProperty('height', 'auto', 'important');
+                unconstrainedBodyDiv.style.setProperty('flex', '0 0 auto', 'important');
+            }
+            const unconstrainedDesc = unconstrainedTemp.querySelector('.spell-description');
+            if (unconstrainedDesc) {
+                unconstrainedDesc.style.setProperty('height', 'auto', 'important');
+                unconstrainedDesc.style.setProperty('flex', '0 0 auto', 'important');
+            }
+            
+            // Force a reflow to ensure the browser recalculates the layout
+            void unconstrainedTemp.offsetHeight;
+            
+            // Compare the overall card heights to detect overflow
+            const constrainedCardHeight = constrainedTemp.querySelector('.spell-card')?.offsetHeight || 0;
+            const unconstrainedCardHeight = unconstrainedCard?.offsetHeight || 0;
+            
+            // Card has overflow if the unconstrained version is taller
+            const hasOverflow = unconstrainedCardHeight > constrainedCardHeight;
+            
+            // Debug logging for specific spells
+            if (spell.title === 'Prestidigitation' || hasOverflow) {
+                console.log(`${spell.title}: card constrained=${constrainedCardHeight}px, card unconstrained=${unconstrainedCardHeight}px, overflow=${hasOverflow}`);
+            }
+            
+            // Save the unconstrained HTML for the hover popup
+            const unconstrainedHTML = unconstrainedCard ? unconstrainedCard.outerHTML : normalCardHTML;
+            
+            // Clean up temporary elements
+            document.body.removeChild(constrainedTemp);
+            document.body.removeChild(unconstrainedTemp);
+            
+            // Create final card with overflow styling and data attribute
+            const finalDiv = document.createElement('div');
+            finalDiv.innerHTML = normalCardHTML;
+            const cardElement = finalDiv.querySelector('.spell-card');
+            if (cardElement) {
+                cardElement.setAttribute('data-unconstrained', unconstrainedHTML);
+                if (hasOverflow) {
+                    cardElement.style.border = '3px solid red';
+                }
+            }
+            
+            return finalDiv.innerHTML;
+        }
+
+        // Debug popup functionality
+        let debugPopup = null;
+        let mouseMoveHandler = null;
+
+        function showDebugPopup(unconstrainedHTML, event) {
+            // Remove any existing popup
+            hideDebugPopup();
+            
+            // Create popup div
+            debugPopup = document.createElement('div');
+            debugPopup.style.position = 'fixed';
+            debugPopup.style.zIndex = '99999';
+            debugPopup.style.pointerEvents = 'none';
+            debugPopup.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+            debugPopup.style.border = '3px solid red';
+            debugPopup.style.padding = '0';
+            debugPopup.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.3)';
+            debugPopup.innerHTML = unconstrainedHTML;
+            
+            document.body.appendChild(debugPopup);
+            
+            // Position popup centered on mouse
+            const updatePosition = (e) => {
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                const popupWidth = debugPopup.offsetWidth;
+                const popupHeight = debugPopup.offsetHeight;
+                
+                debugPopup.style.left = `${mouseX - popupWidth / 2}px`;
+                debugPopup.style.top = `${mouseY - popupHeight / 2}px`;
+            };
+            
+            // Initial position
+            updatePosition(event);
+            
+            // Add mousemove listener to follow cursor
+            mouseMoveHandler = updatePosition;
+            document.addEventListener('mousemove', mouseMoveHandler);
+        }
+
+        function hideDebugPopup() {
+            if (debugPopup) {
+                debugPopup.remove();
+                debugPopup = null;
+            }
+            if (mouseMoveHandler) {
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                mouseMoveHandler = null;
+            }
         }
 
         // Get ordinal suffix for numbers
@@ -2105,7 +2363,6 @@
             updatePaletteStyles();
             updateFontStyles();
         }
-
         // Load spells when page loads
         window.addEventListener('load', () => {
             initializeSizeSettings();
