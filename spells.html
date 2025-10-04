@@ -2252,7 +2252,10 @@
             
             // Simple approach: start with all content, remove one word at a time until it fits
             const isDebugSpell = spell.title === 'Control Flames' || spell.title === 'Snare' || spell.title === 'Wish';
-            if (isDebugSpell) console.log(`Finding split point for ${spell.title}, fullContent length: ${fullContent.length}`);
+            if (isDebugSpell) {
+                console.log(`Finding split point for ${spell.title} (card ${cardNumber}, isContinuation=${isContinuation}), fullContent length: ${fullContent.length}`);
+                console.log(`Content starts with: "${fullContent.substring(0, 100)}..."`);
+            }
             
             const targetHeightPx = currentCardSize.height * 96;
             let splitPoint = fullContent.length;
@@ -2271,7 +2274,7 @@
                 };
                 
                 const testGeneratedData = generateSpellCardData(testSpell);
-                const testHTML = renderSpellCard(testSpell, testGeneratedData);
+                const testHTML = renderSpellCard(testSpell, testGeneratedData, {}, isContinuation);
                 
                 const testTemp = document.createElement('div');
                 testTemp.style.position = 'absolute';
