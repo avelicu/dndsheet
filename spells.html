@@ -266,23 +266,6 @@
             padding-top: 23px;
         }
 
-        .debug-popup {
-            position: fixed;
-            max-width: 80vw;
-            max-height: 80vh;
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid red;
-            z-index: 1000;
-            pointer-events: none;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            padding: 8px;
-            overflow: auto;
-            box-sizing: border-box;
-        }
-
-        .spell-card.overflow-highlight {
-            border: 4px solid red !important;
-        }
 
         .spell-content {
             background: white;
@@ -326,7 +309,7 @@
             background: white;
             border: 2px solid black;
             border-radius: 16px;
-            padding: 4px 12px;
+            padding: 4px 24px;
             position: absolute;
             top: 8px;
             left: 8px;
@@ -339,15 +322,16 @@
         }
 
         .spell-name-with-ritual {
-            justify-content: flex-start;
+            justify-content: center;
         }
 
         .spell-name-with-ritual .spell-title-text {
-            flex: 1;
             text-align: center;
         }
 
         .ritual-indicator {
+            position: absolute;
+            left: 8px;
             display: inline-flex;
             width: 12px;
             height: 12px;
@@ -357,7 +341,6 @@
             font-weight: bold;
             text-align: center;
             line-height: 12px;
-            margin-right: 4px;
             transform: rotate(45deg);
             border-radius: 1px;
             align-items: center;
@@ -2061,33 +2044,17 @@
                 
                 paperContainer.innerHTML = html;
                 
-                // Attach debug hover event listeners to all cards
-                attachDebugHoverListeners();
             }
         }
         
-        // Attach debug hover listeners to all spell cards
-        function attachDebugHoverListeners() {
-            const allCards = document.querySelectorAll('.spell-card[data-unconstrained]');
-            allCards.forEach(card => {
-                card.addEventListener('mouseenter', (e) => {
-                    const unconstrainedHTML = card.getAttribute('data-unconstrained');
-                    showDebugPopup(unconstrainedHTML, e);
-                });
-                card.addEventListener('mouseleave', hideDebugPopup);
-            });
-        }
 
 
         // Generate spell card data (shared between actual and measurement rendering)
         function generateSpellCardData(spell) {
             const levelText = spell.level === '0' ? '0' : spell.level;
             
-            // Check if it's a cantrip and add upgrade text
+            // Use description exactly as provided
             let description = spell.description;
-            if (spell.level === '0') {
-                description += '<br><br><span class="cantrip-upgrade">Cantrip Upgrade.</span> The damage increases by 1d6 when you reach levels 5 (2d6), 11 (3d6), and 17 (4d6).';
-            }
             
             // Format components 
             let formattedComponents = spell.components;
@@ -2262,71 +2229,50 @@
             // Card has overflow if the unconstrained version is taller
             const hasOverflow = unconstrainedCardHeight > constrainedCardHeight;
             
-            // Debug logging for specific spells
-            if (spell.title === 'Prestidigitation' || hasOverflow) {
-                console.log(`${spell.title}: card constrained=${constrainedCardHeight}px, card unconstrained=${unconstrainedCardHeight}px, overflow=${hasOverflow}`);
-            }
-            
-            // Save the unconstrained HTML for the hover popup
-            const unconstrainedHTML = unconstrainedCard ? unconstrainedCard.outerHTML : normalCardHTML;
-            
             // Clean up temporary elements
             document.body.removeChild(constrainedTemp);
             document.body.removeChild(unconstrainedTemp);
             
             // If there's overflow, split the card into two
             if (hasOverflow) {
-                return splitCardContent(spell, cardData, normalCardHTML, unconstrainedHTML);
+                return splitCardContent(spell, cardData, normalCardHTML);
             }
             
-            // Create final card with data attribute for hover popup
-            const finalDiv = document.createElement('div');
-            finalDiv.innerHTML = normalCardHTML;
-            const cardElement = finalDiv.querySelector('.spell-card');
-            if (cardElement) {
-                cardElement.setAttribute('data-unconstrained', unconstrainedHTML);
-            }
-            
-            return finalDiv.innerHTML;
+            return normalCardHTML;
         }
 
         // Split overflowing card content into two cards
-        function splitCardContent(spell, cardData, normalCardHTML, unconstrainedHTML) {
-            // Get the full description text WITHOUT cantrip upgrade text
+        function splitCardContent(spell, cardData, normalCardHTML) {
+            // Get the full description text exactly as provided
             const baseDescription = spell.description;
-            const cantripUpgrade = spell.level === '0' ? '<br><br><span class="cantrip-upgrade">Cantrip Upgrade.</span> The damage increases by 1d6 when you reach levels 5 (2d6), 11 (3d6), and 17 (4d6).' : '';
             
             // Add material component if present
             const materialPrefix = spell.material_component ? `<em>Material Component:</em> ${spell.material_component}<br/><br/>` : '';
             const fullContent = materialPrefix + baseDescription;
             
-            // Binary search to find the optimal split point
-            let left = 0;
-            let right = fullContent.length;
-            let bestSplit = Math.floor(fullContent.length / 2);
+            // Simple approach: start with all content, remove one word at a time until it fits
+            const isDebugSpell = spell.title === 'Control Flames' || spell.title === 'Snare' || spell.title === 'Wish';
+            if (isDebugSpell) console.log(`Finding split point for ${spell.title}, fullContent length: ${fullContent.length}`);
             
-            const isSnare = spell.title === 'Snare';
-            if (isSnare) console.log(`Starting binary search for ${spell.title}, fullContent length: ${fullContent.length}`);
+            const targetHeightPx = currentCardSize.height * 96;
+            let splitPoint = fullContent.length;
+            let iterations = 0;
             
-            while (left < right - 10) { // Stop when we're within 10 characters
-                const mid = Math.floor((left + right) / 2);
+            // Start from the end and work backwards, removing one word at a time
+            while (splitPoint > 0) {
+                iterations++;
                 
-                // Create a test card with content up to 'mid'
-                const testContent = fullContent.substring(0, mid);
-                
-                // Create modified spell object with truncated description
-                // Important: set material_component to empty since it's already in fullContent
+                // Test if current content fits
+                const testContent = fullContent.substring(0, splitPoint);
                 const testSpell = { 
                     ...spell,
                     description: testContent,
-                    material_component: '' // Already included in testContent/fullContent
+                    material_component: ''
                 };
                 
-                // Generate the test card data
                 const testGeneratedData = generateSpellCardData(testSpell);
                 const testHTML = renderSpellCard(testSpell, testGeneratedData);
                 
-                // Measure if it fits
                 const testTemp = document.createElement('div');
                 testTemp.style.position = 'absolute';
                 testTemp.style.visibility = 'hidden';
@@ -2334,8 +2280,6 @@
                 testTemp.innerHTML = testHTML;
                 document.body.appendChild(testTemp);
                 
-                // Don't measure the card height - measure if content is overflowing
-                // We need to force the card to expand and see its natural height
                 const testCard = testTemp.querySelector('.spell-card');
                 if (testCard) {
                     testCard.style.setProperty('height', 'auto', 'important');
@@ -2349,77 +2293,121 @@
                     testBody.style.setProperty('height', 'auto', 'important');
                 }
                 
-                // Force reflow
                 void testTemp.offsetHeight;
-                
                 const testCardHeight = testCard?.offsetHeight || 0;
-                const targetHeightPx = currentCardSize.height * 96; // Use the actual card size setting
-                
-                if (isSnare) {
-                    console.log(`  mid=${mid}, testCardHeight=${testCardHeight}px, targetHeight=${targetHeightPx}px, fits=${testCardHeight <= targetHeightPx}`);
-                }
-                
                 document.body.removeChild(testTemp);
                 
+                if (isDebugSpell && iterations <= 5) {
+                    console.log(`  Iteration ${iterations}, splitPoint=${splitPoint}: height=${testCardHeight}px, target=${targetHeightPx}px, fits=${testCardHeight <= targetHeightPx}`);
+                }
+                
                 if (testCardHeight <= targetHeightPx) {
-                    // Content fits, try more
-                    bestSplit = mid;
-                    left = mid;
+                    // It fits! We're done
+                    if (isDebugSpell) {
+                        console.log(`Found split point after ${iterations} iterations: ${splitPoint}`);
+                    }
+                    break;
+                }
+                
+                // Doesn't fit, move back one word
+                let newSplitPoint = splitPoint;
+                
+                // First, skip any trailing spaces at the current position
+                while (newSplitPoint > 0 && fullContent[newSplitPoint - 1] === ' ') {
+                    newSplitPoint--;
+                }
+                
+                // Now skip backwards through the previous word to find the space before it
+                while (newSplitPoint > 0 && fullContent[newSplitPoint - 1] !== ' ') {
+                    newSplitPoint--;
+                }
+                
+                if (isDebugSpell && iterations <= 10) {
+                    console.log(`  Moving back: splitPoint=${splitPoint} -> newSplitPoint=${newSplitPoint}`);
+                    console.log(`    Text before split: "...${fullContent.substring(Math.max(0, newSplitPoint - 20), newSplitPoint)}"`);
+                    console.log(`    Text after split: "${fullContent.substring(newSplitPoint, Math.min(fullContent.length, newSplitPoint + 20))}..."`);
+                }
+                
+                // Safety check: ensure we're making progress
+                if (newSplitPoint >= splitPoint || newSplitPoint <= 0) {
+                    console.error(`Not making progress! splitPoint=${splitPoint}, newSplitPoint=${newSplitPoint}`);
+                    splitPoint = Math.floor(splitPoint / 2);
                 } else {
-                    // Content doesn't fit, try less
-                    right = mid;
+                    splitPoint = newSplitPoint;
                 }
             }
             
-            if (isSnare) {
-                console.log(`Binary search complete. bestSplit=${bestSplit}, text at split: "${fullContent.substring(bestSplit - 20, bestSplit + 20)}"`);
+            if (isDebugSpell) {
+                console.log(`Final split point: ${splitPoint}, text at split: "${fullContent.substring(Math.max(0, splitPoint - 30), Math.min(fullContent.length, splitPoint + 30))}"`);
+                console.log(`Character at splitPoint: "${fullContent[splitPoint]}" (code: ${fullContent.charCodeAt(splitPoint)})`);
             }
             
-            // Split at the best point, ensuring we're outside of HTML tags
-            let splitPoint = bestSplit;
-            
-            // Check if we're inside a tag - if so, move to just after the tag
-            let insideTag = false;
-            for (let i = splitPoint - 1; i >= 0; i--) {
-                if (fullContent[i] === '>') {
-                    insideTag = false;
-                    break;
-                } else if (fullContent[i] === '<') {
-                    insideTag = true;
-                    break;
+            // Ensure we're at a proper word boundary
+            // If we're not at a space, move forward to the next space
+            if (splitPoint < fullContent.length && fullContent[splitPoint] !== ' ') {
+                let forwardPoint = splitPoint;
+                while (forwardPoint < fullContent.length && fullContent[forwardPoint] !== ' ' && fullContent[forwardPoint] !== '<') {
+                    forwardPoint++;
+                }
+                
+                // Test if including this word still fits
+                const testContent = fullContent.substring(0, forwardPoint);
+                const testSpell = { 
+                    ...spell,
+                    description: testContent,
+                    material_component: ''
+                };
+                const testGeneratedData = generateSpellCardData(testSpell);
+                const testHTML = renderSpellCard(testSpell, testGeneratedData);
+                
+                const testTemp = document.createElement('div');
+                testTemp.style.position = 'absolute';
+                testTemp.style.visibility = 'hidden';
+                testTemp.style.top = '-9999px';
+                testTemp.innerHTML = testHTML;
+                document.body.appendChild(testTemp);
+                
+                const testCard = testTemp.querySelector('.spell-card');
+                if (testCard) {
+                    testCard.style.setProperty('height', 'auto', 'important');
+                }
+                const testContentDiv = testTemp.querySelector('.spell-content');
+                if (testContentDiv) {
+                    testContentDiv.style.setProperty('height', 'auto', 'important');
+                }
+                const testBody = testTemp.querySelector('.spell-body');
+                if (testBody) {
+                    testBody.style.setProperty('height', 'auto', 'important');
+                }
+                
+                void testTemp.offsetHeight;
+                const testCardHeight = testCard?.offsetHeight || 0;
+                document.body.removeChild(testTemp);
+                
+                if (isDebugSpell) {
+                    console.log(`Testing forward to complete word at ${forwardPoint}: height=${testCardHeight}px, fits=${testCardHeight <= targetHeightPx}`);
+                }
+                
+                if (testCardHeight <= targetHeightPx) {
+                    splitPoint = forwardPoint;
+                    if (isDebugSpell) {
+                        console.log(`Extended to complete word at ${splitPoint}`);
+                    }
                 }
             }
             
-            if (insideTag) {
-                // Move forward to the end of the tag
-                while (splitPoint < fullContent.length && fullContent[splitPoint] !== '>') {
-                    splitPoint++;
-                }
-                if (splitPoint < fullContent.length) splitPoint++; // Move past the '>'
-            }
-            
-            // Now ensure we're at a word boundary - always move backwards to avoid overflow
-            if (splitPoint < fullContent.length && fullContent[splitPoint] !== ' ' && fullContent[splitPoint] !== '<') {
-                // We're in the middle of a word, go backwards to the start of the word
-                while (splitPoint > 0 && 
-                       fullContent[splitPoint - 1] !== ' ' && 
-                       fullContent[splitPoint - 1] !== '<' &&
-                       fullContent[splitPoint - 1] !== '>') {
-                    splitPoint--;
-                }
-            }
-            
-            if (isSnare) {
-                console.log(`After adjustment, splitPoint=${splitPoint}, text at split: "${fullContent.substring(splitPoint - 20, splitPoint + 20)}"`);
+            if (isDebugSpell) {
+                console.log(`After word boundary check, split point: ${splitPoint}`);
             }
             
             // Create first card with partial content
             let firstContent = fullContent.substring(0, splitPoint).trim();
             let secondContent = fullContent.substring(splitPoint).trim();
             
-            if (isSnare) {
-                console.log(`First card ends with: "...${firstContent.substring(firstContent.length - 50)}"`);
-                console.log(`Second card starts with: "${secondContent.substring(0, 50)}..."`);
+            if (isDebugSpell) {
+                console.log(`First card ends with: "...${firstContent.substring(firstContent.length - 60)}"`);
+                console.log(`Second card starts with: "${secondContent.substring(0, 60)}..."`);
+                console.log(`First content length: ${firstContent.length}, Second content length: ${secondContent.length}`);
             }
             
             // Close any unclosed tags in first content
@@ -2465,91 +2453,26 @@
             firstSpell.description = firstContent;
             firstSpell.material_component = ''; // Already included
             
-            // We need to temporarily set level to non-cantrip to prevent generateSpellCardData from adding cantrip text
-            const originalLevel = firstSpell.level;
-            firstSpell.level = originalLevel === '0' ? '-1' : originalLevel;
             const firstCardData = generateSpellCardData(firstSpell);
-            firstSpell.level = originalLevel; // Restore
-            
-            // Fix the levelText in cardData to show the correct level
-            firstCardData.levelText = originalLevel === '0' ? '0' : originalLevel;
-            
             const firstCardHTML = renderSpellCard(firstSpell, firstCardData);
             
-            // Create second card with remaining content + cantrip upgrade if applicable
+            // Create second card with remaining content
             const secondSpell = { ...spell };
-            secondSpell.title = spell.title; // Keep original title without "(cont.)"
-            secondSpell.description = secondContent + cantripUpgrade;
+            secondSpell.title = spell.title;
+            secondSpell.description = secondContent;
             secondSpell.material_component = '';
             
-            // Prevent cantrip text from being added again
-            secondSpell.level = originalLevel === '0' ? '-1' : originalLevel;
             const secondCardData = generateSpellCardData(secondSpell);
-            secondSpell.level = originalLevel; // Restore for display
             
             // Render second card as a continuation card (no hexagon, no header bar, extra padding)
             const secondCardHTML = renderSpellCard(secondSpell, secondCardData, {}, true);
             
-            // Add data attributes for hover popup
-            const finalDiv = document.createElement('div');
-            finalDiv.innerHTML = firstCardHTML + secondCardHTML;
-            
-            const cards = finalDiv.querySelectorAll('.spell-card');
-            if (cards[0]) cards[0].setAttribute('data-unconstrained', unconstrainedHTML);
-            if (cards[1]) cards[1].setAttribute('data-unconstrained', unconstrainedHTML);
-            
-            return finalDiv.innerHTML;
-        }
-
-        // Debug popup functionality
-        let debugPopup = null;
-        let mouseMoveHandler = null;
-
-        function showDebugPopup(unconstrainedHTML, event) {
-            // Remove any existing popup
-            hideDebugPopup();
-            
-            // Create popup div
-            debugPopup = document.createElement('div');
-            debugPopup.style.position = 'fixed';
-            debugPopup.style.zIndex = '99999';
-            debugPopup.style.pointerEvents = 'none';
-            debugPopup.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-            debugPopup.style.border = '3px solid red';
-            debugPopup.style.padding = '0';
-            debugPopup.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.3)';
-            debugPopup.innerHTML = unconstrainedHTML;
-            
-            document.body.appendChild(debugPopup);
-            
-            // Position popup centered on mouse
-            const updatePosition = (e) => {
-                const mouseX = e.clientX;
-                const mouseY = e.clientY;
-                const popupWidth = debugPopup.offsetWidth;
-                const popupHeight = debugPopup.offsetHeight;
-                
-                debugPopup.style.left = `${mouseX - popupWidth / 2}px`;
-                debugPopup.style.top = `${mouseY - popupHeight / 2}px`;
-            };
-            
-            // Initial position
-            updatePosition(event);
-            
-            // Add mousemove listener to follow cursor
-            mouseMoveHandler = updatePosition;
-            document.addEventListener('mousemove', mouseMoveHandler);
-        }
-
-        function hideDebugPopup() {
-            if (debugPopup) {
-                debugPopup.remove();
-                debugPopup = null;
+            if (isDebugSpell) {
+                console.log(`Second spell description length: ${secondSpell.description.length}`);
+                console.log(`Second spell description: "${secondSpell.description}"`);
             }
-            if (mouseMoveHandler) {
-                document.removeEventListener('mousemove', mouseMoveHandler);
-                mouseMoveHandler = null;
-            }
+            
+            return firstCardHTML + secondCardHTML;
         }
 
         // Get ordinal suffix for numbers
@@ -2595,4 +2518,5 @@
     </script>
 </body>
 </html>
+
 
