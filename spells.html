@@ -2168,6 +2168,33 @@
             // Then handle standalone dice expressions
             description = description.replace(/\b(\d*d\d+(?:\+\d+)?)\b/g, '<strong>$1</strong>');
             
+            // Bold saving throw expressions
+            description = description.replace(/\b(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)\s+saving\s+throw\b/gi, '<strong>$1 saving throw</strong>');
+            
+            // Bold and color standalone damage types (not already processed with dice)
+            description = description.replace(/\b(fire|cold|lightning|thunder|acid|poison|necrotic|radiant|psychic|force|bludgeoning|piercing|slashing)\s+damage\b/gi, 
+                (match, damageType) => {
+                    const color = damageTypes[damageType.toLowerCase()] || '#000000';
+                    return `<strong style="color: ${color};">${damageType} damage</strong>`;
+                });
+            
+            // Bold conditions
+            description = description.replace(/\b(blinded|charmed|deafened|frightened|grappled|incapacitated|invisible|paralyzed|petrified|poisoned|prone|restrained|stunned|unconscious|exhausted|confused|dominated|dazed|staggered)\b/gi, '<strong>$1</strong>');
+            
+            // Bold range expressions (distance part only)
+            description = description.replace(/\b(\d+(?:\.\d+)?)\s+(feet|ft|miles|mi)\b/gi, '<strong>$1 $2</strong>');
+            
+            // Format material component gold amounts
+            let formattedMaterialComponent = spell.material_component;
+            if (formattedMaterialComponent) {
+                // Bold and color gold amounts (e.g., "50 gp", "100 gold pieces", "25 gold")
+                formattedMaterialComponent = formattedMaterialComponent.replace(/\b(\d+(?:,\d{3})*(?:\.\d+)?)\s*(gp|gold\s+pieces?|gold)\b/gi, 
+                    '<strong style="color: #B8860B;">$1 $2</strong>');
+                
+                // Bold "which the spell consumes" if present
+                formattedMaterialComponent = formattedMaterialComponent.replace(/\b(which the spell consumes)\b/gi, '<strong>$1</strong>');
+            }
+            
             // Format components 
             let formattedComponents = spell.components;
             
@@ -2211,7 +2238,8 @@
                 formattedRange,
                 spellTitle,
                 ritualIndicator,
-                spellNameClass
+                spellNameClass,
+                formattedMaterialComponent
             };
         }
         
@@ -2226,7 +2254,8 @@
                 formattedRange,
                 spellTitle,
                 ritualIndicator,
-                spellNameClass
+                spellNameClass,
+                formattedMaterialComponent
             } = cardData;
             
             // Build the header bar HTML only if not a continuation card
@@ -2267,7 +2296,7 @@
                         <div class="spell-body" style="${styleOverrides.bodyStyle || bodyPadding}">
                             <div class="spell-description">
                                 <div class="spell-description-content">
-                                    ${spell.material_component ? `<em>Material Component:</em> ${spell.material_component}<br/><br/>` : ''}${description}
+                                    ${formattedMaterialComponent ? `<em>Material Component:</em> ${formattedMaterialComponent}<br/><br/>` : ''}${description}
                                 </div>
                             </div>
                         </div>
@@ -2536,7 +2565,7 @@
             const baseDescription = spell.description;
             
             // Add material component if present
-            const materialPrefix = spell.material_component ? `<em>Material Component:</em> ${spell.material_component}<br/><br/>` : '';
+            const materialPrefix = cardData.formattedMaterialComponent ? `<em>Material Component:</em> ${cardData.formattedMaterialComponent}<br/><br/>` : '';
             const fullContent = materialPrefix + baseDescription;
             
             // Simple approach: start with all content, remove one word at a time until it fits
