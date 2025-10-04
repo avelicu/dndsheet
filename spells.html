@@ -768,6 +768,14 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="filter-group">
+                <h3>Debug Options</h3>
+                <div class="filter-option" style="padding: 10px;">
+                    <input type="checkbox" id="showOverflowOnly" onchange="filterSpells()">
+                    <label for="showOverflowOnly" style="color: #2c1810; font-family: 'Cormorant Garamond', serif;">Show only overflow spells</label>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1288,6 +1296,66 @@
             });
             
             filteredSpells = uniqueSpells;
+            
+            // Check if we should filter for overflow spells only
+            const showOverflowOnly = document.getElementById('showOverflowOnly')?.checked;
+            if (showOverflowOnly) {
+                // Pre-render all spells to detect overflow if not already done
+                filteredSpells.forEach(spell => {
+                    if (spell._hasOverflow === undefined) {
+                        // Generate the card to detect overflow (but don't display it)
+                        const cardData = generateSpellCardData(spell);
+                        const cardHTML = renderSpellCard(spell, cardData);
+                        
+                        // Check for overflow
+                        const constrainedTemp = document.createElement('div');
+                        constrainedTemp.style.position = 'absolute';
+                        constrainedTemp.style.visibility = 'hidden';
+                        constrainedTemp.style.top = '-9999px';
+                        constrainedTemp.innerHTML = cardHTML;
+                        document.body.appendChild(constrainedTemp);
+                        
+                        const unconstrainedTemp = document.createElement('div');
+                        unconstrainedTemp.style.position = 'absolute';
+                        unconstrainedTemp.style.visibility = 'hidden';
+                        unconstrainedTemp.style.top = '-9999px';
+                        unconstrainedTemp.innerHTML = cardHTML;
+                        document.body.appendChild(unconstrainedTemp);
+                        
+                        const unconstrainedCard = unconstrainedTemp.querySelector('.spell-card');
+                        if (unconstrainedCard) {
+                            unconstrainedCard.style.setProperty('height', 'auto', 'important');
+                        }
+                        const unconstrainedContent = unconstrainedTemp.querySelector('.spell-content');
+                        if (unconstrainedContent) {
+                            unconstrainedContent.style.setProperty('height', 'auto', 'important');
+                            unconstrainedContent.style.setProperty('flex', '0 0 auto', 'important');
+                        }
+                        const unconstrainedBody = unconstrainedTemp.querySelector('.spell-body');
+                        if (unconstrainedBody) {
+                            unconstrainedBody.style.setProperty('height', 'auto', 'important');
+                            unconstrainedBody.style.setProperty('flex', '0 0 auto', 'important');
+                        }
+                        const unconstrainedDesc = unconstrainedTemp.querySelector('.spell-description');
+                        if (unconstrainedDesc) {
+                            unconstrainedDesc.style.setProperty('height', 'auto', 'important');
+                            unconstrainedDesc.style.setProperty('flex', '0 0 auto', 'important');
+                        }
+                        
+                        void unconstrainedTemp.offsetHeight;
+                        
+                        const constrainedHeight = constrainedTemp.querySelector('.spell-card')?.offsetHeight || 0;
+                        const unconstrainedHeight = unconstrainedCard?.offsetHeight || 0;
+                        spell._hasOverflow = unconstrainedHeight > constrainedHeight;
+                        
+                        document.body.removeChild(constrainedTemp);
+                        document.body.removeChild(unconstrainedTemp);
+                    }
+                });
+                
+                // Filter to only show spells that overflow
+                filteredSpells = filteredSpells.filter(spell => spell._hasOverflow);
+            }
             
             // Update the additional spells list to remove covered spells
             populateSpellDropdown();
@@ -2229,14 +2297,123 @@
             // Card has overflow if the unconstrained version is taller
             const hasOverflow = unconstrainedCardHeight > constrainedCardHeight;
             
+            const isDebugSpell = spell.title === 'Summon Fey';
+            if (isDebugSpell) {
+                console.log(`${spell.title}: constrained=${constrainedCardHeight}px, unconstrained=${unconstrainedCardHeight}px, hasOverflow=${hasOverflow}`);
+            }
+            
+            // If there's overflow, try reducing font size first
+            if (hasOverflow) {
+                let bestFontSize = null;
+                
+                // Try font sizes from 100% down to 80% in 2% increments
+                for (let fontSizePercent = 100; fontSizePercent >= 80; fontSizePercent -= 2) {
+                    const fontSizeMultiplier = fontSizePercent / 100;
+                    
+                    const smallerFontTemp = document.createElement('div');
+                    smallerFontTemp.style.position = 'absolute';
+                    smallerFontTemp.style.visibility = 'hidden';
+                    smallerFontTemp.style.top = '-9999px';
+                    smallerFontTemp.style.left = '-9999px';
+                    smallerFontTemp.innerHTML = normalCardHTML;
+                    document.body.appendChild(smallerFontTemp);
+                    
+                    // Apply the font size multiplier to the description content
+                    const smallerDescContent = smallerFontTemp.querySelector('.spell-description-content');
+                    if (smallerDescContent) {
+                        smallerDescContent.style.fontSize = `${fontSizeMultiplier}em`;
+                    }
+                    
+                    // Force unconstrained to check if smaller font fits
+                    const smallerCard = smallerFontTemp.querySelector('.spell-card');
+                    if (smallerCard) {
+                        smallerCard.style.setProperty('height', 'auto', 'important');
+                    }
+                    const smallerContent = smallerFontTemp.querySelector('.spell-content');
+                    if (smallerContent) {
+                        smallerContent.style.setProperty('height', 'auto', 'important');
+                        smallerContent.style.setProperty('flex', '0 0 auto', 'important');
+                    }
+                    const smallerBody = smallerFontTemp.querySelector('.spell-body');
+                    if (smallerBody) {
+                        smallerBody.style.setProperty('height', 'auto', 'important');
+                        smallerBody.style.setProperty('flex', '0 0 auto', 'important');
+                    }
+                    const smallerDescDiv = smallerFontTemp.querySelector('.spell-description');
+                    if (smallerDescDiv) {
+                        smallerDescDiv.style.setProperty('height', 'auto', 'important');
+                        smallerDescDiv.style.setProperty('flex', '0 0 auto', 'important');
+                    }
+                    
+                    void smallerFontTemp.offsetHeight;
+                    
+                    const smallerCardHeight = smallerCard?.offsetHeight || 0;
+                    const fitsWithSmallerFont = smallerCardHeight <= constrainedCardHeight;
+                    
+                    if (isDebugSpell) {
+                        console.log(`${spell.title}: trying font size ${fontSizePercent}% (${fontSizeMultiplier}em): smallerCardHeight=${smallerCardHeight}px, target=${constrainedCardHeight}px, fits=${fitsWithSmallerFont}`);
+                    }
+                    
+                    document.body.removeChild(smallerFontTemp);
+                    
+                    if (fitsWithSmallerFont) {
+                        bestFontSize = fontSizeMultiplier;
+                        if (isDebugSpell) {
+                            console.log(`${spell.title}: Found working font size: ${fontSizePercent}% (${fontSizeMultiplier}em)`);
+                        }
+                        break; // Found the largest font size that fits
+                    }
+                }
+                
+                if (bestFontSize !== null) {
+                    // Smaller font works! Re-render with the best font size
+                    const styleOverrides = {
+                        bodyStyle: 'position: relative;'
+                    };
+                    const smallerCardHTML = renderSpellCard(spell, cardData, styleOverrides);
+                    
+                    // Apply the best font size to the description content
+                    const finalDiv = document.createElement('div');
+                    finalDiv.innerHTML = smallerCardHTML;
+                    const finalDescContent = finalDiv.querySelector('.spell-description-content');
+                    if (finalDescContent) {
+                        finalDescContent.style.fontSize = `${bestFontSize}em`;
+                    }
+                    
+                    // Store that it doesn't overflow (since we fixed it with smaller font)
+                    spell._hasOverflow = false;
+                    
+                    // Clean up temporary elements
+                    document.body.removeChild(constrainedTemp);
+                    document.body.removeChild(unconstrainedTemp);
+                    
+                    if (isDebugSpell) {
+                        console.log(`${spell.title}: Using font size ${bestFontSize}em, no split needed`);
+                    }
+                    
+                    return finalDiv.innerHTML;
+                } else {
+                    // No font size reduction helps, split the card
+                    spell._hasOverflow = true;
+                    
+                    // Clean up temporary elements
+                    document.body.removeChild(constrainedTemp);
+                    document.body.removeChild(unconstrainedTemp);
+                    
+                    if (isDebugSpell) {
+                        console.log(`${spell.title}: No font size reduction helps, splitting card`);
+                    }
+                    
+                    return splitCardContent(spell, cardData, normalCardHTML);
+                }
+            }
+            
+            // No overflow, use normal card
+            spell._hasOverflow = false;
+            
             // Clean up temporary elements
             document.body.removeChild(constrainedTemp);
             document.body.removeChild(unconstrainedTemp);
-            
-            // If there's overflow, split the card into two
-            if (hasOverflow) {
-                return splitCardContent(spell, cardData, normalCardHTML);
-            }
             
             return normalCardHTML;
         }
@@ -2251,7 +2428,7 @@
             const fullContent = materialPrefix + baseDescription;
             
             // Simple approach: start with all content, remove one word at a time until it fits
-            const isDebugSpell = spell.title === 'Control Flames' || spell.title === 'Snare' || spell.title === 'Wish';
+            const isDebugSpell = spell.title === 'Summon Fey';
             if (isDebugSpell) {
                 console.log(`Finding split point for ${spell.title} (card ${cardNumber}, isContinuation=${isContinuation}), fullContent length: ${fullContent.length}`);
                 console.log(`Content starts with: "${fullContent.substring(0, 100)}..."`);
