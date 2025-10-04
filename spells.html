@@ -776,7 +776,11 @@
                 <h3>Debug Options</h3>
                 <div class="filter-option" style="padding: 10px;">
                     <input type="checkbox" id="showOverflowOnly" onchange="filterSpells()">
-                    <label for="showOverflowOnly" style="color: #2c1810; font-family: 'Cormorant Garamond', serif;">Show only overflow spells</label>
+                    <label for="showOverflowOnly" style="color: #2c1810; font-family: 'Cormorant Garamond', serif;">Show only overflowing spells</label>
+                </div>
+                <div class="filter-option" style="padding: 10px;">
+                    <input type="checkbox" id="showFontReducedOnly" onchange="filterSpells()">
+                    <label for="showFontReducedOnly" style="color: #2c1810; font-family: 'Cormorant Garamond', serif;">Show only font-reduced spells</label>
                 </div>
             </div>
         </div>
@@ -1300,9 +1304,10 @@
             
             filteredSpells = uniqueSpells;
             
-            // Check if we should filter for overflow spells only
+            // Check if we should filter for debug options
             const showOverflowOnly = document.getElementById('showOverflowOnly')?.checked;
-            if (showOverflowOnly) {
+            const showFontReducedOnly = document.getElementById('showFontReducedOnly')?.checked;
+            if (showOverflowOnly || showFontReducedOnly) {
                 // Pre-render all spells to detect overflow if not already done
                 filteredSpells.forEach(spell => {
                     if (spell._hasOverflow === undefined) {
@@ -1356,8 +1361,17 @@
                     }
                 });
                 
-                // Filter to only show spells that overflow or had font size reduced
-                filteredSpells = filteredSpells.filter(spell => spell._hasOverflow || spell._fontSizeReduced);
+                // Apply debug filters
+                if (showOverflowOnly && showFontReducedOnly) {
+                    // Show spells that either overflow OR had font reduced
+                    filteredSpells = filteredSpells.filter(spell => spell._hasOverflow || spell._fontSizeReduced);
+                } else if (showOverflowOnly) {
+                    // Show only spells that overflow
+                    filteredSpells = filteredSpells.filter(spell => spell._hasOverflow);
+                } else if (showFontReducedOnly) {
+                    // Show only spells that had font size reduced
+                    filteredSpells = filteredSpells.filter(spell => spell._fontSizeReduced);
+                }
             }
             
             // Update the additional spells list to remove covered spells
