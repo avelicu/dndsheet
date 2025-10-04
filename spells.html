@@ -2242,7 +2242,7 @@
         }
 
         // Split overflowing card content into two cards
-        function splitCardContent(spell, cardData, normalCardHTML) {
+        function splitCardContent(spell, cardData, normalCardHTML, isContinuation = false, cardNumber = 1, totalCards = null) {
             // Get the full description text exactly as provided
             const baseDescription = spell.description;
             
@@ -2454,7 +2454,8 @@
             firstSpell.material_component = ''; // Already included
             
             const firstCardData = generateSpellCardData(firstSpell);
-            const firstCardHTML = renderSpellCard(firstSpell, firstCardData);
+            // If this is already a continuation, render as continuation; otherwise render normally
+            const firstCardHTML = renderSpellCard(firstSpell, firstCardData, {}, isContinuation);
             
             // Create second card with remaining content
             const secondSpell = { ...spell };
@@ -2470,6 +2471,125 @@
             if (isDebugSpell) {
                 console.log(`Second spell description length: ${secondSpell.description.length}`);
                 console.log(`Second spell description: "${secondSpell.description}"`);
+            }
+            
+            // Check if second card also overflows - if so, recursively split it
+            const secondConstrainedTemp = document.createElement('div');
+            secondConstrainedTemp.style.position = 'absolute';
+            secondConstrainedTemp.style.visibility = 'hidden';
+            secondConstrainedTemp.style.top = '-9999px';
+            secondConstrainedTemp.innerHTML = secondCardHTML;
+            document.body.appendChild(secondConstrainedTemp);
+            
+            const secondUnconstrainedTemp = document.createElement('div');
+            secondUnconstrainedTemp.style.position = 'absolute';
+            secondUnconstrainedTemp.style.visibility = 'hidden';
+            secondUnconstrainedTemp.style.top = '-9999px';
+            secondUnconstrainedTemp.innerHTML = secondCardHTML;
+            document.body.appendChild(secondUnconstrainedTemp);
+            
+            const secondUnconstrainedCard = secondUnconstrainedTemp.querySelector('.spell-card');
+            if (secondUnconstrainedCard) {
+                secondUnconstrainedCard.style.setProperty('height', 'auto', 'important');
+            }
+            const secondUnconstrainedContent = secondUnconstrainedTemp.querySelector('.spell-content');
+            if (secondUnconstrainedContent) {
+                secondUnconstrainedContent.style.setProperty('height', 'auto', 'important');
+                secondUnconstrainedContent.style.setProperty('flex', '0 0 auto', 'important');
+            }
+            const secondUnconstrainedBody = secondUnconstrainedTemp.querySelector('.spell-body');
+            if (secondUnconstrainedBody) {
+                secondUnconstrainedBody.style.setProperty('height', 'auto', 'important');
+                secondUnconstrainedBody.style.setProperty('flex', '0 0 auto', 'important');
+            }
+            const secondUnconstrainedDesc = secondUnconstrainedTemp.querySelector('.spell-description');
+            if (secondUnconstrainedDesc) {
+                secondUnconstrainedDesc.style.setProperty('height', 'auto', 'important');
+                secondUnconstrainedDesc.style.setProperty('flex', '0 0 auto', 'important');
+            }
+            
+            void secondUnconstrainedTemp.offsetHeight;
+            
+            const secondConstrainedHeight = secondConstrainedTemp.querySelector('.spell-card')?.offsetHeight || 0;
+            const secondUnconstrainedHeight = secondUnconstrainedCard?.offsetHeight || 0;
+            const secondHasOverflow = secondUnconstrainedHeight > secondConstrainedHeight;
+            
+            document.body.removeChild(secondConstrainedTemp);
+            document.body.removeChild(secondUnconstrainedTemp);
+            
+            if (isDebugSpell) {
+                console.log(`Second card: constrained=${secondConstrainedHeight}px, unconstrained=${secondUnconstrainedHeight}px, overflow=${secondHasOverflow}`);
+            }
+            
+            if (secondHasOverflow) {
+                // Recursively split the second card (pass isContinuation = true)
+                if (isDebugSpell) {
+                    console.log(`Second card overflows, recursively splitting...`);
+                }
+                const additionalCards = splitCardContent(secondSpell, secondCardData, secondCardHTML, true, cardNumber + 1, totalCards);
+                
+                // Only add counters if this is the top-level call (cardNumber === 1)
+                if (cardNumber === 1) {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = firstCardHTML + additionalCards;
+                    const cardCount = tempDiv.querySelectorAll('.spell-card').length;
+                    
+                    // Add counters to all cards
+                    const cardsArray = Array.from(tempDiv.querySelectorAll('.spell-card'));
+                    cardsArray.forEach((card, index) => {
+                        const counter = document.createElement('div');
+                        counter.className = 'card-counter';
+                        counter.textContent = `${index + 1}/${cardCount}`;
+                        counter.style.position = 'absolute';
+                        counter.style.bottom = '4px';
+                        counter.style.right = '8px';
+                        counter.style.fontSize = '0.7em';
+                        counter.style.color = 'rgba(0, 0, 0, 0.4)';
+                        counter.style.zIndex = '10';
+                        counter.style.pointerEvents = 'none';
+                        
+                        // Add to spell-content instead of spell-card
+                        const spellContent = card.querySelector('.spell-content');
+                        if (spellContent) {
+                            spellContent.style.position = 'relative';
+                            spellContent.appendChild(counter);
+                        }
+                    });
+                    
+                    return tempDiv.innerHTML;
+                }
+                
+                return firstCardHTML + additionalCards;
+            }
+            
+            // No overflow on second card, only add counters if this is the top-level call
+            if (cardNumber === 1) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = firstCardHTML + secondCardHTML;
+                const cardCount = tempDiv.querySelectorAll('.spell-card').length;
+                
+                const cardsArray = Array.from(tempDiv.querySelectorAll('.spell-card'));
+                cardsArray.forEach((card, index) => {
+                    const counter = document.createElement('div');
+                    counter.className = 'card-counter';
+                    counter.textContent = `${index + 1}/${cardCount}`;
+                    counter.style.position = 'absolute';
+                    counter.style.bottom = '4px';
+                    counter.style.right = '8px';
+                    counter.style.fontSize = '0.7em';
+                    counter.style.color = 'rgba(0, 0, 0, 0.4)';
+                    counter.style.zIndex = '10';
+                    counter.style.pointerEvents = 'none';
+                    
+                    // Add to spell-content instead of spell-card
+                    const spellContent = card.querySelector('.spell-content');
+                    if (spellContent) {
+                        spellContent.style.position = 'relative';
+                        spellContent.appendChild(counter);
+                    }
+                });
+                
+                return tempDiv.innerHTML;
             }
             
             return firstCardHTML + secondCardHTML;
