@@ -786,6 +786,7 @@
                         <option value="nature">Nature Theme</option>
                         <option value="shadow">Shadow Theme</option>
                         <option value="arcane">Arcane Theme</option>
+                        <option value="black">Black Theme</option>
                     </select>
                 </div>
                 <div style="margin-top: 10px;">
@@ -1671,6 +1672,16 @@
                 },
                 textColor: '#e65100',
                 sideTextColor: '#e65100'
+            },
+            black: {
+                cardBg: '#000000',
+                sidePanel: {
+                    0: '#1a1a1a', 1: '#2a2a2a', 2: '#3a3a3a', 3: '#4a4a4a',
+                    4: '#5a5a5a', 5: '#6a6a6a', 6: '#7a7a7a', 7: '#8a8a8a',
+                    8: '#9a9a9a', 9: '#aaaaaa'
+                },
+                textColor: '#ffffff',
+                sideTextColor: '#ffffff'
             }
         };
 
@@ -2065,10 +2076,25 @@
                     background: ${currentPalette.cardBg} !important;
                 }
                 
-                .spell-name, .spell-subtitle, .spell-description, .spell-level, .spell-school {
+                .spell-name, .spell-subtitle, .spell-description, .spell-level {
                     color: #000000 !important;
                 }
             `;
+            
+            // Special handling for black theme - make magic school and spell availability text white
+            if (currentPalette === palettes.black) {
+                css += `
+                    .spell-school, .spell-side-text, .spell-classes {
+                        color: #ffffff !important;
+                    }
+                `;
+            } else {
+                css += `
+                    .spell-school, .spell-side-text, .spell-classes {
+                        color: #000000 !important;
+                    }
+                `;
+            }
             
             // Generate CSS for side panel colors by level with dynamic text color
             const hasCustomBackground = document.getElementById('customBackgroundStyles');
