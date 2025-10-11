@@ -175,7 +175,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, 2.5in);
             grid-auto-rows: 3.5in;
-            gap: 0;
+            gap: -1px;
             padding: 0.25in;
             max-width: 8.5in;
             margin: 20px auto;
@@ -188,6 +188,20 @@
             page-break-after: always;
         }
 
+        /* Cutting guides - precise borders between cards, behind the cards */
+        .spell-grid::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+            background-image: none;
+        }
+
+        /* Vertical cutting guides using ::before */
         .spell-grid::before {
             content: '';
             position: absolute;
@@ -195,12 +209,60 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
-                linear-gradient(90deg, transparent 98%, rgba(0,0,0,0.1) 100%),
-                linear-gradient(0deg, transparent 98%, rgba(0,0,0,0.1) 100%);
-            background-size: 1in 1in;
             pointer-events: none;
-            opacity: 0.3;
+            z-index: 1;
+            background-image: none;
+        }
+
+        /* Alternative approach: Individual line elements */
+        .cutting-guide {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            background-color: black;
+            border: none;
+        }
+        
+        .cutting-guide-vertical-1 {
+            top: 0;
+            left: calc(2.75in - 0.5px);
+            width: 0;
+            height: 100%;
+            border-left: 1px dotted black;
+        }
+
+        .cutting-guide-vertical-2 {
+            top: 0;
+            left: calc(5.25in - 0.5px);
+            width: 0;
+            height: 100%;
+            border-left: 1px dotted black;
+        }
+
+        .cutting-guide-horizontal-1 {
+            top: calc(3.75in - 0.5px);
+            left: 0;
+            width: 100%;
+            height: 0;
+            border-top: 1px dotted black;
+        }
+
+        .cutting-guide-horizontal-2 {
+            top: calc(7.25in - 0.5px);
+            left: 0;
+            width: 100%;
+            height: 0;
+            border-top: 1px dotted black;
+        }
+
+        @media print {
+            .cutting-guide-horizontal-1 {
+                top: calc(3.5in - 0.5px) !important;
+            }
+
+            .cutting-guide-horizontal-2 {
+                top: calc(7in - 0.5px) !important;
+            }
         }
 
         @media print {
@@ -252,7 +314,7 @@
         }
 
         .spell-card {
-            border: 1px solid black;
+            border: none;
             padding: 0;
             margin: 0;
             width: 2.5in;
@@ -788,6 +850,11 @@
 
     <div class="paper-container" id="paperContainer">
         <div class="spell-grid" id="spellGrid">
+            <!-- Cutting guide lines -->
+            <div class="cutting-guide cutting-guide-vertical-1"></div>
+            <div class="cutting-guide cutting-guide-vertical-2"></div>
+            <div class="cutting-guide cutting-guide-horizontal-1"></div>
+            <div class="cutting-guide cutting-guide-horizontal-2"></div>
             <!-- Spell cards will be generated here -->
         </div>
     </div>
@@ -1078,7 +1145,8 @@
                 // Restore palette settings
                 if (settings.palette) {
                     document.getElementById('paletteSelect').value = settings.palette;
-                    currentPalette = palettes[settings.palette];
+                    // Check if the saved palette exists, fallback to default if not
+                    currentPalette = palettes[settings.palette] || palettes.default;
                     updatePaletteStyles();
                 }
                 
@@ -1545,7 +1613,7 @@
                 sideTextColor: '#2c1810'
             },
             default: {
-                cardBg: 'linear-gradient(135deg, #e6d8a3 0%, #d4c4a0 50%, #c2b08d 100%)',
+                cardBg: '#d4c4a0',
                 sidePanel: {
                     0: '#f0f0f0', 1: '#ffebee', 2: '#fff3e0', 3: '#fffde7',
                     4: '#f1f8e9', 5: '#e8f5e8', 6: '#e3f2fd', 7: '#f3e5f5',
@@ -1555,7 +1623,7 @@
                 sideTextColor: '#2c1810'
             },
             fire: {
-                cardBg: 'linear-gradient(135deg, #ffe8d6 0%, #ffd4b3 50%, #ffc090 100%)',
+                cardBg: '#ffd4b3',
                 sidePanel: {
                     0: '#fff5f5', 1: '#ffebee', 2: '#ffcdd2', 3: '#ffcdd2',
                     4: '#ff8a80', 5: '#ff5722', 6: '#d32f2f', 7: '#b71c1c',
@@ -1565,7 +1633,7 @@
                 sideTextColor: '#3e2723'
             },
             ice: {
-                cardBg: 'linear-gradient(135deg, #e3f2fd 0%, #d1e7ff 50%, #bfdcff 100%)',
+                cardBg: '#d1e7ff',
                 sidePanel: {
                     0: '#f5f5f5', 1: '#e8f4fd', 2: '#bbdefb', 3: '#90caf9',
                     4: '#64b5f6', 5: '#42a5f5', 6: '#2196f3', 7: '#1976d2',
@@ -1575,7 +1643,7 @@
                 sideTextColor: '#1a237e'
             },
             nature: {
-                cardBg: 'linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 50%, #dcedc8 100%)',
+                cardBg: '#e8f5e8',
                 sidePanel: {
                     0: '#dcedc8', 1: '#c8e6c9', 2: '#a5d6a7', 3: '#81c784',
                     4: '#66bb6a', 5: '#4caf50', 6: '#388e3c', 7: '#2e7d32',
@@ -1585,7 +1653,7 @@
                 sideTextColor: '#1b5e20'
             },
             shadow: {
-                cardBg: 'linear-gradient(135deg, #f3e5f5 0%, #e8d5f0 50%, #ddc5eb 100%)',
+                cardBg: '#e8d5f0',
                 sidePanel: {
                     0: '#f5f5f5', 1: '#f3e5f5', 2: '#e1bee7', 3: '#ce93d8',
                     4: '#ba68c8', 5: '#ab47bc', 6: '#9c27b0', 7: '#7b1fa2',
@@ -1595,7 +1663,7 @@
                 sideTextColor: '#4a148c'
             },
             arcane: {
-                cardBg: 'linear-gradient(135deg, #fff3e0 0%, #ffe8cc 50%, #ffddb8 100%)',
+                cardBg: '#ffe8cc',
                 sidePanel: {
                     0: '#f5f5f5', 1: '#fff3e0', 2: '#ffe0b2', 3: '#ffcc80',
                     4: '#ffb74d', 5: '#ff9800', 6: '#f57c00', 7: '#ef6c00',
@@ -1666,7 +1734,8 @@
         // Update palette
         function updatePalette() {
             const select = document.getElementById('paletteSelect');
-            currentPalette = palettes[select.value];
+            // Check if the selected palette exists, fallback to default if not
+            currentPalette = palettes[select.value] || palettes.default;
             updatePaletteStyles();
             displaySpells();
             saveAllSettings();
@@ -2065,7 +2134,7 @@
             
             if (filteredSpells.length === 0) {
                 setTimeout(() => {
-                    paperContainer.innerHTML = '<div class="spell-grid"><div class="no-spells">No spells found matching your criteria.</div></div>';
+                    paperContainer.innerHTML = '<div class="spell-grid"><div class="cutting-guide cutting-guide-vertical-1"></div><div class="cutting-guide cutting-guide-vertical-2"></div><div class="cutting-guide cutting-guide-horizontal-1"></div><div class="cutting-guide cutting-guide-horizontal-2"></div><div class="no-spells">No spells found matching your criteria.</div></div>';
                 }, 100);
             } else {
                 // Sort spells by level first, then alphabetically by name
@@ -2124,7 +2193,7 @@
                     const endIndex = Math.min(startIndex + cardsPerPage, allCards.length);
                     const pageCards = allCards.slice(startIndex, endIndex);
                     
-                    html += `<div class="spell-grid">${pageCards.join('')}</div>`;
+                    html += `<div class="spell-grid"><div class="cutting-guide cutting-guide-vertical-1"></div><div class="cutting-guide cutting-guide-vertical-2"></div><div class="cutting-guide cutting-guide-horizontal-1"></div><div class="cutting-guide cutting-guide-horizontal-2"></div>${pageCards.join('')}</div>`;
                 }
                 
                 paperContainer.innerHTML = html;
