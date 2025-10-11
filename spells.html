@@ -48,7 +48,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 10px;
         }
 
         .filter-groups-container {
@@ -738,6 +738,40 @@
             
         </div>
         
+        <!-- Custom Cards Section -->
+        <div class="custom-cards-section" style="margin: 10px; padding: 5px 15px; background: linear-gradient(145deg, #f5f5dc, #e6d8a3); border-radius: 10px; transition: all 0.3s ease;">
+            <h3 style="color: #8B4513; margin-bottom: 8px; font-family: 'Cinzel Decorative', 'Cinzel', serif; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleCustomCardsSection()">
+                <span>Custom Cards <span id="customCardsToggle" style="font-size: 0.8em;">▶</span></span>
+                <div id="customCardsButtons" style="display: flex; gap: 8px; transition: opacity 0.3s ease; opacity: 0;">
+                    <button onclick="event.stopPropagation(); copyCustomCardsToCSV()" style="padding: 4px 8px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 0.8em;">Copy</button>
+                    <button onclick="event.stopPropagation(); pasteCustomCardsFromCSV()" style="padding: 4px 8px; background: #2196F3; color: white; border: none; border-radius: 3px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 0.8em;">Paste</button>
+                    <button onclick="event.stopPropagation(); addCustomCard()" style="padding: 4px 8px; background: #8B4513; color: white; border: none; border-radius: 3px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 0.8em;">Add Card</button>
+                </div>
+            </h3>
+            <div id="customCardsContent" style="display: none; transition: all 0.3s ease; overflow: hidden; max-height: 0px;">
+                <div style="overflow-x: auto;">
+                    <table id="customCardsTable" style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <thead>
+                            <tr style="background: #8B4513; color: white;">
+                                <th style="padding: 4px; text-align: left; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Level</th>
+                                <th style="padding: 4px; text-align: left; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Title</th>
+                                <th style="padding: 4px; text-align: left; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Range</th>
+                                <th style="padding: 4px; text-align: left; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Components</th>
+                                <th style="padding: 4px; text-align: left; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Duration</th>
+                                <th style="padding: 4px; text-align: left; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Casting Time</th>
+                                <th style="padding: 4px; text-align: left; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">School</th>
+                                <th style="padding: 4px; text-align: left; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Classes</th>
+                                <th style="padding: 4px; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 0.9em;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customCardsTableBody">
+                            <!-- Custom cards rows will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
         <!-- Reset Button - Centered below the three main filter groups -->
         <div class="reset-button-container">
             <button onclick="resetToDefault()" style="padding: 8px 16px; background: #8B4513; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 1em;">Reset</button>
@@ -1303,6 +1337,359 @@
         // Global variable to store selected spells
         let selectedSpells = new Set();
 
+        // Custom Cards functionality
+        let customCards = [];
+
+        // Load custom cards from localStorage
+        function loadCustomCards() {
+            const saved = localStorage.getItem('customCards');
+            if (saved) {
+                customCards = JSON.parse(saved);
+            }
+            renderCustomCardsTable();
+        }
+
+        // Add a new custom card
+        function addCustomCard() {
+            const newCard = {
+                id: Date.now(), // Simple unique ID
+                level: '',
+                title: '',
+                range: '',
+                components: '',
+                duration: '',
+                casting_time: '',
+                description: '',
+                school_of_magic: '',
+                classes: '',
+                ritual: '',
+                concentration: '',
+                material_component: '',
+                included: true // Default to included
+            };
+            customCards.push(newCard);
+            renderCustomCardsTable();
+            // Auto-save to localStorage
+            localStorage.setItem('customCards', JSON.stringify(customCards));
+            // Refresh the display
+            filterSpells();
+        }
+
+        // Delete a custom card
+        function deleteCustomCard(id) {
+            customCards = customCards.filter(card => card.id !== id);
+            renderCustomCardsTable();
+            // Auto-save to localStorage
+            localStorage.setItem('customCards', JSON.stringify(customCards));
+            // Refresh the display
+            filterSpells();
+        }
+
+        // Update a custom card field
+        function updateCustomCardField(id, field, value) {
+            const card = customCards.find(c => c.id === id);
+            if (card) {
+                card[field] = value;
+                // Auto-save to localStorage
+                localStorage.setItem('customCards', JSON.stringify(customCards));
+                // Refresh the display
+                filterSpells();
+            }
+        }
+
+        // Toggle included status of a custom card
+        function toggleCustomCardIncluded(id) {
+            const card = customCards.find(c => c.id === id);
+            if (card) {
+                card.included = !card.included;
+                // Auto-save to localStorage
+                localStorage.setItem('customCards', JSON.stringify(customCards));
+                // Refresh the display
+                filterSpells();
+            }
+        }
+
+        // Toggle custom cards section visibility
+        function toggleCustomCardsSection() {
+            const content = document.getElementById('customCardsContent');
+            const toggle = document.getElementById('customCardsToggle');
+            const buttons = document.getElementById('customCardsButtons');
+            const section = document.querySelector('.custom-cards-section');
+            
+            if (content.style.display === 'none') {
+                // Expanding
+                content.style.display = 'block';
+                toggle.textContent = '▼';
+                buttons.style.opacity = '1';
+                section.style.padding = '15px';
+                
+                // Trigger reflow for smooth animation
+                content.offsetHeight;
+                content.style.maxHeight = content.scrollHeight + 'px';
+            } else {
+                // Collapsing
+                content.style.maxHeight = '0px';
+                buttons.style.opacity = '0';
+                section.style.padding = '5px 15px';
+                
+                setTimeout(() => {
+                    content.style.display = 'none';
+                    toggle.textContent = '▶';
+                }, 300);
+            }
+        }
+        
+        // Copy custom cards to TSV format (Google Sheets compatible)
+        function copyCustomCardsToCSV() {
+            if (customCards.length === 0) {
+                alert('No custom cards to copy');
+                return;
+            }
+            
+            // TSV headers
+            const headers = ['Level', 'Title', 'Range', 'Components', 'Duration', 'Casting Time', 'Description', 'School', 'Classes', 'Included'];
+            
+            // Convert cards to TSV rows (tab-separated, no quotes needed)
+            const tsvRows = customCards.map(card => [
+                card.level || '',
+                card.title || '',
+                card.range || '',
+                card.components || '',
+                card.duration || '',
+                card.casting_time || '',
+                (card.description || '').replace(/\t/g, ' ').replace(/\n/g, ' '), // Replace tabs and newlines
+                card.school || '',
+                card.classes || '',
+                card.included ? 'true' : 'false'
+            ]);
+            
+            // Combine headers and rows with tab separation
+            const tsvContent = [headers, ...tsvRows]
+                .map(row => row.join('\t'))
+                .join('\n');
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(tsvContent).then(() => {
+                alert(`Copied ${customCards.length} custom cards to clipboard (Google Sheets compatible)`);
+            }).catch(err => {
+                console.error('Failed to copy to clipboard:', err);
+                alert('Failed to copy to clipboard');
+            });
+        }
+        
+        // Paste custom cards from TSV/CSV format (Google Sheets compatible)
+        function pasteCustomCardsFromCSV() {
+            navigator.clipboard.readText().then(text => {
+                try {
+                    const lines = text.split('\n').filter(line => line.trim());
+                    if (lines.length < 2) {
+                        alert('No valid data found');
+                        return;
+                    }
+                    
+                    // Detect format: TSV (tab-separated) or CSV (comma-separated)
+                    const isTSV = lines[0].includes('\t');
+                    const delimiter = isTSV ? '\t' : ',';
+                    
+                    // Parse TSV/CSV line
+                    const parseLine = (line) => {
+                        if (isTSV) {
+                            // Simple TSV parsing - just split on tabs
+                            return line.split('\t');
+                        } else {
+                            // CSV parsing (existing logic)
+                            const result = [];
+                            let current = '';
+                            let inQuotes = false;
+                            
+                            for (let i = 0; i < line.length; i++) {
+                                const char = line[i];
+                                if (char === '"') {
+                                    if (inQuotes && line[i + 1] === '"') {
+                                        // Escaped quote
+                                        current += '"';
+                                        i++; // Skip next quote
+                                    } else {
+                                        // Toggle quote state
+                                        inQuotes = !inQuotes;
+                                    }
+                                } else if (char === ',' && !inQuotes) {
+                                    result.push(current);
+                                    current = '';
+                                } else {
+                                    current += char;
+                                }
+                            }
+                            result.push(current);
+                            return result;
+                        }
+                    };
+                    
+                    // Skip header row
+                    const dataRows = lines.slice(1);
+                    const newCards = [];
+                    const updatedCards = [];
+                    
+                    dataRows.forEach(row => {
+                        const fields = parseLine(row);
+                        if (fields.length >= 9) {
+                            const title = fields[1] || '';
+                            const titleLower = title.toLowerCase();
+                            
+                            // Check if card already exists
+                            const existingCard = customCards.find(card => card.title.toLowerCase() === titleLower);
+                            
+                            if (existingCard) {
+                                // Update existing card
+                                existingCard.level = fields[0] || '';
+                                existingCard.title = title;
+                                existingCard.range = fields[2] || '';
+                                existingCard.components = fields[3] || '';
+                                existingCard.duration = fields[4] || '';
+                                existingCard.casting_time = fields[5] || '';
+                                existingCard.description = fields[6] || '';
+                                existingCard.school = fields[7] || '';
+                                existingCard.classes = fields[8] || '';
+                                // Only update included status if the field has a meaningful value
+                                if (fields[9] !== '' && fields[9] !== undefined && fields[9] !== null) {
+                                    // Handle various boolean representations (clean whitespace and carriage returns)
+                                    const includeValue = fields[9].toString().trim().toLowerCase();
+                                    const newIncludeValue = includeValue === 'true' || includeValue === '1' || includeValue === 'yes';
+                                    existingCard.included = newIncludeValue;
+                                }
+                                
+                                updatedCards.push(existingCard);
+                            } else {
+                                // Create new card
+                                const newCard = {
+                                    id: Date.now() + Math.random(), // Unique ID
+                                    level: fields[0] || '',
+                                    title: title,
+                                    range: fields[2] || '',
+                                    components: fields[3] || '',
+                                    duration: fields[4] || '',
+                                    casting_time: fields[5] || '',
+                                    description: fields[6] || '',
+                                    school: fields[7] || '',
+                                    classes: fields[8] || '',
+                                    included: fields[9] === 'true' || fields[9] === true || fields[9] === ''
+                                };
+                                
+                                newCards.push(newCard);
+                            }
+                        }
+                    });
+                    
+                    if (newCards.length === 0 && updatedCards.length === 0) {
+                        alert('No data to process');
+                        return;
+                    }
+                    
+                    // Add new cards
+                    customCards.push(...newCards);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('customCards', JSON.stringify(customCards));
+                    
+                    // Refresh display
+                    renderCustomCardsTable();
+                    filterSpells();
+                    
+                    alert(`Processed ${dataRows.length} cards: ${newCards.length} new, ${updatedCards.length} updated`);
+                    
+                } catch (error) {
+                    console.error('Error parsing data:', error);
+                    alert('Error parsing clipboard data');
+                }
+            }).catch(err => {
+                console.error('Failed to read from clipboard:', err);
+                alert('Failed to read from clipboard');
+            });
+        }
+        
+        // Render the custom cards table
+        function renderCustomCardsTable() {
+            const tbody = document.getElementById('customCardsTableBody');
+            tbody.innerHTML = '';
+            
+            customCards.forEach(card => {
+                // Create main row with all fields except description
+                const mainRow = document.createElement('tr');
+                mainRow.style.borderBottom = '1px solid #eee';
+                
+                mainRow.innerHTML = `
+                    <td style="padding: 4px; border-right: 1px solid #eee;">
+                        <input type="text" value="${card.level}" onchange="updateCustomCardField(${card.id}, 'level', this.value)" 
+                               style="width: 100%; border: none; background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 0.9em; padding: 8px;" />
+                    </td>
+                    <td style="padding: 4px; border-right: 1px solid #eee;">
+                        <input type="text" value="${card.title}" onchange="updateCustomCardField(${card.id}, 'title', this.value)" 
+                               style="width: 100%; border: none; background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 0.9em; padding: 8px;" />
+                    </td>
+                    <td style="padding: 4px; border-right: 1px solid #eee;">
+                        <input type="text" value="${card.range}" onchange="updateCustomCardField(${card.id}, 'range', this.value)" 
+                               style="width: 100%; border: none; background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 0.9em; padding: 8px;" />
+                    </td>
+                    <td style="padding: 4px; border-right: 1px solid #eee;">
+                        <input type="text" value="${card.components}" onchange="updateCustomCardField(${card.id}, 'components', this.value)" 
+                               style="width: 100%; border: none; background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 0.9em; padding: 8px;" />
+                    </td>
+                    <td style="padding: 4px; border-right: 1px solid #eee;">
+                        <input type="text" value="${card.duration}" onchange="updateCustomCardField(${card.id}, 'duration', this.value)" 
+                               style="width: 100%; border: none; background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 0.9em; padding: 8px;" />
+                    </td>
+                    <td style="padding: 4px; border-right: 1px solid #eee;">
+                        <input type="text" value="${card.casting_time}" onchange="updateCustomCardField(${card.id}, 'casting_time', this.value)" 
+                               style="width: 100%; border: none; background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 0.9em; padding: 8px;" />
+                    </td>
+                    <td style="padding: 4px; border-right: 1px solid #eee;">
+                        <input type="text" value="${card.school_of_magic}" onchange="updateCustomCardField(${card.id}, 'school_of_magic', this.value)" 
+                               style="width: 100%; border: none; background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 0.9em; padding: 8px;" />
+                    </td>
+                    <td style="padding: 4px; border-right: 1px solid #eee;">
+                        <input type="text" value="${card.classes}" onchange="updateCustomCardField(${card.id}, 'classes', this.value)" 
+                               style="width: 100%; border: none; background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 0.9em; padding: 8px;" />
+                    </td>
+                    <td rowspan="2" style="padding: 4px; text-align: center; vertical-align: middle; border-left: 1px solid #eee;">
+                        <div style="margin-bottom: 8px;">
+                            <input type="checkbox" ${card.included ? 'checked' : ''} onchange="toggleCustomCardIncluded(${card.id})" 
+                                   style="margin-right: 4px;">
+                            <label style="font-family: 'Cormorant Garamond', serif; font-size: 0.8em; color: #2c1810;">Include</label>
+                        </div>
+                        <button onclick="deleteCustomCard(${card.id})" style="padding: 4px 8px; background: #f44336; color: white; border: none; border-radius: 3px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 0.8em;">Delete</button>
+                    </td>
+                `;
+                
+                // Create description row
+                const descRow = document.createElement('tr');
+                descRow.style.borderBottom = '2px solid #ddd';
+                
+                descRow.innerHTML = `
+                    <td colspan="8" style="padding: 8px;">
+                        <textarea onchange="updateCustomCardField(${card.id}, 'description', this.value)" 
+                                  oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px';"
+                                  style="width: 100%; border: none; background: transparent; font-family: 'Cormorant Garamond', serif; font-size: 0.9em; resize: vertical; min-height: 100px; padding: 8px; overflow: hidden;">${card.description}</textarea>
+                    </td>
+                `;
+                
+                tbody.appendChild(mainRow);
+                tbody.appendChild(descRow);
+            });
+            
+            // Auto-resize all textareas after rendering
+            setTimeout(() => {
+                const textareas = tbody.querySelectorAll('textarea');
+                textareas.forEach(textarea => {
+                    // Reset to minimum height first
+                    textarea.style.height = '100px';
+                    // Force a reflow
+                    textarea.offsetHeight;
+                    // Now set to actual content height
+                    textarea.style.height = Math.max(100, textarea.scrollHeight) + 'px';
+                });
+            }, 50);
+        }
+
         // Filter spells based on selected checkboxes
         function filterSpells() {
             // Save current filter state (but not during initial load)
@@ -1371,7 +1758,11 @@
                 }
             });
             
-            filteredSpells = uniqueSpells;
+            // Start with custom cards first (only included ones)
+            filteredSpells = [...customCards.filter(card => card.included)];
+            
+            // Add regular spells
+            filteredSpells = [...filteredSpells, ...uniqueSpells];
             
             // Check if we should filter for debug options
             const showOverflowOnly = document.getElementById('showOverflowOnly')?.checked;
@@ -2163,8 +2554,12 @@
                     paperContainer.innerHTML = '<div class="spell-grid"><div class="cutting-guide cutting-guide-vertical-1"></div><div class="cutting-guide cutting-guide-vertical-2"></div><div class="cutting-guide cutting-guide-horizontal-1"></div><div class="cutting-guide cutting-guide-horizontal-2"></div><div class="no-spells">No spells found matching your criteria.</div></div>';
                 }, 100);
             } else {
-                // Sort spells by level first, then alphabetically by name
-                const sortedSpells = [...filteredSpells].sort((a, b) => {
+                // Separate custom cards from regular spells
+                const customCardsOnly = filteredSpells.filter(spell => spell.id); // Custom cards have an id property
+                const regularSpells = filteredSpells.filter(spell => !spell.id); // Regular spells don't have an id property
+                
+                // Sort regular spells by level first, then alphabetically by name
+                const sortedRegularSpells = [...regularSpells].sort((a, b) => {
                     const levelA = parseInt(a.level);
                     const levelB = parseInt(b.level);
                     if (levelA !== levelB) {
@@ -2172,6 +2567,9 @@
                     }
                     return a.title.localeCompare(b.title);
                 });
+                
+                // Combine: custom cards first, then sorted regular spells
+                const sortedSpells = [...customCardsOnly, ...sortedRegularSpells];
                 // Calculate how many cards fit per page dynamically based on current settings
                 const availableWidth = currentPaperSize.width - 0.5; // Account for margins
                 const availableHeight = currentPaperSize.height - 0.5;
@@ -2236,6 +2634,32 @@
             // Use description exactly as provided
             let description = spell.description;
             
+            // Process HTML tags and line breaks
+            if (description) {
+                // Convert line breaks to <br> tags
+                description = description.replace(/\n/g, '<br>');
+                // HTML tags will be rendered as-is since we're inserting into innerHTML
+            }
+            
+            // Process components to extract material components
+            let components = spell.components || '';
+            let materialComponent = spell.material_component || '';
+            
+            // Look for material components in parentheses in the components field
+            const materialMatch = components.match(/\(([^)]+)\)/);
+            if (materialMatch) {
+                // Extract the material component text
+                const materialText = materialMatch[1];
+                // Remove it from components
+                components = components.replace(/\([^)]+\)/, '').trim();
+                // Add it to material component (append if there's already one)
+                if (materialComponent) {
+                    materialComponent += '; ' + materialText;
+                } else {
+                    materialComponent = materialText;
+                }
+            }
+            
             // Bold dice expressions and color damage types
             const damageTypes = {
                 'fire': '#DC2626',      // red
@@ -2280,7 +2704,7 @@
             description = description.replace(/\b(\d+(?:\.\d+)?)\s+(feet|ft|miles|mi)\b/gi, '<strong>$1 $2</strong>');
             
             // Format material component gold amounts
-            let formattedMaterialComponent = spell.material_component;
+            let formattedMaterialComponent = materialComponent;
             if (formattedMaterialComponent) {
                 // Bold and color gold amounts (e.g., "50 gp", "100 gold pieces", "25 gold")
                 formattedMaterialComponent = formattedMaterialComponent.replace(/\b(\d+(?:,\d{3})*(?:\.\d+)?)\s*(gp|gold\s+pieces?|gold)\b/gi, 
@@ -2291,7 +2715,7 @@
             }
             
             // Format components 
-            let formattedComponents = spell.components;
+            let formattedComponents = components;
             
             // Format duration with concentration indicator
             let formattedDuration = spell.duration;
@@ -2391,7 +2815,7 @@
                         <div class="spell-body" style="${styleOverrides.bodyStyle || bodyPadding}">
                             <div class="spell-description">
                                 <div class="spell-description-content">
-                                    ${formattedMaterialComponent ? `<em>Material Component:</em> ${formattedMaterialComponent}<br/><br/>` : ''}${description}
+                                    ${formattedMaterialComponent ? `<em>Material Component:</em> ${formattedMaterialComponent}<br/><br/>` : ''}<span class="description-content">${description}</span>
                                 </div>
                             </div>
                         </div>
@@ -3053,9 +3477,11 @@
             updatePaletteStyles();
             updateFontStyles();
         }
+
         // Load spells when page loads
         window.addEventListener('load', () => {
             initializeSizeSettings();
+            loadCustomCards(); // Load custom cards from localStorage
             loadSpells();
         });
     </script>
