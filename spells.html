@@ -2584,7 +2584,7 @@
                 
                 for (let i = 0; i < sortedSpells.length; i++) {
                     const spell = sortedSpells[i];
-                    const cardHTML = createSpellCard(spell);
+                    const cardHTML = await createSpellCard(spell);
                     
                     // Update progress bar
                     const progress = Math.round(((i + 1) / totalSpells) * 100);
@@ -2830,7 +2830,7 @@
         }
         
         // Create spell card HTML with overflow detection
-        function createSpellCard(spell) {
+        async function createSpellCard(spell) {
             // Generate card data
             const cardData = generateSpellCardData(spell);
             
@@ -2942,10 +2942,10 @@
                 unconstrainedContent.style.setProperty('height', 'auto', 'important');
                 unconstrainedContent.style.setProperty('flex', '0 0 auto', 'important');
             }
-            const unconstrainedBodyDiv = unconstrainedTemp.querySelector('.spell-body');
-            if (unconstrainedBodyDiv) {
-                unconstrainedBodyDiv.style.setProperty('height', 'auto', 'important');
-                unconstrainedBodyDiv.style.setProperty('flex', '0 0 auto', 'important');
+            const unconstrainedBody = unconstrainedTemp.querySelector('.spell-body');
+            if (unconstrainedBody) {
+                unconstrainedBody.style.setProperty('height', 'auto', 'important');
+                unconstrainedBody.style.setProperty('flex', '0 0 auto', 'important');
             }
             const unconstrainedDesc = unconstrainedTemp.querySelector('.spell-description');
             if (unconstrainedDesc) {
@@ -2957,10 +2957,14 @@
             void unconstrainedTemp.offsetHeight;
             
             // Compare the overall card heights to detect overflow
-            const constrainedCardHeight = constrainedTemp.querySelector('.spell-card')?.offsetHeight || 0;
-            const unconstrainedCardHeight = unconstrainedCard?.offsetHeight || 0;
-            
-            // Card has overflow if the unconstrained version is taller
+            const { constrainedCardHeight, unconstrainedCardHeight } = await new Promise(resolve => {
+                requestAnimationFrame(() => {
+                    const constrainedHeight = constrainedTemp.querySelector('.spell-card')?.offsetHeight || 0;
+                    const unconstrainedHeight = unconstrainedCard?.offsetHeight || 0;
+                    resolve({ constrainedCardHeight: constrainedHeight, unconstrainedCardHeight: unconstrainedHeight });
+                });
+            });
+
             const hasOverflow = unconstrainedCardHeight > constrainedCardHeight;
             
             const isDebugSpell = spell.title === 'Summon Fey';
@@ -3068,7 +3072,7 @@
                         console.log(`${spell.title}: No font size reduction helps, splitting card`);
                     }
                     
-                    return splitCardContent(spell, cardData, finalCardHTML);
+                    return await splitCardContent(spell, cardData, finalCardHTML);
                 }
             }
             
@@ -3080,7 +3084,7 @@
         }
 
         // Split overflowing card content into two cards
-        function splitCardContent(spell, cardData, normalCardHTML, isContinuation = false, cardNumber = 1, totalCards = null) {
+        async function splitCardContent(spell, cardData, normalCardHTML, isContinuation = false, cardNumber = 1, totalCards = null) {
             // Get the full description text exactly as provided
             const baseDescription = spell.description;
             
@@ -3374,7 +3378,7 @@
                 if (isDebugSpell) {
                     console.log(`Second card overflows, recursively splitting...`);
                 }
-                const additionalCards = splitCardContent(secondSpell, secondCardData, secondCardHTML, true, cardNumber + 1, totalCards);
+                const additionalCards = await splitCardContent(secondSpell, secondCardData, secondCardHTML, true, cardNumber + 1, totalCards);
                 
                 // Only add counters if this is the top-level call (cardNumber === 1)
                 if (cardNumber === 1) {
