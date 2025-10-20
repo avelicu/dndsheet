@@ -1,0 +1,460 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --card-width: 2.5in;
+    --card-height: 3.5in;
+    --paper-width: 8.5in;
+    --paper-height: 11in;
+    --custom-card-width: 2.5in;
+    --custom-card-height: 3.5in;
+}
+
+/* Card Size Presets */
+:root[data-card-size='standard'] { --card-width: 2.5in; --card-height: 3.5in; }
+:root[data-card-size='mini'] { --card-width: 1.5in; --card-height: 2.5in; }
+:root[data-card-size='large'] { --card-width: 3.5in; --card-height: 5in; }
+:root[data-card-size='custom'] { --card-width: var(--custom-card-width); --card-height: var(--custom-card-height); }
+
+/* Paper Size Presets */
+:root[data-paper-size='letter'] { --paper-width: 8.5in; --paper-height: 11in; }
+:root[data-paper-size='a4'] { --paper-width: 8.27in; --paper-height: 11.69in; }
+:root[data-paper-size='legal'] { --paper-width: 8.5in; --paper-height: 14in; }
+:root[data-paper-size='tabloid'] { --paper-width: 11in; --paper-height: 17in; }
+
+
+body {
+    font-family: 'Cormorant Garamond', 'Cinzel', serif;
+    background: linear-gradient(135deg, #2c1810, #3d2817, #4a2c1a);
+    color: #f4e4bc;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.header {
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    border-bottom: 3px solid #654321;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
+}
+
+.filters {
+    background: linear-gradient(145deg, #f5f5dc, #e6d8a3);
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    border: 2px solid #8B4513;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-groups-container {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: stretch;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 180px;
+    flex: 1 1 0;
+    height: 100%; /* Fill container height */
+    justify-content: center; /* Vertically center content */
+}
+
+.filter-group h3 {
+    font-weight: bold;
+    color: #8B4513;
+    margin: 0;
+    font-size: 1.1em;
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
+}
+
+.reset-button-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.settings-groups-container {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+
+.filter-options {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    background: #fafafa;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-option input[type="checkbox"] {
+    margin: 0;
+}
+
+.filter-option label {
+    font-size: 0.9em;
+    color: #333;
+    cursor: pointer;
+    margin: 0;
+}
+
+.filter-option label:hover {
+    color: #8B4513;
+}
+
+/* Spell checkbox labels - same styling as filter options */
+.spell-checkbox-label {
+    font-size: 0.9em;
+    color: #333;
+    cursor: pointer;
+    margin: 0;
+}
+
+.spell-checkbox-label:hover {
+    color: #8B4513;
+}
+
+/* "All" filter labels - bold styling */
+#all_classes + label,
+#all_levels + label {
+    font-weight: bold;
+}
+
+/* Spell Selector Styles */
+.spell-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.spell-selector input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.spell-selector #spellCheckboxes {
+    height: 158px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+
+
+
+
+.reset-button-container button {
+    padding: 8px 16px;
+    background: #8B4513;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1em;
+}
+
+.reset-button-container button:hover {
+    background: #A0522D;
+}
+
+
+/* Settings Section Styles */
+#customSizeInputs {
+    display: none;
+    margin-top: 10px;
+}
+
+.paper-selector {
+    margin-top: 10px;
+}
+
+.settings-info {
+    margin-top: 8px;
+    font-size: 0.85em;
+    color: #666;
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.clear-filters {
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    border: 2px solid #654321;
+    font-family: 'MedievalSharp', 'Cinzel', serif;
+    font-size: 1em;
+}
+
+.clear-filters:hover {
+    background: linear-gradient(135deg, #A0522D, #8B4513);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.size-selector select, .paper-selector select, .palette-selector select, .font-size-selector select, .body-font-size-selector select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    font-size: 0.9em;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+#customSizeInputs {
+    display: flex;
+    gap: 10px;
+}
+
+#customSizeInputs input, #customFontSizeInput input, #customBodyFontSizeInput input {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.spell-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, var(--card-width));
+    grid-auto-rows: var(--card-height);
+    gap: 0px;
+    padding: 0.25in;
+    max-width: var(--paper-width);
+    margin: 20px auto;
+    justify-content: start;
+    background: #fefefe;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+    height: var(--paper-height);
+    position: relative;
+    page-break-after: always;
+}
+
+/* Alternative approach: Individual line elements */
+.cutting-guide {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+    background-color: black;
+    border: none;
+}
+
+.cutting-guide-vertical-1 {
+    top: 0;
+    left: calc(2.75in - 0.5px);
+    width: 0;
+    height: 100%;
+    border-left: 1px dotted black;
+}
+
+.cutting-guide-vertical-2 {
+    top: 0;
+    left: calc(5.25in - 0.5px);
+    width: 0;
+    height: 100%;
+    border-left: 1px dotted black;
+}
+
+.cutting-guide-horizontal-1 {
+    top: calc(3.75in - 0.5px);
+    left: 0;
+    width: 100%;
+    height: 0;
+    border-top: 1px dotted black;
+}
+
+.cutting-guide-horizontal-2 {
+    top: calc(7.25in - 0.5px);
+    left: 0;
+    width: 100%;
+    height: 0;
+    border-top: 1px dotted black;
+}
+
+@media print {
+    @page {
+        margin: 0 !important;
+        size: var(--paper-width) var(--paper-height) !important;
+    }
+
+    .spell-grid {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        max-width: none !important;
+        display: grid !important;
+        width: var(--paper-width) !important;
+        height: var(--paper-height) !important;
+        /* The number of columns is now implicitly handled by the available width */
+        grid-template-columns: repeat(auto-fit, var(--card-width)) !important;
+        grid-auto-rows: var(--card-height) !important;
+        gap: 0 !important;
+        justify-content: center !important;
+        align-content: center !important;
+        page-break-inside: avoid !important;
+    }
+
+    .paper-container {
+        gap: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        min-height: 11in !important;
+    }
+
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white;
+    }
+
+    .header, .filters, .pagination {
+        display: none;
+    }
+
+    .cutting-guide-horizontal-1 {
+        top: calc(3.5in - 0.5px) !important;
+    }
+
+    .cutting-guide-horizontal-2 {
+        top: calc(7in - 0.5px) !important;
+    }
+}
+
+.paper-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    background: white;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.pagination button {
+    padding: 10px 15px;
+    border: 2px solid #8B4513;
+    background: white;
+    color: #8B4513;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+    background: #8B4513;
+    color: white;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-weight: bold;
+    color: #8B4513;
+}
+
+.no-spells {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 1.2em;
+}
+
+@media print {
+    body {
+        background: white;
+        margin: 0;
+        padding: 0;
+    }
+    .header, .filters, .pagination {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .spell-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 480px) {
+    .spell-grid {
+        grid-template-columns: 1fr;
+    }
+}

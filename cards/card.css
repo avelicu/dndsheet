@@ -1,0 +1,420 @@
+:root {
+    /* Font Size Control */
+    --font-scale: 1.0;
+    --body-font-scale: 0.8;
+    --custom-font-scale: 1.0;
+    --custom-body-font-scale: 0.8;
+
+    /* Palette Control */
+    --card-bg: #d4c4a0;
+    --text-color: #000000;
+    --side-panel-0: #f0f0f0;
+    --side-panel-1: #ffebee;
+    --side-panel-2: #fff3e0;
+    --side-panel-3: #fffde7;
+    --side-panel-4: #f1f8e9;
+    --side-panel-5: #e8f5e8;
+    --side-panel-6: #e3f2fd;
+    --side-panel-7: #f3e5f5;
+    --side-panel-8: #fce4ec;
+    --side-panel-9: #ffebee;
+}
+
+/* Font Size Presets */
+:root[data-font-size='auto'] { --font-scale: 1.0; } /* Auto logic handled in JS, 1.0 is fallback */
+:root[data-font-size='small'] { --font-scale: 0.8; }
+:root[data-font-size='normal'] { --font-scale: 1.0; }
+:root[data-font-size='large'] { --font-scale: 1.2; }
+:root[data-font-size='custom'] { --font-scale: var(--custom-font-scale); }
+
+:root[data-body-font-size='auto'] { --body-font-scale: 0.8; } /* Auto logic handled in JS, 0.8 is fallback */
+:root[data-body-font-size='small'] { --body-font-scale: 0.7; }
+:root[data-body-font-size='normal'] { --body-font-scale: 0.8; }
+:root[data-body-font-size='large'] { --body-font-scale: 0.9; }
+:root[data-body-font-size='custom'] { --body-font-scale: var(--custom-body-font-scale); }
+
+/* --- Palette Presets --- */
+/* Default is handled by :root */
+:root[data-theme='none'] { --card-bg: transparent; }
+:root[data-theme='fire'] {
+    --card-bg: #ffd4b3; --text-color: #3e2723;
+    --side-panel-0: #fff5f5; --side-panel-1: #ffebee; --side-panel-2: #ffcdd2; --side-panel-3: #ffcdd2; --side-panel-4: #ff8a80;
+    --side-panel-5: #ff5722; --side-panel-6: #d32f2f; --side-panel-7: #b71c1c; --side-panel-8: #8d0000; --side-panel-9: #4a0000;
+}
+:root[data-theme='ice'] {
+    --card-bg: #d1e7ff; --text-color: #1a237e;
+    --side-panel-0: #f5f5f5; --side-panel-1: #e8f4fd; --side-panel-2: #bbdefb; --side-panel-3: #90caf9; --side-panel-4: #64b5f6;
+    --side-panel-5: #42a5f5; --side-panel-6: #2196f3; --side-panel-7: #1976d2; --side-panel-8: #0d47a1; --side-panel-9: #01579b;
+}
+:root[data-theme='nature'] {
+    --card-bg: #e8f5e8; --text-color: #1b5e20;
+    --side-panel-0: #dcedc8; --side-panel-1: #c8e6c9; --side-panel-2: #a5d6a7; --side-panel-3: #81c784; --side-panel-4: #66bb6a;
+    --side-panel-5: #4caf50; --side-panel-6: #388e3c; --side-panel-7: #2e7d32; --side-panel-8: #1b5e20; --side-panel-9: #0d4a0d;
+}
+:root[data-theme='shadow'] {
+    --card-bg: #e8d5f0; --text-color: #4a148c;
+    --side-panel-0: #f5f5f5; --side-panel-1: #f3e5f5; --side-panel-2: #e1bee7; --side-panel-3: #ce93d8; --side-panel-4: #ba68c8;
+    --side-panel-5: #ab47bc; --side-panel-6: #9c27b0; --side-panel-7: #7b1fa2; --side-panel-8: #4a148c; --side-panel-9: #2e1065;
+}
+:root[data-theme='arcane'] {
+    --card-bg: #ffe8cc; --text-color: #e65100;
+    --side-panel-0: #f5f5f5; --side-panel-1: #fff3e0; --side-panel-2: #ffe0b2; --side-panel-3: #ffcc80; --side-panel-4: #ffb74d;
+    --side-panel-5: #ff9800; --side-panel-6: #f57c00; --side-panel-7: #ef6c00; --side-panel-8: #e65100; --side-panel-9: #bf360c;
+}
+:root[data-theme='black'] {
+    --card-bg: #000000; --text-color: #ffffff;
+    --side-panel-0: #1a1a1a; --side-panel-1: #2a2a2a; --side-panel-2: #3a3a3a; --side-panel-3: #4a4a4a; --side-panel-4: #5a5a5a;
+    --side-panel-5: #6a6a6a; --side-panel-6: #7a7a7a; --side-panel-7: #8a8a8a; --side-panel-8: #9a9a9a; --side-panel-9: #aaaaaa;
+}
+
+
+.spell-card {
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: var(--card-width);
+    height: var(--card-height);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    letter-spacing: -0.02em;
+    padding-top: 23px;
+    background: var(--card-bg);
+}
+
+.spell-name {
+    color: #000000; /* Always black for readability */
+    letter-spacing: -1px;
+}
+
+.ritual-indicator + .spell-title-text {
+    padding-left: 20px; /* Make space for the ritual icon */
+}
+
+.spell-subtitle, .spell-description, .spell-level, .spell-header-label, .spell-header-value {
+    color: var(--text-color);
+}
+
+.spell-school, .spell-side-text, .spell-classes {
+    color: var(--text-color) !important;
+}
+
+.spell-side-band.level-0 { background-color: var(--side-panel-0); }
+.spell-side-band.level-1 { background-color: var(--side-panel-1); }
+.spell-side-band.level-2 { background-color: var(--side-panel-2); }
+.spell-side-band.level-3 { background-color: var(--side-panel-3); }
+.spell-side-band.level-4 { background-color: var(--side-panel-4); }
+.spell-side-band.level-5 { background-color: var(--side-panel-5); }
+.spell-side-band.level-6 { background-color: var(--side-panel-6); }
+.spell-side-band.level-7 { background-color: var(--side-panel-7); }
+.spell-side-band.level-8 { background-color: var(--side-panel-8); }
+.spell-side-band.level-9 { background-color: var(--side-panel-9); }
+
+.spell-name {
+    font-size: calc(1.1em * var(--font-scale));
+}
+
+.spell-description {
+    font-size: calc(0.8em * var(--body-font-scale));
+}
+
+.spell-content {
+    background: black;
+    color: white;
+    border: 2px solid black;
+    margin: 0 4px 0 4px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+
+
+
+.spell-header {
+    background: white;
+    color: black;
+    padding: 7px 8px 8px 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    z-index: 2;
+}
+
+.spell-name {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+    font-family: 'Crimson Text', 'Times New Roman', serif;
+    letter-spacing: -1px;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid black;
+    border-radius: 16px;
+    padding: 4px 28px;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    z-index: 2;
+    width: calc(100% - 16px);
+    height: 35px;
+    max-height: 35px;
+    overflow: hidden;
+}
+
+.spell-name-with-ritual {
+    justify-content: center;
+}
+
+.spell-title-text {
+    line-height: 0.9;
+}
+
+.spell-name-with-ritual .spell-title-text {
+    text-align: center;
+}
+
+.ritual-indicator {
+    position: absolute;
+    left: 8px;
+    display: inline-flex;
+    width: 12px;
+    height: 12px;
+    background: black;
+    color: white;
+    font-size: 0.6em;
+    font-weight: bold;
+    text-align: center;
+    line-height: 12px;
+    transform: rotate(45deg);
+    border-radius: 1px;
+    align-items: center;
+    justify-content: center;
+}
+
+.ritual-indicator span {
+    transform: rotate(-45deg);
+    display: inline-block;
+}
+
+.spell-level-circle {
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border: 2px solid black;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7em;
+    font-weight: bold;
+    font-family: 'Crimson Text', 'Times New Roman', serif;
+    color: black;
+    line-height: 1;
+    text-align: center;
+}
+
+.spell-level-circle span {
+    display: block;
+    transform: translateX(-0.5px) translateY(0.5px);
+}
+
+
+
+
+
+.spell-header-bar {
+    display: flex;
+    border-bottom: 1px solid black;
+    background: white;
+    height: 32px;
+    overflow: hidden;
+}
+
+.spell-header-column {
+    flex: 1 1 auto;
+    padding: 4px 1px;
+    text-align: center;
+    border-right: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    height: 100%;
+}
+
+.spell-header-column:nth-child(1) {
+    flex: 0.8 1 auto;
+}
+
+.spell-header-column:nth-child(2) {
+    flex: 0.9 1 auto;
+}
+
+.spell-header-column:nth-child(3) {
+    flex: 1.2 1 auto;
+}
+
+.spell-header-column:nth-child(4) {
+    flex: 1.1 1 auto;
+}
+
+.spell-header-column:last-child {
+    border-right: none;
+}
+
+.spell-header-label {
+    font-size: 0.4em;
+    font-weight: 700;
+    color: black;
+    margin-bottom: 3px;
+    font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.spell-header-value {
+    font-size: 0.65em;
+    font-weight: 400;
+    color: black;
+    font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.concentration-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 10px;
+    height: 12px;
+    background: black;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.4em;
+    font-weight: bold;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+
+.spell-body {
+    padding: 8px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: white;
+    overflow: hidden;
+}
+
+.spell-description {
+    padding: 0;
+    line-height: 1.2;
+    color: black;
+    font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.spell-description br {
+    margin: 0.5em 0;
+    display: block;
+}
+
+.spell-description-content {
+    overflow-y: auto;
+    flex: 1;
+    padding: 0;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.spell-description-content::-webkit-scrollbar {
+    display: none; /* WebKit */
+}
+
+.cantrip-upgrade {
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+
+.spell-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 6px 8px;
+    font-size: 0.65em;
+    flex-shrink: 0;
+    min-height: 18px;
+}
+
+.spell-school {
+    text-align: left;
+    font-weight: 700;
+    color: black;
+    font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.65em;
+    word-wrap: break-word;
+}
+
+.spell-classes {
+    text-align: right;
+    font-weight: 400;
+    font-style: italic;
+    color: black;
+    font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.65em;
+    word-wrap: break-word;
+}
+
+.school-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.school-abjuration { background-color: #FF6B6B; }
+.school-conjuration { background-color: #4ECDC4; }
+.school-divination { background-color: #45B7D1; }
+.school-enchantment { background-color: #96CEB4; }
+.school-evocation { background-color: #FFEAA7; }
+.school-illusion { background-color: #DDA0DD; }
+.school-necromancy { background-color: #98D8C8; }
+.school-transmutation { background-color: #F7DC6F; }

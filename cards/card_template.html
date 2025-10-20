@@ -1,0 +1,48 @@
+<div class="spell-card">
+    <div class="spell-name">
+        {{#if isRitual}}
+        <div class="ritual-indicator"><span>R</span></div>
+        {{/if}}
+        <span class="spell-title-text">{{spellTitle}}</span>
+        {{#if levelText}}
+        <div class="spell-level-circle"><span>{{levelText}}</span></div>
+        {{/if}}
+    </div>
+    <div class="spell-content">
+        <div class="spell-header"></div>
+        {{#if hasHeader}}
+        <div class="spell-header-bar">
+            <div class="spell-header-column">
+                <div class="spell-header-label">RANGE</div>
+                <div class="spell-header-value">{{formattedRange}}</div>
+            </div>
+            <div class="spell-header-column">
+                <div class="spell-header-label">COMPONENTS</div>
+                <div class="spell-header-value">{{formattedComponents}}</div>
+            </div>
+            <div class="spell-header-column">
+                <div class="spell-header-label">DURATION</div>
+                <div class="spell-header-value">{{{formattedDuration}}}</div>
+            </div>
+            <div class="spell-header-column">
+                <div class="spell-header-label">CASTING TIME</div>
+                <div class="spell-header-value">{{formattedCastingTime}}</div>
+            </div>
+        </div>
+        {{/if}}
+        <div class="spell-body">
+            <div class="spell-description">
+                <div class="spell-description-content">
+                    {{#if formattedMaterialComponent}}
+                    <em>Material Component:</em> {{{formattedMaterialComponent}}}<br/><br/>
+                    {{/if}}
+                    <span class="description-content">{{{description}}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="spell-footer">
+        <div class="spell-school">{{school_of_magic}}</div>
+        <div class="spell-classes">{{classes}}</div>
+    </div>
+</div>
