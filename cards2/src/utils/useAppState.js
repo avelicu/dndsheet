@@ -6,7 +6,7 @@ import stateManager from './stateManager';
  * @returns {Object} Spell selection state and update function
  */
 export const useSpellSelection = () => {
-  const [spellSelection, setSpellSelection] = useState(stateManager.getState().spellSelection);
+  const [spellSelection, setSpellSelection] = useState(() => stateManager.getState().spellSelection);
 
   useEffect(() => {
     // Subscribe to state changes
@@ -33,7 +33,7 @@ export const useSpellSelection = () => {
  * @returns {Object} Layout config state and update function
  */
 export const useLayoutConfig = () => {
-  const [layoutConfig, setLayoutConfig] = useState(stateManager.getState().layoutConfig);
+  const [layoutConfig, setLayoutConfig] = useState(() => stateManager.getState().layoutConfig);
 
   useEffect(() => {
     // Subscribe to state changes

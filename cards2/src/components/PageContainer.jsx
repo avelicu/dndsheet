@@ -1,10 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Page from './Page';
 import CardGrid from './CardGrid';
 import { calculateCardsPerPage } from '../utils/layoutConfig';
+import { reflowCalculator } from '../utils/reflowCalculator';
 import './PageContainer.css';
 
 const PageContainer = ({ spellSelection, layoutConfig }) => {
+  const [reflowedSpells, setReflowedSpells] = useState([]);
+  const [isCalculating, setIsCalculating] = useState(false);
+
+  // Calculate reflowed spells when filtered spells or layout config changes
+  useEffect(() => {
+    const calculateReflow = async () => {
+      if (!spellSelection?.filteredSpells || spellSelection.filteredSpells.length === 0) {
+        setReflowedSpells([]);
+        return;
+      }
+
+      setIsCalculating(true);
+      const reflowed = await reflowCalculator(
+        spellSelection.filteredSpells, 
+        layoutConfig?.cardSize || 'standard'
+      );
+      setReflowedSpells(reflowed);
+      setIsCalculating(false);
+    };
+
+    calculateReflow();
+  }, [spellSelection?.filteredSpells, layoutConfig?.cardSize]);
+
   if (!spellSelection || !spellSelection.filteredSpells || spellSelection.filteredSpells.length === 0) {
     return (
       <div className="page-container">
@@ -21,14 +45,19 @@ const PageContainer = ({ spellSelection, layoutConfig }) => {
     layoutConfig?.cardSize || 'standard'
   );
   
-  // Split spells into pages
+  // Split reflowed spells into pages
   const pages = [];
-  for (let i = 0; i < spellSelection.filteredSpells.length; i += cardsPerPage) {
-    pages.push(spellSelection.filteredSpells.slice(i, i + cardsPerPage));
+  for (let i = 0; i < reflowedSpells.length; i += cardsPerPage) {
+    pages.push(reflowedSpells.slice(i, i + cardsPerPage));
   }
 
   return (
     <div className="page-container">
+      {isCalculating && (
+        <div className="calculating-message">
+          <p>Calculating card layouts...</p>
+        </div>
+      )}
       <div className="pages-preview">
         {pages.map((pageSpells, pageIndex) => (
           <Page key={pageIndex} layoutConfig={layoutConfig}>

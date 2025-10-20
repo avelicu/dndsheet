@@ -9,16 +9,23 @@ import './Configurator.css';
 const Configurator = ({ onSelectionChange, onLayoutChange }) => {
   const { spells, classes, levels, filterSpells, loading, error } = useSpellData();
   
-  // Initialize with saved state
-  const initialState = stateManager.getState();
-  console.log('Configurator initializing with state:', initialState);
-  console.log('Selected classes:', initialState.spellSelection.selectedClasses);
-  console.log('Selected levels:', initialState.spellSelection.selectedLevels);
-  
-  const [selectedClasses, setSelectedClasses] = useState(initialState.spellSelection.selectedClasses);
-  const [selectedLevels, setSelectedLevels] = useState(initialState.spellSelection.selectedLevels);
-  const [pageSize, setPageSize] = useState(initialState.layoutConfig.pageSize);
-  const [cardSize, setCardSize] = useState(initialState.layoutConfig.cardSize || 'standard');
+  // Initialize with saved state - only once
+  const [selectedClasses, setSelectedClasses] = useState(() => {
+    const initialState = stateManager.getState();
+    return initialState.spellSelection.selectedClasses;
+  });
+  const [selectedLevels, setSelectedLevels] = useState(() => {
+    const initialState = stateManager.getState();
+    return initialState.spellSelection.selectedLevels;
+  });
+  const [pageSize, setPageSize] = useState(() => {
+    const initialState = stateManager.getState();
+    return initialState.layoutConfig.pageSize;
+  });
+  const [cardSize, setCardSize] = useState(() => {
+    const initialState = stateManager.getState();
+    return initialState.layoutConfig.cardSize || 'standard';
+  });
 
   // Notify parent component of selection changes
   useEffect(() => {

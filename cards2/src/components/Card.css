@@ -342,6 +342,27 @@
   line-height: 12px;
 }
 
+/* Unconstrained card styles for measurement */
+.spell-card[style*="height: auto"] {
+  overflow: visible !important;
+}
+
+.spell-card[style*="height: auto"] .spell-content {
+  overflow: visible !important;
+}
+
+.spell-card[style*="height: auto"] .spell-body {
+  overflow: visible !important;
+}
+
+.spell-card[style*="height: auto"] .spell-description {
+  overflow: visible !important;
+}
+
+.spell-card[style*="height: auto"] .spell-description-content {
+  overflow: visible !important;
+}
+
 /* Print styles */
 @media print {
   .spell-card {

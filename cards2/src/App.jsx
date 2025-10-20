@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Configurator from './components/Configurator';
 import PageContainer from './components/PageContainer';
 import DebugPanel from './components/DebugPanel';
@@ -13,15 +13,15 @@ function App() {
     updateLayoutConfig 
   } = useAppState();
 
-  const handleSelectionChange = (selection) => {
+  const handleSelectionChange = useCallback((selection) => {
     updateSpellSelection(selection);
     console.log('Spell selection updated:', selection);
-  };
+  }, [updateSpellSelection]);
 
-  const handleLayoutChange = (layout) => {
+  const handleLayoutChange = useCallback((layout) => {
     updateLayoutConfig(layout);
     console.log('Layout config updated:', layout);
-  };
+  }, [updateLayoutConfig]);
 
   return (
     <div className="app">

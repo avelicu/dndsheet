@@ -2,7 +2,7 @@ import React from 'react';
 import { getCardDimensions } from '../utils/layoutConfig';
 import './Card.css';
 
-const Card = ({ spell, cardSize = 'standard', className = '' }) => {
+const Card = ({ spell, cardSize = 'standard', unconstrained = false, className = '' }) => {
   const dimensions = getCardDimensions(cardSize);
 
   const levelText = spell.level.toString();
@@ -45,7 +45,7 @@ const Card = ({ spell, cardSize = 'standard', className = '' }) => {
       className={`spell-card ${className}`}
       style={{
         width: dimensions.width,
-        height: dimensions.height
+        height: unconstrained ? 'auto' : dimensions.height
       }}
     >
       {/* Spell Name Header */}

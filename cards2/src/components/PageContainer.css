@@ -30,6 +30,22 @@
   font-style: italic;
 }
 
+.calculating-message {
+  text-align: center;
+  padding: 1rem 2rem;
+  color: #3498db;
+  font-size: 0.9rem;
+  background: #ecf0f1;
+  border-radius: 6px;
+  border: 1px solid #bdc3c7;
+  margin: 1rem;
+}
+
+.calculating-message p {
+  margin: 0;
+  font-style: italic;
+}
+
 /* Print styles */
 @media print {
   .page-container {
@@ -43,7 +59,8 @@
     gap: 0;
   }
   
-  .no-spells-message {
+  .no-spells-message,
+  .calculating-message {
     display: none;
   }
 }
