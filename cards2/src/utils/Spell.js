@@ -47,6 +47,7 @@ export class Spell {
     return this.level === level;
   }
 
+
   /**
    * Get formatted level display
    * @returns {string} Formatted level string

@@ -20,6 +20,14 @@ const DebugPanel = () => {
     }
   };
 
+  const handleClearLocalStorage = () => {
+    if (window.confirm('Are you sure you want to clear all localStorage data?')) {
+      localStorage.clear();
+      console.log('localStorage cleared');
+      window.location.reload(); // Reload to reinitialize with defaults
+    }
+  };
+
   const handleExport = () => {
     const stateJson = stateManager.exportState();
     const blob = new Blob([stateJson], { type: 'application/json' });
@@ -78,6 +86,9 @@ const DebugPanel = () => {
           <div className="debug-actions">
             <button onClick={handleReset} className="debug-btn debug-btn-danger">
               Reset to Defaults
+            </button>
+            <button onClick={handleClearLocalStorage} className="debug-btn debug-btn-danger">
+              Clear localStorage
             </button>
             <button onClick={handleExport} className="debug-btn debug-btn-primary">
               Export State

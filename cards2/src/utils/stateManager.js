@@ -53,10 +53,13 @@ const StorageUtils = {
   load(key, defaultValue = null) {
     try {
       const serialized = localStorage.getItem(key);
+      console.log(`Raw localStorage data for ${key}:`, serialized);
       if (serialized === null) {
+        console.log(`No data found for ${key}, using default:`, defaultValue);
         return defaultValue;
       }
       const parsed = JSON.parse(serialized);
+      console.log(`Parsed data for ${key}:`, parsed);
       
       // Special handling for spell selection to reconstruct Spell objects
       if (key === STORAGE_KEYS.SPELL_SELECTION && parsed.filteredSpells) {

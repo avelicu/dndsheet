@@ -11,6 +11,10 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
   
   // Initialize with saved state
   const initialState = stateManager.getState();
+  console.log('Configurator initializing with state:', initialState);
+  console.log('Selected classes:', initialState.spellSelection.selectedClasses);
+  console.log('Selected levels:', initialState.spellSelection.selectedLevels);
+  
   const [selectedClasses, setSelectedClasses] = useState(initialState.spellSelection.selectedClasses);
   const [selectedLevels, setSelectedLevels] = useState(initialState.spellSelection.selectedLevels);
   const [pageSize, setPageSize] = useState(initialState.layoutConfig.pageSize);
@@ -65,14 +69,42 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
 
   const handleClassChange = (newSelectedClasses) => {
     setSelectedClasses(newSelectedClasses);
+    // Save to localStorage immediately
+    const currentState = stateManager.getState();
+    stateManager.updateSpellSelection({
+      ...currentState.spellSelection,
+      selectedClasses: newSelectedClasses
+    });
   };
 
   const handleLevelChange = (newSelectedLevels) => {
     setSelectedLevels(newSelectedLevels);
+    // Save to localStorage immediately
+    const currentState = stateManager.getState();
+    stateManager.updateSpellSelection({
+      ...currentState.spellSelection,
+      selectedLevels: newSelectedLevels
+    });
   };
 
   const handlePageSizeChange = (newPageSize) => {
     setPageSize(newPageSize);
+    // Save to localStorage immediately
+    const currentState = stateManager.getState();
+    stateManager.updateLayoutConfig({
+      ...currentState.layoutConfig,
+      pageSize: newPageSize
+    });
+  };
+
+  const handleCardSizeChange = (newCardSize) => {
+    setCardSize(newCardSize);
+    // Save to localStorage immediately
+    const currentState = stateManager.getState();
+    stateManager.updateLayoutConfig({
+      ...currentState.layoutConfig,
+      cardSize: newCardSize
+    });
   };
 
   if (loading) {
@@ -110,7 +142,7 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
           pageSize={pageSize}
           cardSize={cardSize}
           onPageSizeChange={handlePageSizeChange}
-          onCardSizeChange={setCardSize}
+          onCardSizeChange={handleCardSizeChange}
         />
       </div>
     </div>
