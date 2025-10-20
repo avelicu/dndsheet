@@ -3,7 +3,7 @@ import Card from './Card';
 import { getCardDimensions, calculateGridLayout } from '../utils/layoutConfig';
 import './CardGrid.css';
 
-const CardGrid = ({ spells, cardSize = 'standard', pageSize = 'letter' }) => {
+const CardGrid = ({ cardData = [], cardSize = 'standard', pageSize = 'letter' }) => {
   const cardDimensions = getCardDimensions(cardSize);
   const { cardsPerRow, cardsPerColumn } = calculateGridLayout(pageSize, cardSize);
 
@@ -15,10 +15,10 @@ const CardGrid = ({ spells, cardSize = 'standard', pageSize = 'letter' }) => {
         gridTemplateRows: `repeat(${cardsPerColumn}, ${cardDimensions.height})`
       }}
     >
-      {spells.map((spell, cardIndex) => (
+      {cardData.map((card, cardIndex) => (
         <Card 
-          key={`${spell.name}-${cardIndex}`}
-          spell={spell} 
+          key={`${card.title}-${cardIndex}`}
+          cardData={card} 
           cardSize={cardSize}
           className="grid-card"
         />

@@ -3,17 +3,18 @@ import Page from './Page';
 import CardGrid from './CardGrid';
 import { calculateCardsPerPage } from '../utils/layoutConfig';
 import { reflowCalculator } from '../utils/reflowCalculator';
+import { SpellToCardDataTransformer } from '../utils/SpellToCardDataTransformer';
 import './PageContainer.css';
 
 const PageContainer = ({ spellSelection, layoutConfig }) => {
-  const [reflowedSpells, setReflowedSpells] = useState([]);
+  const [reflowedCardData, setReflowedCardData] = useState([]);
   const [isCalculating, setIsCalculating] = useState(false);
 
   // Calculate reflowed spells when filtered spells or layout config changes
   useEffect(() => {
     const calculateReflow = async () => {
       if (!spellSelection?.filteredSpells || spellSelection.filteredSpells.length === 0) {
-        setReflowedSpells([]);
+        setReflowedCardData([]);
         return;
       }
 
@@ -22,7 +23,7 @@ const PageContainer = ({ spellSelection, layoutConfig }) => {
         spellSelection.filteredSpells, 
         layoutConfig?.cardSize || 'standard'
       );
-      setReflowedSpells(reflowed);
+      setReflowedCardData(reflowed);
       setIsCalculating(false);
     };
 
@@ -45,10 +46,10 @@ const PageContainer = ({ spellSelection, layoutConfig }) => {
     layoutConfig?.cardSize || 'standard'
   );
   
-  // Split reflowed spells into pages
+  // Split reflowed cardData into pages
   const pages = [];
-  for (let i = 0; i < reflowedSpells.length; i += cardsPerPage) {
-    pages.push(reflowedSpells.slice(i, i + cardsPerPage));
+  for (let i = 0; i < reflowedCardData.length; i += cardsPerPage) {
+    pages.push(reflowedCardData.slice(i, i + cardsPerPage));
   }
 
   return (
@@ -59,10 +60,10 @@ const PageContainer = ({ spellSelection, layoutConfig }) => {
         </div>
       )}
       <div className="pages-preview">
-        {pages.map((pageSpells, pageIndex) => (
+        {pages.map((pageCardData, pageIndex) => (
           <Page key={pageIndex} layoutConfig={layoutConfig}>
             <CardGrid 
-              spells={pageSpells}
+              cardData={pageCardData}
               cardSize={layoutConfig?.cardSize || 'standard'}
               pageSize={layoutConfig?.pageSize || 'letter'}
             />
