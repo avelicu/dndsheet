@@ -1,0 +1,119 @@
+/* Spell Card Component Styles */
+
+.spell-card {
+  background: white;
+  border: 2px solid #2c3e50;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem;
+  margin: 0.25rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-header {
+  border-bottom: 1px solid #bdc3c7;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.spell-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #2c3e50;
+  line-height: 1.2;
+}
+
+.spell-level {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.spell-classes {
+  font-weight: 600;
+  color: #34495e;
+  text-align: center;
+  padding: 0.25rem;
+  background: #ecf0f1;
+  border-radius: 4px;
+  margin-bottom: 0.25rem;
+}
+
+.spell-school,
+.spell-casting-time,
+.spell-range,
+.spell-components,
+.spell-duration {
+  color: #2c3e50;
+}
+
+.spell-school strong,
+.spell-casting-time strong,
+.spell-range strong,
+.spell-components strong,
+.spell-duration strong {
+  color: #34495e;
+}
+
+.spell-description {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #ecf0f1;
+  color: #2c3e50;
+  font-style: italic;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Card size variations */
+.spell-card[style*="width: 1.75in"] {
+  font-size: 0.7rem;
+}
+
+.spell-card[style*="width: 1.75in"] .spell-name {
+  font-size: 0.85rem;
+}
+
+.spell-card[style*="width: 1.75in"] .spell-level {
+  font-size: 0.7rem;
+}
+
+.spell-card[style*="width: 3.5in"] {
+  font-size: 0.85rem;
+}
+
+.spell-card[style*="width: 3.5in"] .spell-name {
+  font-size: 1.2rem;
+}
+
+.spell-card[style*="width: 3.5in"] .spell-level {
+  font-size: 0.9rem;
+}
+
+/* Print styles - identical to preview */
+@media print {
+  .spell-card {
+    box-shadow: none;
+    border: 1px solid #000;
+    page-break-inside: avoid;
+    margin: 0.125rem;
+  }
+}

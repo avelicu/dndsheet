@@ -1,0 +1,154 @@
+.debug-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  transition: all 0.2s ease;
+}
+
+.debug-toggle:hover {
+  background: #c0392b;
+  transform: scale(1.1);
+}
+
+.debug-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 400px;
+  max-height: 600px;
+  background: #2c3e50;
+  border: 2px solid #34495e;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 1001;
+  overflow: hidden;
+}
+
+.debug-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #34495e;
+  border-bottom: 1px solid #2c3e50;
+}
+
+.debug-header h3 {
+  margin: 0;
+  color: #ecf0f1;
+  font-size: 1rem;
+}
+
+.debug-close {
+  background: none;
+  border: none;
+  color: #bdc3c7;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.debug-close:hover {
+  color: #ecf0f1;
+}
+
+.debug-content {
+  padding: 1rem;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.debug-section {
+  margin-bottom: 1.5rem;
+}
+
+.debug-section h4 {
+  margin: 0 0 0.5rem 0;
+  color: #ecf0f1;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.debug-state {
+  background: #2c3e50;
+  border: 1px solid #34495e;
+  border-radius: 4px;
+  padding: 0.75rem;
+  color: #bdc3c7;
+  font-size: 0.8rem;
+  font-family: 'Courier New', monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.debug-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.debug-btn {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #34495e;
+  border-radius: 4px;
+  background: #34495e;
+  color: #ecf0f1;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.debug-btn:hover {
+  background: #2c3e50;
+}
+
+.debug-btn-primary {
+  border-color: #3498db;
+}
+
+.debug-btn-primary:hover {
+  background: #3498db;
+}
+
+.debug-btn-danger {
+  border-color: #e74c3c;
+}
+
+.debug-btn-danger:hover {
+  background: #e74c3c;
+}
+
+.debug-btn-secondary {
+  border-color: #95a5a6;
+}
+
+.debug-btn-secondary:hover {
+  background: #95a5a6;
+}
+
+.debug-storage {
+  color: #bdc3c7;
+  font-size: 0.8rem;
+}
+
+.debug-storage p {
+  margin: 0.25rem 0;
+}

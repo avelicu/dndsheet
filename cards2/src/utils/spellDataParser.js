@@ -1,8 +1,10 @@
+import Papa from 'papaparse';
+import { Spell } from './Spell.js';
+
 /**
- * CSV Parser Utility for D&D Spells
+ * CSV Parser Utility for D&D Spells using PapaParse
  * Handles parsing and data extraction from the spells CSV file
  */
-
 export class SpellDataParser {
   constructor() {
     this.spells = [];
@@ -17,25 +19,30 @@ export class SpellDataParser {
    */
   parseCSV(csvText) {
     try {
-      const lines = csvText.trim().split('\n');
-      const headers = this.parseLine(lines[0]);
-      
-      if (!this.validateHeaders(headers)) {
-        throw new Error('Invalid CSV headers. Expected: level;name;school_of_magic;casting_time;range;components;material_component;duration;description;classes');
+      const result = Papa.parse(csvText, {
+        header: true,
+        delimiter: ';',
+        skipEmptyLines: true,
+        transformHeader: (header) => header.trim(),
+        transform: (value) => value.trim()
+      });
+
+      if (result.errors.length > 0) {
+        console.warn('CSV parsing warnings:', result.errors);
       }
 
       this.spells = [];
       this.classes.clear();
       this.levels.clear();
 
-      // Parse each spell line
-      for (let i = 1; i < lines.length; i++) {
-        const spell = this.parseSpellLine(lines[i], headers);
-        if (spell) {
+      // Process each spell
+      result.data.forEach((spellData) => {
+        if (spellData.name && spellData.level !== undefined) {
+          const spell = new Spell(spellData);
           this.spells.push(spell);
           this.extractClassesAndLevels(spell);
         }
-      }
+      });
 
       return {
         spells: this.spells,
@@ -49,86 +56,8 @@ export class SpellDataParser {
   }
 
   /**
-   * Parse a single line from CSV
-   * @param {string} line - CSV line
-   * @returns {Array} Parsed fields
-   */
-  parseLine(line) {
-    const fields = [];
-    let currentField = '';
-    let inQuotes = false;
-    
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i];
-      
-      if (char === '"') {
-        inQuotes = !inQuotes;
-      } else if (char === ';' && !inQuotes) {
-        fields.push(currentField.trim());
-        currentField = '';
-      } else {
-        currentField += char;
-      }
-    }
-    
-    fields.push(currentField.trim());
-    return fields;
-  }
-
-  /**
-   * Validate CSV headers
-   * @param {Array} headers - Parsed headers
-   * @returns {boolean} True if valid
-   */
-  validateHeaders(headers) {
-    const expectedHeaders = [
-      'level', 'name', 'school_of_magic', 'casting_time', 'range',
-      'components', 'material_component', 'duration', 'description', 'classes'
-    ];
-    
-    return headers.length === expectedHeaders.length &&
-           headers.every((header, index) => header === expectedHeaders[index]);
-  }
-
-  /**
-   * Parse a single spell line
-   * @param {string} line - CSV line
-   * @param {Array} headers - CSV headers
-   * @returns {Object|null} Parsed spell object
-   */
-  parseSpellLine(line, headers) {
-    try {
-      const fields = this.parseLine(line);
-      
-      if (fields.length !== headers.length) {
-        console.warn(`Skipping malformed line: ${line.substring(0, 50)}...`);
-        return null;
-      }
-
-      const spell = {};
-      headers.forEach((header, index) => {
-        spell[header] = fields[index];
-      });
-
-      // Convert level to number
-      spell.level = parseInt(spell.level, 10);
-      
-      // Parse classes string into array
-      spell.classes = spell.classes
-        .split(',')
-        .map(cls => cls.trim())
-        .filter(cls => cls.length > 0);
-
-      return spell;
-    } catch (error) {
-      console.warn(`Error parsing spell line: ${error.message}`);
-      return null;
-    }
-  }
-
-  /**
    * Extract unique classes and levels from spell data
-   * @param {Object} spell - Spell object
+   * @param {Spell} spell - Spell object
    */
   extractClassesAndLevels(spell) {
     // Add level
@@ -142,12 +71,12 @@ export class SpellDataParser {
    * Filter spells by class and level
    * @param {string} className - Class name to filter by
    * @param {number} level - Spell level to filter by
-   * @returns {Array} Filtered spells
+   * @returns {Array<Spell>} Filtered spells
    */
   filterSpells(className, level) {
     return this.spells.filter(spell => {
-      const matchesClass = !className || spell.classes.includes(className);
-      const matchesLevel = level === null || spell.level === level;
+      const matchesClass = !className || spell.isAvailableToClass(className);
+      const matchesLevel = level === null || spell.isLevel(level);
       return matchesClass && matchesLevel;
     });
   }

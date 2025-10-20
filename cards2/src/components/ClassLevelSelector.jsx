@@ -35,42 +35,14 @@ const ClassLevelSelector = ({ onSelectionChange }) => {
   // Notify parent component of selection changes
   useEffect(() => {
     if (onSelectionChange) {
-      let filteredSpells = [];
-      
-      // AND logic: spells must match ALL selected classes AND ALL selected levels
-      if (selectedClasses.length === 0 && selectedLevels.length === 0) {
-        // No selections - show no spells
-        filteredSpells = [];
-      } else if (selectedClasses.length === 0) {
-        // Only level filters - show spells that match ANY selected level
-        filteredSpells = selectedLevels.flatMap(level => 
-          filterSpells('', level)
-        );
-        // Remove duplicates
-        filteredSpells = filteredSpells.filter((spell, index, self) => 
-          index === self.findIndex(s => s.name === spell.name)
-        );
-      } else if (selectedLevels.length === 0) {
-        // Only class filters - show spells that match ANY selected class
-        filteredSpells = selectedClasses.flatMap(className => 
-          filterSpells(className, null)
-        );
-        // Remove duplicates
-        filteredSpells = filteredSpells.filter((spell, index, self) => 
-          index === self.findIndex(s => s.name === spell.name)
-        );
-      } else {
-        // Both class and level filters - show spells that match ANY selected class AND ANY selected level
-        filteredSpells = selectedClasses.flatMap(className => 
-          selectedLevels.flatMap(level => 
-            filterSpells(className, level)
-          )
-        );
-        // Remove duplicates
-        filteredSpells = filteredSpells.filter((spell, index, self) => 
-          index === self.findIndex(s => s.name === spell.name)
-        );
-      }
+      // Simple logic: show spells that match ANY selected class AND ANY selected level
+      const filteredSpells = selectedClasses.flatMap(className => 
+        selectedLevels.flatMap(level => 
+          filterSpells(className, level)
+        )
+      ).filter((spell, index, self) => 
+        index === self.findIndex(s => s.name === spell.name)
+      );
 
       onSelectionChange({
         selectedClasses,

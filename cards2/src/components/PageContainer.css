@@ -1,47 +1,8 @@
+/* Page container styles */
 .page-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-}
-
-.page-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e1e5e9;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.add-page-btn {
-  background: #4a90e2;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.add-page-btn:hover {
-  background: #357abd;
-}
-
-.page-count, .spell-count {
-  font-weight: 500;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.spell-count {
-  background: #e8f4fd;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  border-left: 3px solid #4a90e2;
+  background: transparent;
 }
 
 .pages-preview {
@@ -49,135 +10,40 @@
   flex-direction: column;
   gap: 2rem;
   align-items: center;
+  padding: 0;
+  background: transparent;
 }
 
-.page-wrapper {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.remove-page-btn {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s ease;
-}
-
-.remove-page-btn:hover {
-  background: #c82333;
-}
-
-.page-content {
+.no-spells-message {
   text-align: center;
-  color: #666;
-}
-
-.page-content h3 {
-  margin: 0 0 1rem 0;
-  color: #333;
-}
-
-.page-content p {
-  margin: 0;
-  font-style: italic;
-}
-
-.selection-info {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: #e8f4fd;
-  border-radius: 4px;
-  border-left: 3px solid #4a90e2;
-  font-style: normal;
-  font-size: 0.9rem;
-}
-
-/* Spell page content styles */
-.spell-page-content {
-  padding: 0.5rem;
-}
-
-.page-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e1e5e9;
-}
-
-.page-header h3 {
-  margin: 0 0 0.5rem 0;
-  color: #333;
-  font-size: 1.5rem;
-}
-
-.spell-range {
-  margin: 0;
-  color: #666;
-  font-size: 0.9rem;
-  font-style: italic;
-}
-
-.spell-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.spell-item {
-  background: #f8f9fa;
-  border: 1px solid #e1e5e9;
-  border-radius: 6px;
-  padding: 1rem;
-  transition: box-shadow 0.2s ease;
-}
-
-.spell-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.spell-item h4 {
-  margin: 0 0 0.5rem 0;
-  color: #2c5aa0;
+  padding: 3rem 2rem;
+  color: #7f8c8d;
   font-size: 1.1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #bdc3c7;
+  margin: 2rem;
 }
 
-.spell-level {
-  margin: 0 0 0.5rem 0;
-  font-weight: 600;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.spell-classes {
+.no-spells-message p {
   margin: 0;
-  color: #888;
-  font-size: 0.8rem;
   font-style: italic;
 }
 
-/* Print styles - hide controls */
+/* Print styles */
 @media print {
-  .page-controls,
-  .remove-page-btn {
-    display: none !important;
+  .page-container {
+    background: white;
+    padding: 0;
   }
   
-  .spell-item {
-    break-inside: avoid;
+  .pages-preview {
+    background: white;
+    padding: 0;
+    gap: 0;
+  }
+  
+  .no-spells-message {
+    display: none;
   }
 }

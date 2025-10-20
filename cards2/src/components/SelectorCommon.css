@@ -1,0 +1,89 @@
+/* Common styles for all selector components */
+
+/* Group headers */
+.selector-group-header {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ecf0f1;
+}
+
+/* Selection counts */
+.selector-selection-count {
+  font-size: 0.8rem;
+  color: #bdc3c7;
+  margin-bottom: 0.5rem;
+}
+
+/* Checkbox lists */
+.selector-checkbox-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #2c3e50;
+  border-radius: 4px;
+  background: #2c3e50;
+}
+
+.selector-checkbox-list li {
+  border-bottom: 1px solid #34495e;
+}
+
+.selector-checkbox-list li:last-child {
+  border-bottom: none;
+}
+
+.selector-checkbox-label {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.selector-checkbox-label:hover {
+  background-color: #34495e;
+}
+
+.selector-checkbox-label input[type="checkbox"] {
+  margin-right: 0.5rem;
+  width: 16px;
+  height: 16px;
+}
+
+.selector-checkbox-text {
+  font-size: 0.9rem;
+  color: #ecf0f1;
+}
+
+/* Form elements */
+.selector-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #bdc3c7;
+  white-space: nowrap;
+}
+
+.selector-dropdown {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #2c3e50;
+  border-radius: 4px;
+  background: #2c3e50;
+  font-size: 0.9rem;
+  color: #ecf0f1;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  min-width: 120px;
+}
+
+.selector-dropdown:hover {
+  border-color: #3498db;
+}
+
+.selector-dropdown:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+}
