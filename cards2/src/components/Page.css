@@ -1,0 +1,56 @@
+/* Page component styles */
+.page {
+  width: 8.5in;
+  height: 11in;
+  background: white;
+  margin: 1rem auto;
+  padding: 1in;
+  box-sizing: border-box;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  position: relative;
+}
+
+/* Print styles - only pages should show */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  .page,
+  .page * {
+    visibility: visible;
+  }
+  
+  .page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8.5in;
+    height: 11in;
+    margin: 0;
+    padding: 1in;
+    box-shadow: none;
+    border-radius: 0;
+    page-break-after: always;
+  }
+  
+  /* Hide non-page elements in print */
+  .class-level-selector,
+  .page-controls,
+  .preview-controls {
+    display: none !important;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page {
+    width: 100%;
+    max-width: 8.5in;
+    height: auto;
+    min-height: 11in;
+    margin: 0.5rem;
+    padding: 0.75in;
+  }
+}
