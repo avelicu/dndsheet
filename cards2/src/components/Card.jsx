@@ -11,13 +11,16 @@ const Card = ({ cardData, cardSize = 'standard', unconstrained = false, classNam
   const rightIndicator = cardData.rightIndicator; // spell level
   const specs = cardData.specs;
   const body = cardData.body;
-  const fontScale = typeof cardData.fontScale === 'number' ? cardData.fontScale : 1;
   const bottomLeft = cardData.bottomLeft; // school of magic
   const bottomRight = cardData.bottomRight; // classes
+  const fontScale = typeof cardData.fontScale === 'number' ? cardData.fontScale : 1;
+
+  const showErrorOutline = !!(cardData.error || cardData.isOverflowing);
+  const showSizeReducedOutline = !!cardData.sizeReduced;
 
   return (
     <div 
-      className={`spell-card ${className} ${cardData.error ? 'card-error' : ''} ${cardData.sizeReduced ? 'card-size-reduced' : ''}`}
+      className={`spell-card ${className} ${showErrorOutline ? 'card-error' : ''} ${showSizeReducedOutline ? 'card-size-reduced' : ''}`}
       style={{
         width: dimensions.width,
         height: unconstrained ? 'auto' : dimensions.height

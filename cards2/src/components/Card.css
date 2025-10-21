@@ -27,6 +27,12 @@
   outline-offset: -2px;
 }
 
+/* If both apply, overflow (red) takes precedence */
+.debug-outlines-enabled .spell-card.card-error.card-size-reduced {
+  outline: 2px solid #e53935;
+  outline-offset: -2px;
+}
+
 .spell-name {
   font-size: 1.2em;
   font-weight: 600;
