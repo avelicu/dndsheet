@@ -221,7 +221,7 @@ function createFallbackTemplate() {
                     <div class="spell-body">
                         <div class="spell-description">
                             <div class="spell-description-content">
-                                ${data.formattedMaterialComponent ? `<em>Material Component:</em> ${data.formattedMaterialComponent}<br/><br/>` : ''}
+                                ${data.formattedMaterialComponent ? `<em>Material Componenttt:</em> ${data.formattedMaterialComponent}<br/><br/>` : ''}
                                 <span class="description-content">${data.description || 'No description available'}</span>
                             </div>
                         </div>

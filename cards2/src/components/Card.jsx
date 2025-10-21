@@ -18,9 +18,11 @@ const Card = ({ cardData, cardSize = 'standard', unconstrained = false, classNam
   const showErrorOutline = !!(cardData.error || cardData.isOverflowing);
   const showSizeReducedOutline = !!cardData.sizeReduced;
 
+  const sizeClass = `card--${cardSize}`; // expected: card--mini|standard|large
+
   return (
     <div 
-      className={`spell-card ${className} ${showErrorOutline ? 'card-error' : ''} ${showSizeReducedOutline ? 'card-size-reduced' : ''}`}
+      className={`spell-card ${sizeClass} ${className} ${showErrorOutline ? 'card-error' : ''} ${showSizeReducedOutline ? 'card-size-reduced' : ''}`}
       style={{
         width: dimensions.width,
         height: unconstrained ? 'auto' : dimensions.height

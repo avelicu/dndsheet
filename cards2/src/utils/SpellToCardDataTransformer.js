@@ -36,7 +36,7 @@ export class SpellToCardDataTransformer {
     // Build main body content
     let body = '';
     if (spell.materialComponent) {
-      body += `<em>Material Component:</em> ${spell.materialComponent}<br/><br/>`;
+      body += `<p>Material Component:</em> ${spell.materialComponent}</p>`;
     }
     body += spell.description;
 
