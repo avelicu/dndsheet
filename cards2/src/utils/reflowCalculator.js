@@ -37,6 +37,8 @@ const performCalculation = async (spells, cardSize) => {
 
   const root = createRoot(hiddenContainer);
 
+  // IMPORTANT: Do not swallow errors in this function.
+  // If something goes wrong we want the app to crash for debuggability.
   try {
     if (document.fonts && document.fonts.ready) {
       await document.fonts.ready;
@@ -66,33 +68,114 @@ const performCalculation = async (spells, cardSize) => {
       return Math.max(0, heightPx - constrainedPx);
     };
 
-    // Helper: split a long description into multiple CardData entries using binary search on words
-    const splitIntoContinuations = (original, minScale) => {
-      const results = [];
-      // Extract plain text from HTML body
-      const scratch = document.createElement('div');
-      scratch.innerHTML = original.body || '';
-      const fullText = scratch.textContent || scratch.innerText || '';
-      const words = fullText.split(/\s+/).filter(Boolean);
-      let start = 0;
+    // Count words in HTML
+    const countWordsInHTML = (html) => {
+      const c = document.createElement('div');
+      c.innerHTML = html || '';
+      const text = c.textContent || c.innerText || '';
+      const matches = text.trim().match(/\S+/g);
+      return matches ? matches.length : 0;
+    };
 
-      // Guard: if no words, just return original marked overflow
-      if (words.length === 0) {
-        const only = { ...original, fontScale: minScale, isOverflowing: true, overflowPx: 1, error: true, sizeReduced: minScale < 1 };
-        results.push(only);
-        return results;
+    // Slice HTML by word count without breaking tags using DOM Range
+    const sliceHTMLByWords = (html, wordLimit) => {
+      const container = document.createElement('div');
+      container.innerHTML = html || '';
+
+      if (wordLimit <= 0) {
+        return { firstHTML: '', restHTML: html || '' };
       }
 
-      while (start < words.length) {
+      const walker = document.createTreeWalker(
+        container,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: (node) => (node.nodeValue && /\S/.test(node.nodeValue)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+        }
+      );
+
+      let words = 0;
+      let targetNode = null;
+      let targetOffset = 0;
+
+      while (walker.nextNode()) {
+        const t = walker.currentNode;
+        const str = t.nodeValue;
+        const regex = /\S+/g;
+        let m;
+        while ((m = regex.exec(str)) !== null) {
+          words += 1;
+          if (words === wordLimit) {
+            targetNode = t;
+            targetOffset = m.index + m[0].length; // end of this word
+            break;
+          }
+        }
+        if (targetNode) break;
+      }
+
+      if (!targetNode) {
+        return { firstHTML: html || '', restHTML: '' };
+      }
+
+      const r1 = document.createRange();
+      r1.setStart(container, 0);
+      r1.setEnd(targetNode, targetOffset);
+      const frag1 = r1.cloneContents();
+      const wrap1 = document.createElement('div');
+      wrap1.appendChild(frag1);
+      const firstHTML = wrap1.innerHTML;
+
+      const r2 = document.createRange();
+      r2.setStart(targetNode, targetOffset);
+      r2.setEnd(container, container.childNodes.length);
+      const frag2 = r2.cloneContents();
+      const wrap2 = document.createElement('div');
+      wrap2.appendChild(frag2);
+      const restHTML = wrap2.innerHTML;
+
+      return { firstHTML, restHTML };
+    };
+
+    // Trim leading <br> and whitespace-only nodes from HTML fragment
+    const trimLeadingBreaks = (html) => {
+      const c = document.createElement('div');
+      c.innerHTML = html || '';
+      // Remove leading whitespace-only text nodes and <br>
+      while (c.firstChild) {
+        const n = c.firstChild;
+        if (n.nodeType === Node.TEXT_NODE && !/\S/.test(n.nodeValue || '')) {
+          c.removeChild(n);
+          continue;
+        }
+        if (n.nodeType === Node.ELEMENT_NODE && n.nodeName === 'BR') {
+          c.removeChild(n);
+          continue;
+        }
+        break;
+      }
+      return c.innerHTML;
+    };
+
+    // Helper: split a long HTML description into multiple CardData entries using binary search on words
+    const splitIntoContinuations = (original, minScale) => {
+      const results = [];
+      let remainingHTML = original.body || '';
+
+      const totalWords = () => countWordsInHTML(remainingHTML);
+
+      while ((remainingHTML || '').trim().length > 0) {
+        const wordsCount = totalWords();
+        if (wordsCount === 0) break;
+
         let lo = 1;
-        let hi = words.length - start;
+        let hi = wordsCount;
         let best = 0;
 
-        // Binary search the max words that fit
         while (lo <= hi) {
           const mid = Math.floor((lo + hi) / 2);
-          const bodyText = words.slice(start, start + mid).join(' ');
-          const testData = { ...original, body: bodyText, fontScale: minScale };
+          const { firstHTML } = sliceHTMLByWords(remainingHTML, mid);
+          const testData = { ...original, body: firstHTML, fontScale: minScale };
           const overflow = measureOverflow(testData);
           if (overflow <= 0) {
             best = mid;
@@ -102,21 +185,19 @@ const performCalculation = async (spells, cardSize) => {
           }
         }
 
-        // Ensure progress even if nothing fits (very long single word)
-        if (best === 0) {
-          best = 1;
-        }
+        if (best === 0) best = 1; // ensure progress
 
-        const bodyText = words.slice(start, start + best).join(' ');
-        const partData = { ...original, body: bodyText, fontScale: minScale };
+        const { firstHTML, restHTML } = sliceHTMLByWords(remainingHTML, best);
+        const cleanFirst = trimLeadingBreaks(firstHTML);
+        const partData = { ...original, body: cleanFirst, fontScale: minScale };
         const overflowPart = measureOverflow(partData);
-        partData.isOverflowing = true;
+        partData.isOverflowing = true; // mark continuations as overflown for visibility
         partData.overflowPx = overflowPart;
-        partData.error = false; // this part fits or progressed; not an error card
+        partData.error = false;
         partData.sizeReduced = minScale < 1.0;
         results.push(partData);
 
-        start += best;
+        remainingHTML = trimLeadingBreaks(restHTML);
       }
 
       return results;
@@ -139,7 +220,6 @@ const performCalculation = async (spells, cardSize) => {
       }
 
       if (!fits) {
-        // Use minimal scale and split into continuations recursively until all text fits
         const parts = splitIntoContinuations(original, MIN_SCALE);
         reflowed.push(...parts);
         continue;
@@ -155,8 +235,6 @@ const performCalculation = async (spells, cardSize) => {
 
     return reflowed;
   } finally {
-    // IMPORTANT: Do not swallow errors in this function.
-    // If something goes wrong we want the app to crash for debuggability.
     try { root.unmount(); } catch {}
     try { document.body.removeChild(hiddenContainer); } catch {}
   }
