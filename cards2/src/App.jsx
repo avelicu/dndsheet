@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Configurator from './components/Configurator';
 import PageContainer from './components/PageContainer';
 import DebugPanel from './components/DebugPanel';
@@ -10,13 +10,17 @@ function App() {
     spellSelection, 
     updateSpellSelection, 
     layoutConfig, 
-    updateLayoutConfig 
+    updateLayoutConfig,
+    debug
   } = useAppState();
 
+  // Runtime-only selected spells (not persisted)
+  const [selectedSpells, setSelectedSpells] = useState([]);
+
   const handleSelectionChange = useCallback((selection) => {
-    updateSpellSelection(selection);
-    console.log('Spell selection updated:', selection);
-  }, [updateSpellSelection]);
+    // Only keep final computed list in runtime state
+    setSelectedSpells(selection.spells || []);
+  }, []);
 
   const handleLayoutChange = useCallback((layout) => {
     updateLayoutConfig(layout);
@@ -24,7 +28,7 @@ function App() {
   }, [updateLayoutConfig]);
 
   return (
-    <div className="app">
+    <div className={`app ${debug?.showOutlines ? 'debug-outlines-enabled' : ''}`}>
       <header className="app-header">
         <h1>D&D Spell Card Creator</h1>
         <p>Create custom spell cards for your D&D adventures</p>
@@ -35,7 +39,7 @@ function App() {
         onLayoutChange={handleLayoutChange}
       />
       <PageContainer 
-        spellSelection={spellSelection}
+        spells={selectedSpells}
         layoutConfig={layoutConfig}
       />
       

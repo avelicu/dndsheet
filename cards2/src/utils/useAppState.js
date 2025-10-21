@@ -56,12 +56,33 @@ export const useLayoutConfig = () => {
 };
 
 /**
+ * Custom hook for managing debug flags with localStorage persistence
+ */
+export const useDebugFlags = () => {
+  const [debug, setDebug] = useState(() => stateManager.getState().debug);
+
+  useEffect(() => {
+    const unsubscribe = stateManager.subscribe('debug', (newDebug) => {
+      setDebug(newDebug);
+    });
+    return unsubscribe;
+  }, []);
+
+  const updateDebug = useCallback((newDebug) => {
+    stateManager.updateDebug(newDebug);
+  }, []);
+
+  return { debug, updateDebug };
+};
+
+/**
  * Custom hook for managing all application state
  * @returns {Object} Complete state and update functions
  */
 export const useAppState = () => {
   const spellSelection = useSpellSelection();
   const layoutConfig = useLayoutConfig();
+  const debugFlags = useDebugFlags();
 
   const resetState = useCallback(() => {
     stateManager.reset();
@@ -78,6 +99,7 @@ export const useAppState = () => {
   return {
     ...spellSelection,
     ...layoutConfig,
+    ...debugFlags,
     resetState,
     exportState,
     importState

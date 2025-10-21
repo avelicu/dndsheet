@@ -58,6 +58,12 @@ const DebugPanel = () => {
     }
   };
 
+  const toggleOutlines = () => {
+    const next = { ...stateManager.getState().debug, showOutlines: !stateManager.getState().debug.showOutlines };
+    stateManager.updateDebug(next);
+    setCurrentState(stateManager.getState());
+  };
+
   if (!isOpen) {
     return (
       <button className="debug-toggle" onClick={togglePanel}>
@@ -103,6 +109,18 @@ const DebugPanel = () => {
               />
             </label>
           </div>
+        </div>
+
+        <div className="debug-section">
+          <h4>Visual Aids</h4>
+          <label className="selector-item">
+            <input
+              type="checkbox"
+              checked={stateManager.getState().debug.showOutlines}
+              onChange={toggleOutlines}
+            />
+            <span className="selector-item-label">Show card outlines (size reduced: blue, overflow: red)</span>
+          </label>
         </div>
         
         <div className="debug-section">

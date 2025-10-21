@@ -1,5 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
 import Card from '../components/Card';
 import { getCardDimensions } from './layoutConfig';
 import { SpellToCardDataTransformer } from './SpellToCardDataTransformer';
@@ -37,10 +38,11 @@ const performCalculation = async (spells, cardSize) => {
   // Create React root for rendering
   const root = createRoot(hiddenContainer);
 
+  // IMPORTANT: Do not swallow errors in this function.
+  // If something goes wrong we want the app to crash for debuggability.
   try {
-    // Ensure fonts are loaded for deterministic measurement
     if (document.fonts && document.fonts.ready) {
-      try { await document.fonts.ready; } catch {}
+      await document.fonts.ready;
     }
 
     const cardDimensions = getCardDimensions(cardSize);
@@ -56,26 +58,20 @@ const performCalculation = async (spells, cardSize) => {
       let overflowPx = 0;
       let fits = false;
 
-      for (let scale = 1.0; scale >= 0.5; scale -= 0.1) {
+      for (let scale = 1.0; scale >= 0.7; scale -= 0.1) {
         const testData = { ...original, fontScale: parseFloat(scale.toFixed(1)) };
-        // Render test card
-        root.render(React.createElement('div', null, React.createElement(Card, {
-          key: `measure-${testData.title}-${i}`,
-          cardData: testData,
-          cardSize: cardSize,
-          unconstrained: true
-        })));
-
-        // Wait for styles/layout to settle (double rAF)
-        await new Promise(resolve => requestAnimationFrame(resolve));
-
+        // Render test card synchronously
+        flushSync(() => {
+          root.render(React.createElement('div', null, React.createElement(Card, {
+            key: `measure-${testData.title}-${i}`,
+            cardData: testData,
+            cardSize: cardSize,
+            unconstrained: true
+          })));
+        });
         const cardElement = hiddenContainer.querySelector('.spell-card');
         if (!cardElement) {
-          // If not found, assume fits
-          chosenScale = parseFloat(scale.toFixed(1));
-          fits = true;
-          overflowPx = 0;
-          break;
+          throw new Error('Card element not found when measuring');
         }
 
         const heightPx = cardElement.offsetHeight;
@@ -99,18 +95,10 @@ const performCalculation = async (spells, cardSize) => {
       reflowed.push(finalData);
     }
 
-    // Cleanup
-    root.unmount();
-    document.body.removeChild(hiddenContainer);
-
     return reflowed;
-  } catch (error) {
-    console.error('Error in reflowCalculator:', error);
-    try {
-      root.unmount();
-      document.body.removeChild(hiddenContainer);
-    } catch {}
-    // Fallback: return original card data with defaults
-    return cardDataArray.map(cardData => ({ ...cardData, isOverflowing: false, overflowPx: 0 }));
+  } finally {
+    // Always cleanup exactly once
+    try { root.unmount(); } catch {}
+    try { document.body.removeChild(hiddenContainer); } catch {}
   }
 };

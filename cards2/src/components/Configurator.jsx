@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ClassSelector from './ClassSelector';
 import LevelSelector from './LevelSelector';
 import LayoutSelector from './LayoutSelector';
+import AdditionalSpells from './AdditionalSpells';
 import { useSpellData } from '../utils/useSpellData';
 import stateManager from '../utils/stateManager';
 import './Configurator.css';
@@ -27,6 +28,13 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
     return initialState.layoutConfig.cardSize || 'standard';
   });
 
+  // Additional spells selection (by name)
+  const [additionalSpellNames, setAdditionalSpellNames] = useState(() => {
+    const initialState = stateManager.getState();
+    return initialState.spellSelection.additionalSpellNames || [];
+  });
+  const [activeFilteredSpellNames, setActiveFilteredSpellNames] = useState(new Set());
+
   // Notify parent component of selection changes
   useEffect(() => {
     if (onSelectionChange) {
@@ -34,16 +42,12 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
       
       // AND logic: spells must match ALL selected classes AND ALL selected levels
       if (selectedClasses.length === 0 && selectedLevels.length === 0) {
-        // No selections - show no spells
         filteredSpells = [];
       } else if (selectedClasses.length === 0) {
-        // Only level filters - show no spells (need both class AND level)
         filteredSpells = [];
       } else if (selectedLevels.length === 0) {
-        // Only class filters - show no spells (need both class AND level)
         filteredSpells = [];
       } else {
-        // Both class and level filters - show spells that match ANY selected class AND ANY selected level
         filteredSpells = selectedClasses.flatMap(className => 
           selectedLevels.flatMap(level => 
             filterSpells(className, level)
@@ -55,14 +59,23 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
         );
       }
 
+      // Build active set for the AdditionalSpells panel (for greying out)
+      const activeNames = new Set(filteredSpells.map(s => s.name));
+      setActiveFilteredSpellNames(activeNames);
+
+      // Merge in additional spells by name, avoiding duplicates
+      const addByName = new Set(additionalSpellNames);
+      const additional = spells.filter(s => addByName.has(s.name) && !activeNames.has(s.name));
+      const finalSpells = filteredSpells.concat(additional);
+
+      // Emit ONLY final list
       onSelectionChange({
-        selectedClasses,
-        selectedLevels,
-        filteredSpells,
-        spellCount: filteredSpells.length
+        spells: finalSpells,
+        spellCount: finalSpells.length
       });
     }
-  }, [selectedClasses, selectedLevels, filterSpells, onSelectionChange]);
+  // Intentionally exclude onSelectionChange to avoid identity-triggered loops
+  }, [selectedClasses, selectedLevels, filterSpells, additionalSpellNames, spells]);
 
   // Notify parent component of layout changes
   useEffect(() => {
@@ -76,27 +89,26 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
 
   const handleClassChange = (newSelectedClasses) => {
     setSelectedClasses(newSelectedClasses);
-    // Save to localStorage immediately
     const currentState = stateManager.getState();
     stateManager.updateSpellSelection({
       ...currentState.spellSelection,
-      selectedClasses: newSelectedClasses
+      selectedClasses: newSelectedClasses,
+      additionalSpellNames // persist alongside
     });
   };
 
   const handleLevelChange = (newSelectedLevels) => {
     setSelectedLevels(newSelectedLevels);
-    // Save to localStorage immediately
     const currentState = stateManager.getState();
     stateManager.updateSpellSelection({
       ...currentState.spellSelection,
-      selectedLevels: newSelectedLevels
+      selectedLevels: newSelectedLevels,
+      additionalSpellNames
     });
   };
 
   const handlePageSizeChange = (newPageSize) => {
     setPageSize(newPageSize);
-    // Save to localStorage immediately
     const currentState = stateManager.getState();
     stateManager.updateLayoutConfig({
       ...currentState.layoutConfig,
@@ -106,11 +118,19 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
 
   const handleCardSizeChange = (newCardSize) => {
     setCardSize(newCardSize);
-    // Save to localStorage immediately
     const currentState = stateManager.getState();
     stateManager.updateLayoutConfig({
       ...currentState.layoutConfig,
       cardSize: newCardSize
+    });
+  };
+
+  const handleAdditionalSpellsChange = (names) => {
+    setAdditionalSpellNames(names);
+    const currentState = stateManager.getState();
+    stateManager.updateSpellSelection({
+      ...currentState.spellSelection,
+      additionalSpellNames: names
     });
   };
 
@@ -143,6 +163,13 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
           levels={levels}
           selectedLevels={selectedLevels}
           onLevelChange={handleLevelChange}
+        />
+        
+        <AdditionalSpells
+          allSpells={spells}
+          activeSpellNames={activeFilteredSpellNames}
+          selectedNames={additionalSpellNames}
+          onChange={handleAdditionalSpellsChange}
         />
         
         <LayoutSelector

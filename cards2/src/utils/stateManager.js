@@ -1,4 +1,4 @@
-import { Spell } from './Spell';
+// Note: We no longer persist derived spell lists, so no need to import Spell here
 
 /**
  * Centralized state management with localStorage persistence
@@ -11,18 +11,23 @@ const DEFAULT_STATE = {
     selectedClasses: [],
     selectedLevels: [],
     filteredSpells: [],
+    additionalSpellNames: [],
     spellCount: 0
   },
   layoutConfig: {
     pageSize: 'letter',
     cardSize: 'standard'
+  },
+  debug: {
+    showOutlines: false
   }
 };
 
 // State keys for localStorage
 const STORAGE_KEYS = {
   SPELL_SELECTION: 'dnd-spell-creator-spell-selection',
-  LAYOUT_CONFIG: 'dnd-spell-creator-layout-config'
+  LAYOUT_CONFIG: 'dnd-spell-creator-layout-config',
+  DEBUG: 'dnd-spell-creator-debug'
 };
 
 /**
@@ -60,14 +65,7 @@ const StorageUtils = {
       }
       const parsed = JSON.parse(serialized);
       console.log(`Parsed data for ${key}:`, parsed);
-      
-      // Special handling for spell selection to reconstruct Spell objects
-      if (key === STORAGE_KEYS.SPELL_SELECTION && parsed.filteredSpells) {
-        parsed.filteredSpells = parsed.filteredSpells.map(spellData => 
-          Spell.fromObject(spellData)
-        );
-      }
-      
+
       console.log(`Loaded from localStorage: ${key}`);
       return parsed;
     } catch (error) {
@@ -113,19 +111,28 @@ class StateManager {
    * Load state from localStorage on initialization
    */
   loadState() {
-    const savedSpellSelection = StorageUtils.load(
+    const loadedSpellSelection = StorageUtils.load(
       STORAGE_KEYS.SPELL_SELECTION, 
       DEFAULT_STATE.spellSelection
     );
+    const savedSpellSelection = { ...DEFAULT_STATE.spellSelection, ...loadedSpellSelection };
     
-    const savedLayoutConfig = StorageUtils.load(
+    const loadedLayoutConfig = StorageUtils.load(
       STORAGE_KEYS.LAYOUT_CONFIG, 
       DEFAULT_STATE.layoutConfig
     );
+    const savedLayoutConfig = { ...DEFAULT_STATE.layoutConfig, ...loadedLayoutConfig };
+
+    const loadedDebug = StorageUtils.load(
+      STORAGE_KEYS.DEBUG,
+      DEFAULT_STATE.debug
+    );
+    const savedDebug = { ...DEFAULT_STATE.debug, ...loadedDebug };
 
     this.state = {
       spellSelection: savedSpellSelection,
-      layoutConfig: savedLayoutConfig
+      layoutConfig: savedLayoutConfig,
+      debug: savedDebug
     };
 
     console.log('State loaded from localStorage:', this.state);
@@ -144,7 +151,13 @@ class StateManager {
    * @param {Object} spellSelection - New spell selection data
    */
   updateSpellSelection(spellSelection) {
-    this.state.spellSelection = { ...spellSelection };
+    // Whitelist only non-derived fields
+    const next = {
+      selectedClasses: spellSelection.selectedClasses || [],
+      selectedLevels: spellSelection.selectedLevels || [],
+      additionalSpellNames: spellSelection.additionalSpellNames || []
+    };
+    this.state.spellSelection = { ...this.state.spellSelection, ...next };
     this.saveSpellSelection();
     this.notifyListeners('spellSelection', this.state.spellSelection);
   }
@@ -159,11 +172,23 @@ class StateManager {
     this.notifyListeners('layoutConfig', this.state.layoutConfig);
   }
 
+  updateDebug(debug) {
+    this.state.debug = { ...debug };
+    StorageUtils.save(STORAGE_KEYS.DEBUG, this.state.debug);
+    this.notifyListeners('debug', this.state.debug);
+  }
+
   /**
    * Save spell selection to localStorage
    */
   saveSpellSelection() {
-    StorageUtils.save(STORAGE_KEYS.SPELL_SELECTION, this.state.spellSelection);
+    // Persist only the whitelisted, non-derived fields
+    const toSave = {
+      selectedClasses: this.state.spellSelection.selectedClasses || [],
+      selectedLevels: this.state.spellSelection.selectedLevels || [],
+      additionalSpellNames: this.state.spellSelection.additionalSpellNames || []
+    };
+    StorageUtils.save(STORAGE_KEYS.SPELL_SELECTION, toSave);
   }
 
   /**

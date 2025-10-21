@@ -6,39 +6,34 @@ import { reflowCalculator } from '../utils/reflowCalculator';
 import { SpellToCardDataTransformer } from '../utils/SpellToCardDataTransformer';
 import './PageContainer.css';
 
-const PageContainer = ({ spellSelection, layoutConfig }) => {
+const PageContainer = ({ spells = [], layoutConfig }) => {
   const [reflowedCardData, setReflowedCardData] = useState([]);
   const [isCalculating, setIsCalculating] = useState(false);
 
-  // Calculate reflowed spells when filtered spells or layout config changes
+  // Calculate reflowed spells when input spells or layout config changes
   useEffect(() => {
     const calculateReflow = async () => {
-      if (!spellSelection?.filteredSpells || spellSelection.filteredSpells.length === 0) {
+      if (!spells || spells.length === 0) {
         setReflowedCardData([]);
         return;
       }
 
       let config = layoutConfig?.cardSize
 
-      let cancelled = false;
-
       setIsCalculating(true);
       const reflowed = await reflowCalculator(
-        spellSelection.filteredSpells, 
+        spells, 
         layoutConfig?.cardSize || 'standard'
       );
       
-      console.log("calculateReflow " + config + " finished with first spell " + reflowed[0].fontScale);
-      if (!cancelled) setReflowedCardData(reflowed);
+      setReflowedCardData(reflowed);
       setIsCalculating(false);
-
-      return () => { cancelled = true; }
     };
 
     calculateReflow();
-  }, [spellSelection?.filteredSpells, layoutConfig?.cardSize]);
+  }, [spells, layoutConfig?.cardSize]);
 
-  if (!spellSelection || !spellSelection.filteredSpells || spellSelection.filteredSpells.length === 0) {
+  if (!spells || spells.length === 0) {
     return (
       <div className="page-container">
         <div className="no-spells-message">
