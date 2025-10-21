@@ -226,7 +226,8 @@ const performCalculation = async (spells, cardSize) => {
           }
         }
 
-        const partData = { ...original, body: cleanFirst, fontScale: minScale };
+        const isFirstPart = results.length === 0;
+        const partData = { ...original, body: cleanFirst, fontScale: minScale, specs: isFirstPart ? (original.specs || []) : [] };
         const overflowPart = measureOverflow(partData);
         const heightPxPart = constrainedPx + overflowPart;
         console.debug('[reflow] choose part', { words: finalCount, tail: textPreview(cleanFirst), heightPx: heightPxPart, overflow: overflowPart, remainingWords: countWordsInHTML(cleanRest) });

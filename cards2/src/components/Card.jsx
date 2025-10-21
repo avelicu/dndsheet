@@ -9,7 +9,7 @@ const Card = ({ cardData, cardSize = 'standard', unconstrained = false, classNam
   const title = cardData.title;
   const leftIndicator = cardData.leftIndicator; // 'R' for ritual
   const rightIndicator = cardData.rightIndicator; // spell level
-  const specs = cardData.specs;
+  const specs = cardData.specs || [];
   const body = cardData.body;
   const bottomLeft = cardData.bottomLeft; // school of magic
   const bottomRight = cardData.bottomRight; // classes
@@ -44,19 +44,21 @@ const Card = ({ cardData, cardSize = 'standard', unconstrained = false, classNam
       {/* Main Content */}
       <div className="spell-content">
         {/* Header Bar with Details */}
-        <div className="spell-header-bar">
-          {specs.map((spec, index) => (
-            <div key={index} className="spell-header-column">
-              <div className="spell-header-label">{spec.label}</div>
-              <div className="spell-header-value">
-                {spec.hasConcentration && (
-                  <span className="concentration-indicator-inline">C</span>
-                )}
-                {spec.value}
+        {specs.length > 0 && (
+          <div className="spell-header-bar">
+            {specs.map((spec, index) => (
+              <div key={index} className="spell-header-column">
+                <div className="spell-header-label">{spec.label}</div>
+                <div className="spell-header-value">
+                  {spec.hasConcentration && (
+                    <span className="concentration-indicator-inline">C</span>
+                  )}
+                  {spec.value}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Description Body */}
         <div className="spell-body">
