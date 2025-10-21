@@ -132,6 +132,7 @@
 
 .spell-content {
   background: white;
+  background-clip: padding-box;
   color: black;
   border: 2px solid black;
   margin: 0;
@@ -379,25 +380,4 @@
 
 .spell-card[style*="height: auto"] .spell-description-content {
   overflow: visible !important;
-}
-
-/* Print styles */
-@media print {
-  .spell-card {
-    box-shadow: none;
-    border: 1px solid #eee;
-    page-break-inside: avoid;
-    padding: 0; /* Remove padding in print to eliminate gaps */
-    background: black !important;
-  }
-  
-  .spell-content {
-    margin: 0 !important; /* Ensure no margin in print */
-    border: 2px solid black !important;
-    background: white !important;
-  }
-  
-  .spell-description-content {
-    overflow-y: visible;
-  }
 }
