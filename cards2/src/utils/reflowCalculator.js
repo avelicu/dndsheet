@@ -53,8 +53,9 @@ const performCalculation = async (spells, cardSize) => {
     // Helper to measure overflow for a given CardData
     const measureOverflow = (cardData) => {
       flushSync(() => {
+        // include body length in key to avoid DOM reuse
         root.render(React.createElement('div', null, React.createElement(Card, {
-          key: `measure-${cardData.title}-${cardData.fontScale}`,
+          key: `measure-${cardData.title}-${cardData.fontScale}-${(cardData.body||'').length}`,
           cardData,
           cardSize,
           unconstrained: true
@@ -75,6 +76,14 @@ const performCalculation = async (spells, cardSize) => {
       const text = c.textContent || c.innerText || '';
       const matches = text.trim().match(/\S+/g);
       return matches ? matches.length : 0;
+    };
+
+    const textPreview = (html, tailCount = 5) => {
+      const c = document.createElement('div');
+      c.innerHTML = html || '';
+      const text = (c.textContent || c.innerText || '').trim();
+      const parts = text.split(/\s+/);
+      return parts.slice(Math.max(0, parts.length - tailCount)).join(' ');
     };
 
     // Slice HTML by word count without breaking tags using DOM Range
@@ -141,17 +150,10 @@ const performCalculation = async (spells, cardSize) => {
     const trimLeadingBreaks = (html) => {
       const c = document.createElement('div');
       c.innerHTML = html || '';
-      // Remove leading whitespace-only text nodes and <br>
       while (c.firstChild) {
         const n = c.firstChild;
-        if (n.nodeType === Node.TEXT_NODE && !/\S/.test(n.nodeValue || '')) {
-          c.removeChild(n);
-          continue;
-        }
-        if (n.nodeType === Node.ELEMENT_NODE && n.nodeName === 'BR') {
-          c.removeChild(n);
-          continue;
-        }
+        if (n.nodeType === Node.TEXT_NODE && !/\S/.test(n.nodeValue || '')) { c.removeChild(n); continue; }
+        if (n.nodeType === Node.ELEMENT_NODE && n.nodeName === 'BR') { c.removeChild(n); continue; }
         break;
       }
       return c.innerHTML;
@@ -177,6 +179,8 @@ const performCalculation = async (spells, cardSize) => {
           const { firstHTML } = sliceHTMLByWords(remainingHTML, mid);
           const testData = { ...original, body: firstHTML, fontScale: minScale };
           const overflow = measureOverflow(testData);
+          const heightPx = constrainedPx + overflow;
+          console.debug('[reflow] probe', { words: mid, tail: textPreview(firstHTML), heightPx, overflow });
           if (overflow <= 0) {
             best = mid;
             lo = mid + 1;
@@ -187,17 +191,52 @@ const performCalculation = async (spells, cardSize) => {
 
         if (best === 0) best = 1; // ensure progress
 
-        const { firstHTML, restHTML } = sliceHTMLByWords(remainingHTML, best);
-        const cleanFirst = trimLeadingBreaks(firstHTML);
+        // Greedily try to pack more words beyond best if they still fit
+        let grow = best;
+        while (grow < wordsCount) {
+          const { firstHTML: growHTML } = sliceHTMLByWords(remainingHTML, grow + 1);
+          const testGrow = { ...original, body: growHTML, fontScale: minScale };
+          const ovGrow = measureOverflow(testGrow);
+          const heightGrow = constrainedPx + ovGrow;
+          console.debug('[reflow] grow try', { words: grow + 1, tail: textPreview(growHTML), heightPx: heightGrow, overflow: ovGrow });
+          if (ovGrow <= 0) {
+            grow += 1;
+          } else {
+            break;
+          }
+        }
+
+        const finalCount = grow;
+        const { firstHTML, restHTML } = sliceHTMLByWords(remainingHTML, finalCount);
+        let cleanFirst = trimLeadingBreaks(firstHTML);
+        let cleanRest = trimLeadingBreaks(restHTML);
+
+        // Consolidate short remainders to avoid single-word orphan pages
+        const remWords = countWordsInHTML(cleanRest);
+        if (remWords > 0 && remWords <= 3) {
+          const joiner = cleanFirst && !/\s$/.test(cleanFirst) ? ' ' : '';
+          const combined = cleanFirst + joiner + cleanRest;
+          const testCombined = { ...original, body: combined, fontScale: minScale };
+          const ovCombined = measureOverflow(testCombined);
+          const hCombined = constrainedPx + ovCombined;
+          console.debug('[reflow] consolidate try', { remWords, tail: textPreview(combined), heightPx: hCombined, overflow: ovCombined });
+          if (ovCombined <= 0) {
+            cleanFirst = combined;
+            cleanRest = '';
+          }
+        }
+
         const partData = { ...original, body: cleanFirst, fontScale: minScale };
         const overflowPart = measureOverflow(partData);
+        const heightPxPart = constrainedPx + overflowPart;
+        console.debug('[reflow] choose part', { words: finalCount, tail: textPreview(cleanFirst), heightPx: heightPxPart, overflow: overflowPart, remainingWords: countWordsInHTML(cleanRest) });
         partData.isOverflowing = true; // mark continuations as overflown for visibility
         partData.overflowPx = overflowPart;
         partData.error = false;
         partData.sizeReduced = minScale < 1.0;
         results.push(partData);
 
-        remainingHTML = trimLeadingBreaks(restHTML);
+        remainingHTML = cleanRest;
       }
 
       return results;
