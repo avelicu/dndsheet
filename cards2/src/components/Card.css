@@ -15,6 +15,18 @@
   box-sizing: border-box;
 }
 
+/* Error state - red outline to indicate persistent overflow */
+.spell-card.card-error {
+  outline: 2px solid #e53935;
+  outline-offset: -2px;
+}
+
+/* Size reduced state - blue outline to indicate scaled text */
+.spell-card.card-size-reduced {
+  outline: 2px solid #1e88e5;
+  outline-offset: -2px;
+}
+
 .spell-name {
   font-size: 1.2em;
   font-weight: 600;

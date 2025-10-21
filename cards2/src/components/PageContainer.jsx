@@ -18,13 +18,21 @@ const PageContainer = ({ spellSelection, layoutConfig }) => {
         return;
       }
 
+      let config = layoutConfig?.cardSize
+
+      let cancelled = false;
+
       setIsCalculating(true);
       const reflowed = await reflowCalculator(
         spellSelection.filteredSpells, 
         layoutConfig?.cardSize || 'standard'
       );
-      setReflowedCardData(reflowed);
+      
+      console.log("calculateReflow " + config + " finished with first spell " + reflowed[0].fontScale);
+      if (!cancelled) setReflowedCardData(reflowed);
       setIsCalculating(false);
+
+      return () => { cancelled = true; }
     };
 
     calculateReflow();

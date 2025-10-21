@@ -10,7 +10,10 @@ export class CardData {
     specs = [],
     body = '',
     bottomLeft = '',
-    bottomRight = ''
+    bottomRight = '',
+    fontScale = 1,
+    error = false,
+    sizeReduced = false
   } = {}) {
     this.title = title;
     this.leftIndicator = leftIndicator;
@@ -19,6 +22,9 @@ export class CardData {
     this.body = body;
     this.bottomLeft = bottomLeft;
     this.bottomRight = bottomRight;
+    this.fontScale = fontScale; // scaling factor applied to body text only
+    this.error = error; // true if reflow could not make it fit
+    this.sizeReduced = sizeReduced; // true if fontScale < 1 was applied
   }
 
   /**
@@ -42,7 +48,10 @@ export class CardData {
       specs: this.specs,
       body: this.body,
       bottomLeft: this.bottomLeft,
-      bottomRight: this.bottomRight
+      bottomRight: this.bottomRight,
+      fontScale: this.fontScale,
+      error: this.error,
+      sizeReduced: this.sizeReduced
     };
   }
 

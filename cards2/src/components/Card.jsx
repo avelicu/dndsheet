@@ -11,12 +11,13 @@ const Card = ({ cardData, cardSize = 'standard', unconstrained = false, classNam
   const rightIndicator = cardData.rightIndicator; // spell level
   const specs = cardData.specs;
   const body = cardData.body;
+  const fontScale = typeof cardData.fontScale === 'number' ? cardData.fontScale : 1;
   const bottomLeft = cardData.bottomLeft; // school of magic
   const bottomRight = cardData.bottomRight; // classes
 
   return (
     <div 
-      className={`spell-card ${className}`}
+      className={`spell-card ${className} ${cardData.error ? 'card-error' : ''} ${cardData.sizeReduced ? 'card-size-reduced' : ''}`}
       style={{
         width: dimensions.width,
         height: unconstrained ? 'auto' : dimensions.height
@@ -55,7 +56,7 @@ const Card = ({ cardData, cardSize = 'standard', unconstrained = false, classNam
         {/* Description Body */}
         <div className="spell-body">
           <div className="spell-description">
-            <div className="spell-description-content">
+            <div className="spell-description-content" style={{ fontSize: `${fontScale * 100}%` }}>
               <span 
                 className="description-content"
                 dangerouslySetInnerHTML={{ __html: body }}

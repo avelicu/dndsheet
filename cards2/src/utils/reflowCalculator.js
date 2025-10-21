@@ -37,75 +37,80 @@ const performCalculation = async (spells, cardSize) => {
   // Create React root for rendering
   const root = createRoot(hiddenContainer);
 
-  return new Promise((resolve) => {
-    try {
-      // Render all card data with unconstrained height
-      const cards = cardDataArray.map((cardData, index) => 
-        React.createElement(Card, {
-          key: `measure-${cardData.title}-${index}`,
-          cardData: cardData,
+  try {
+    // Ensure fonts are loaded for deterministic measurement
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready; } catch {}
+    }
+
+    const cardDimensions = getCardDimensions(cardSize);
+    const constrainedHeightInches = parseFloat(cardDimensions.height);
+    const constrainedPx = constrainedHeightInches * 96; // convert inches to pixels
+
+    const reflowed = [];
+
+    // Measure one card at a time by re-rendering with updated fontScale
+    for (let i = 0; i < cardDataArray.length; i++) {
+      const original = cardDataArray[i];
+      let chosenScale = 1.0;
+      let overflowPx = 0;
+      let fits = false;
+
+      for (let scale = 1.0; scale >= 0.5; scale -= 0.1) {
+        const testData = { ...original, fontScale: parseFloat(scale.toFixed(1)) };
+        // Render test card
+        root.render(React.createElement('div', null, React.createElement(Card, {
+          key: `measure-${testData.title}-${i}`,
+          cardData: testData,
           cardSize: cardSize,
           unconstrained: true
-        })
-      );
+        })));
 
-      // Render to hidden container
-      root.render(React.createElement('div', null, cards));
+        // Wait for styles/layout to settle (double rAF)
+        await new Promise(resolve => requestAnimationFrame(resolve));
 
-      // Wait for render to complete, then measure
-      requestAnimationFrame(() => {
-        const cardElements = hiddenContainer.querySelectorAll('.spell-card');
-        const cardDimensions = getCardDimensions(cardSize);
-        const constrainedHeightInches = parseFloat(cardDimensions.height);
-        const constrainedPx = constrainedHeightInches * 96; // convert inches to pixels
-        
-        const reflowedCardData = cardDataArray.map((cardData, index) => {
-          const cardElement = cardElements[index];
-          if (!cardElement) {
-            cardData.isOverflowing = false;
-            cardData.overflowPx = 0;
-            return cardData;
-          }
+        const cardElement = hiddenContainer.querySelector('.spell-card');
+        if (!cardElement) {
+          // If not found, assume fits
+          chosenScale = parseFloat(scale.toFixed(1));
+          fits = true;
+          overflowPx = 0;
+          break;
+        }
 
-          // Get unconstrained height (actual rendered height)
-          const unconstrainedPx = cardElement.offsetHeight;
-          const overflowPx = Math.max(0, unconstrainedPx - constrainedPx);
-          const isOverflowing = overflowPx > 0;
-          
-          // Log overflow if detected
-          if (isOverflowing) {
-            console.log(`Overflow: ${cardData.title} (${overflowPx}px overflow)`);
-          }
+        const heightPx = cardElement.offsetHeight;
+        overflowPx = Math.max(0, heightPx - constrainedPx);
 
-          // Set overflow properties on cardData
-          cardData.isOverflowing = isOverflowing;
-          cardData.overflowPx = overflowPx;
-          return cardData;
-        });
-
-        // Cleanup
-        root.unmount();
-        document.body.removeChild(hiddenContainer);
-        
-        resolve(reflowedCardData);
-      });
-
-    } catch (error) {
-      console.error('Error in reflowCalculator:', error);
-      // Cleanup on error
-      try {
-        root.unmount();
-        document.body.removeChild(hiddenContainer);
-      } catch (cleanupError) {
-        console.error('Cleanup error:', cleanupError);
+        if (overflowPx <= 0) {
+          chosenScale = parseFloat(scale.toFixed(1));
+          fits = true;
+          break;
+        }
       }
-      
-      // Return original card data with no overflow info on error
-      resolve(cardDataArray.map(cardData => {
-        cardData.isOverflowing = false;
-        cardData.overflowPx = 0;
-        return cardData;
-      }));
+
+      const finalData = { ...original, fontScale: chosenScale };
+      finalData.isOverflowing = !fits && overflowPx > 0;
+      finalData.overflowPx = overflowPx;
+      finalData.error = finalData.isOverflowing; // mark error when still too big
+      finalData.sizeReduced = chosenScale < 1.0;
+      if (finalData.isOverflowing) {
+        console.log(`Overflow: ${finalData.title} (${overflowPx}px overflow)`);
+      }
+      reflowed.push(finalData);
     }
-  });
+
+    // Cleanup
+    root.unmount();
+    document.body.removeChild(hiddenContainer);
+
+    return reflowed;
+  } catch (error) {
+    console.error('Error in reflowCalculator:', error);
+    try {
+      root.unmount();
+      document.body.removeChild(hiddenContainer);
+    } catch {}
+    // Fallback: return original card data with defaults
+    return cardDataArray.map(cardData => ({ ...cardData, isOverflowing: false, overflowPx: 0 }));
+  }
 };
