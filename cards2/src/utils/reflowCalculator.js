@@ -15,8 +15,8 @@ export const reflowCalculator = async (spells, cardSize = 'standard') => {
   return performCalculation(spells, cardSize);
 };
 
-const MIN_SCALE = 0.8; // use minimal scale for all continuation cards
-const SCALE_STEP = 0.1;
+const MIN_SCALE = 0.7; // use minimal scale for all continuation cards
+const SCALE_STEP = 0.01;
 
 // Shared helper: normalize leading <br> and whitespace-only text nodes
 const normalizeLeading = (fragmentHtml) => {
