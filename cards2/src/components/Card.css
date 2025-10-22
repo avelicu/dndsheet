@@ -11,7 +11,7 @@
   font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   letter-spacing: -0.02em;
   /* Default title height and vertical padding */
-  --title-h: 35px;
+  --title-h: 30px;
   --title-pad-y: 6px;
   padding-top: calc(var(--title-h) / 2 + var(--title-pad-y));
   background: black; /* Changed to black */
@@ -20,7 +20,7 @@
 
 /* Size variants set the title height variable */
 .spell-card.card--mini { --title-h: 25px; }
-.spell-card.card--standard { --title-h: 35px; }
+.spell-card.card--standard { --title-h: 40px; }
 .spell-card.card--large { --title-h: 45px; }
 
 /* Error state - red outline to indicate persistent overflow - gated by debug flag */
@@ -48,7 +48,7 @@
   text-align: center;
   font-family: 'Crimson Text', 'Times New Roman', serif;
   letter-spacing: -1px;
-  line-height: 1.2;
+  line-height: 0.75;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,10 +66,6 @@
   max-height: var(--title-h);
   overflow: hidden;
   color: black;
-}
-
-.spell-title-text {
-  line-height: 0.9;
 }
 
 .ritual-indicator {
