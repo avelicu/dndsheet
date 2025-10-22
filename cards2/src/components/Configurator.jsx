@@ -66,7 +66,8 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
       // Merge in additional spells by name, avoiding duplicates
       const addByName = new Set(additionalSpellNames);
       const additional = spells.filter(s => addByName.has(s.name) && !activeNames.has(s.name));
-      const finalSpells = filteredSpells.concat(additional);
+      const finalSpells = filteredSpells.concat(additional)
+        .sort((a, b) => (a.level - b.level) || a.name.localeCompare(b.name));
 
       // Emit ONLY final list
       onSelectionChange({
