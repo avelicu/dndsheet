@@ -88,11 +88,24 @@ const performCalculation = async (spells, cardSize) => {
 
     // Slice HTML by word count without breaking tags using DOM Range
     const sliceHTMLByWords = (html, wordLimit) => {
+      // Normalize leading breaks/whitespace before slicing
+      const normalizeLeading = (fragmentHtml) => {
+        const d = document.createElement('div');
+        d.innerHTML = fragmentHtml || '';
+        while (d.firstChild) {
+          const n = d.firstChild;
+          if (n.nodeType === Node.TEXT_NODE && !/\S/.test(n.nodeValue || '')) { d.removeChild(n); continue; }
+          if (n.nodeType === Node.ELEMENT_NODE && n.nodeName === 'BR') { d.removeChild(n); continue; }
+          break;
+        }
+        return d.innerHTML;
+      };
+
       const container = document.createElement('div');
-      container.innerHTML = html || '';
+      container.innerHTML = normalizeLeading(html || '');
 
       if (wordLimit <= 0) {
-        return { firstHTML: '', restHTML: html || '' };
+        return { firstHTML: '', restHTML: normalizeLeading(html || '') };
       }
 
       const walker = document.createTreeWalker(
@@ -124,7 +137,8 @@ const performCalculation = async (spells, cardSize) => {
       }
 
       if (!targetNode) {
-        return { firstHTML: html || '', restHTML: '' };
+        const normalized = normalizeLeading(html || '');
+        return { firstHTML: normalized, restHTML: '' };
       }
 
       const r1 = document.createRange();
@@ -133,7 +147,7 @@ const performCalculation = async (spells, cardSize) => {
       const frag1 = r1.cloneContents();
       const wrap1 = document.createElement('div');
       wrap1.appendChild(frag1);
-      const firstHTML = wrap1.innerHTML;
+      const rawFirst = wrap1.innerHTML;
 
       const r2 = document.createRange();
       r2.setStart(targetNode, targetOffset);
@@ -141,136 +155,86 @@ const performCalculation = async (spells, cardSize) => {
       const frag2 = r2.cloneContents();
       const wrap2 = document.createElement('div');
       wrap2.appendChild(frag2);
-      const restHTML = wrap2.innerHTML;
+      const rawRest = wrap2.innerHTML;
+
+      // Trim leading breaks/whitespace on both outputs
+      const firstHTML = normalizeLeading(rawFirst);
+      const restHTML = normalizeLeading(rawRest);
 
       return { firstHTML, restHTML };
     };
 
-    // Trim leading <br> and whitespace-only nodes from HTML fragment
-    const trimLeadingBreaks = (html) => {
-      const c = document.createElement('div');
-      c.innerHTML = html || '';
-      while (c.firstChild) {
-        const n = c.firstChild;
-        if (n.nodeType === Node.TEXT_NODE && !/\S/.test(n.nodeValue || '')) { c.removeChild(n); continue; }
-        if (n.nodeType === Node.ELEMENT_NODE && n.nodeName === 'BR') { c.removeChild(n); continue; }
-        break;
-      }
-      return c.innerHTML;
-    };
+    // Recursive splitter: caller passes baseData; this function reads body from baseData and drops specs for continuations
+    const splitHTMLRecursive = (baseData) => {
+      const parts = [];
+      const html = baseData.body || '';
+      const totalWords = countWordsInHTML(html);
+      if (totalWords === 0) return parts;
 
-    // Helper: split a long HTML description into multiple CardData entries using binary search on words
-    const splitIntoContinuations = (original, minScale) => {
-      const results = [];
-      let remainingHTML = original.body || '';
+      let lo = 1;
+      let hi = totalWords;
+      let best = 0;
 
-      const totalWords = () => countWordsInHTML(remainingHTML);
+      let probeData;
+      let rest;
 
-      while ((remainingHTML || '').trim().length > 0) {
-        const wordsCount = totalWords();
-        if (wordsCount === 0) break;
+      while (lo <= hi) {
+        const mid = Math.floor((lo + hi) / 2);
+        const sliceRes = sliceHTMLByWords(html, mid);
+        probeData = { ...baseData, body: sliceRes.firstHTML };
+        rest = sliceRes.restHTML;
 
-        let lo = 1;
-        let hi = wordsCount;
-        let best = 0;
-
-        while (lo <= hi) {
-          const mid = Math.floor((lo + hi) / 2);
-          const { firstHTML } = sliceHTMLByWords(remainingHTML, mid);
-          const testData = { ...original, body: firstHTML, fontScale: minScale };
-          const overflow = measureOverflow(testData);
-          const heightPx = constrainedPx + overflow;
-          console.debug('[reflow] probe', { words: mid, tail: textPreview(firstHTML), heightPx, overflow });
-          if (overflow <= 0) {
-            best = mid;
-            lo = mid + 1;
-          } else {
-            hi = mid - 1;
-          }
+        const overflow = measureOverflow(probeData);
+        console.debug('[reflow] probe', { words: mid, tail: textPreview(sliceRes.firstHTML), overflow });
+        if (overflow <= 0) {
+          best = mid;
+          lo = mid + 1;
+        } else {
+          hi = mid - 1;
         }
-
-        if (best === 0) best = 1; // ensure progress
-
-        // Greedily try to pack more words beyond best if they still fit
-        let grow = best;
-        while (grow < wordsCount) {
-          const { firstHTML: growHTML } = sliceHTMLByWords(remainingHTML, grow + 1);
-          const testGrow = { ...original, body: growHTML, fontScale: minScale };
-          const ovGrow = measureOverflow(testGrow);
-          const heightGrow = constrainedPx + ovGrow;
-          console.debug('[reflow] grow try', { words: grow + 1, tail: textPreview(growHTML), heightPx: heightGrow, overflow: ovGrow });
-          if (ovGrow <= 0) {
-            grow += 1;
-          } else {
-            break;
-          }
-        }
-
-        const finalCount = grow;
-        const { firstHTML, restHTML } = sliceHTMLByWords(remainingHTML, finalCount);
-        let cleanFirst = trimLeadingBreaks(firstHTML);
-        let cleanRest = trimLeadingBreaks(restHTML);
-
-        // Consolidate short remainders to avoid single-word orphan pages
-        const remWords = countWordsInHTML(cleanRest);
-        if (remWords > 0 && remWords <= 3) {
-          const joiner = cleanFirst && !/\s$/.test(cleanFirst) ? ' ' : '';
-          const combined = cleanFirst + joiner + cleanRest;
-          const testCombined = { ...original, body: combined, fontScale: minScale };
-          const ovCombined = measureOverflow(testCombined);
-          const hCombined = constrainedPx + ovCombined;
-          console.debug('[reflow] consolidate try', { remWords, tail: textPreview(combined), heightPx: hCombined, overflow: ovCombined });
-          if (ovCombined <= 0) {
-            cleanFirst = combined;
-            cleanRest = '';
-          }
-        }
-
-        const isFirstPart = results.length === 0;
-        const partData = { ...original, body: cleanFirst, fontScale: minScale, specs: isFirstPart ? (original.specs || []) : [] };
-        const overflowPart = measureOverflow(partData);
-        const heightPxPart = constrainedPx + overflowPart;
-        console.debug('[reflow] choose part', { words: finalCount, tail: textPreview(cleanFirst), heightPx: heightPxPart, overflow: overflowPart, remainingWords: countWordsInHTML(cleanRest) });
-        partData.isOverflowing = true; // mark continuations as overflown for visibility
-        partData.overflowPx = overflowPart;
-        partData.error = false;
-        partData.sizeReduced = minScale < 1.0;
-        results.push(partData);
-
-        remainingHTML = cleanRest;
       }
 
-      return results;
+      if (best === 0) {
+        best = 1; // ensure progress
+      }
+
+      console.debug('[reflow] choose part');
+      parts.push({ ...probeData });
+
+      if ((rest || '').trim().length > 0) {
+        const restBase = { ...probeData, specs: [], body: rest, isOverflowing: true };
+        const restParts = splitHTMLRecursive(restBase);
+        parts.push(...restParts);
+      }
+
+      return parts;
     };
 
     for (let i = 0; i < cardDataArray.length; i++) {
       const original = cardDataArray[i];
-      let chosenScale = 1.0;
       let overflowPx = 0;
       let fits = false;
 
+      // Declare probeData outside, recreate per attempt
+      let probeData;
+
       for (let scale = 1.0; scale >= MIN_SCALE; scale -= SCALE_STEP) {
-        const testData = { ...original, fontScale: parseFloat(scale.toFixed(1)) };
-        overflowPx = measureOverflow(testData);
+        probeData = { ...original, fontScale: scale, sizeReduced: scale < 1.0 };
+        overflowPx = measureOverflow(probeData);
         if (overflowPx <= 0) {
-          chosenScale = parseFloat(scale.toFixed(1));
           fits = true;
           break;
         }
       }
 
       if (!fits) {
-        const parts = splitIntoContinuations(original, MIN_SCALE);
+        // Couldn't fit by reducing font scale, split it into parts.
+        const parts = splitHTMLRecursive(probeData);
         reflowed.push(...parts);
         continue;
       }
 
-      const finalData = { ...original, fontScale: chosenScale };
-      finalData.isOverflowing = false;
-      finalData.overflowPx = 0;
-      finalData.error = false;
-      finalData.sizeReduced = chosenScale < 1.0;
-      reflowed.push(finalData);
+      reflowed.push({ ...probeData });
     }
 
     return reflowed;
