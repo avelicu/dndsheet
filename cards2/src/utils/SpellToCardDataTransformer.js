@@ -40,6 +40,9 @@ export class SpellToCardDataTransformer {
     }
     body += spell.description;
 
+    // Apply formatting rules to body
+    body = this.formatDescription(body);
+
     return new CardData({
       title: title,
       leftIndicator: isRitual ? 'R' : '',
@@ -99,5 +102,82 @@ export class SpellToCardDataTransformer {
     formatted = formatted.replace(/up to/gi, '≤');
     
     return { formatted, isConcentration };
+  }
+
+  /** Inline color palette for damage types */
+  static DAMAGE_COLORS = {
+    acid: '#7cb342',
+    cold: '#29b6f6',
+    fire: '#e53935',
+    force: '#7e57c2',
+    lightning: '#f9a825',
+    necrotic: '#616161',
+    poison: '#2e7d32',
+    psychic: '#8e24aa',
+    radiant: '#ffd54f',
+    thunder: '#1e88e5',
+    bludgeoning: '#6d4c41',
+    piercing: '#455a64',
+    slashing: '#37474f'
+  };
+
+  static colorDamage(typeWord) {
+    const key = (typeWord || '').toLowerCase();
+    const color = this.DAMAGE_COLORS[key] || '#000';
+    return `<span style=\"color:${color}\">${typeWord}</span>`;
+  }
+
+  /**
+   * Format spell description HTML: bold dice, bold saves, bold dice+damage, color damage types
+   * @param {string} html
+   * @returns {string}
+   */
+  static formatDescription(html) {
+    if (!html) return '';
+
+    let out = html;
+
+    const damageTypes = '(acid|cold|fire|force|lightning|necrotic|poison|psychic|radiant|thunder|piercing|slashing|bludgeoning)';
+    const dicePattern = '(?:\\d+\\s*)?\\d+d\\d+(?:\\s*[+\\-]\\s*\\d+)?';
+
+    // Phase A: replace dice+damage phrases with placeholders to avoid double-bolding later
+    const placeholders = [];
+    let phIndex = 0;
+    const diceDamageRegex = new RegExp(`\\b(${dicePattern})\\s+${damageTypes}\\s+damage\\b`, 'gi');
+    out = out.replace(diceDamageRegex, (m, dice, dtype) => {
+      const key = (dtype || '').toLowerCase();
+      const color = SpellToCardDataTransformer.DAMAGE_COLORS[key] || '#000';
+      const htmlFrag = `<strong><span style=\"color:${color}\">${dice} ${dtype} damage</span></strong>`;
+      const token = `__DICEDMG_${phIndex++}__`;
+      placeholders.push(htmlFrag);
+      return token;
+    });
+
+    // Phase B: color standalone "<type> damage" occurrences (without dice), and bold them
+    const typeDamageRegex = new RegExp(`\\b(${damageTypes})\\s+damage\\b`, 'gi');
+    out = out.replace(typeDamageRegex, (m, dtype) => {
+      const key = (dtype || '').toLowerCase();
+      const color = SpellToCardDataTransformer.DAMAGE_COLORS[key] || '#000';
+      return `<strong><span style=\"color:${color}\">${dtype} damage</span></strong>`;
+    });
+
+    // Phase C: bold saves (e.g., "Dexterity saving throw", "Dex save")
+    const saveRegex = /\b(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|Str|Dex|Con|Int|Wis|Cha)\s+(saving throw|save)\b/gi;
+    out = out.replace(saveRegex, (m) => `<strong>${m}</strong>`);
+
+    // Phase C.1: bold spell attack phrases
+    const spellAttackRegex = /\b(melee|ranged)\s+spell\s+attack\b/gi;
+    out = out.replace(spellAttackRegex, (m) => `<strong>${m}</strong>`);
+
+    // Phase D: bold any remaining dice specs (not part of a dice+damage phrase)
+    const loneDiceRegex = new RegExp(`\\b${dicePattern}\\b`, 'gi');
+    out = out.replace(loneDiceRegex, (m) => `<strong>${m}</strong>`);
+
+    // Phase E: restore placeholders
+    if (placeholders.length > 0) {
+      out = out.replace(/__DICEDMG_(\d+)__/g, (m, i) => placeholders[Number(i)] || m);
+    }
+
+    return out;
   }
 }
