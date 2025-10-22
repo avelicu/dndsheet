@@ -180,7 +180,6 @@ const performCalculation = async (spells, cardSize) => {
 
       let lo = 1;
       let hi = totalWords;
-      let best = 0;
 
       let probeData;
       let rest;
@@ -188,21 +187,17 @@ const performCalculation = async (spells, cardSize) => {
       while (lo <= hi) {
         const mid = Math.floor((lo + hi) / 2);
         const sliceRes = sliceHTMLByWords(html, mid);
-        probeData = { ...baseData, body: sliceRes.firstHTML };
-        rest = sliceRes.restHTML;
-
-        const overflow = measureOverflow(probeData);
+        const temp = { ...baseData, body: sliceRes.firstHTML };
+        const overflow = measureOverflow(temp);
         console.debug('[reflow] probe', { lo: lo, hi: hi, words: mid, tail: textPreview(sliceRes.firstHTML), overflow });
+
         if (overflow <= 0) {
-          best = mid;
+          probeData = temp;
+          rest = sliceRes.restHTML;
           lo = mid + 1;
         } else {
           hi = mid - 1;
         }
-      }
-
-      if (best === 0) {
-        best = 1; // ensure progress
       }
 
       console.debug('[reflow] choose part');
