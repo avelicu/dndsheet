@@ -18,6 +18,19 @@ export const reflowCalculator = async (spells, cardSize = 'standard') => {
 const MIN_SCALE = 0.8; // use minimal scale for all continuation cards
 const SCALE_STEP = 0.1;
 
+// Shared helper: normalize leading <br> and whitespace-only text nodes
+const normalizeLeading = (fragmentHtml) => {
+  const d = document.createElement('div');
+  d.innerHTML = fragmentHtml || '';
+  while (d.firstChild) {
+    const n = d.firstChild;
+    if (n.nodeType === Node.TEXT_NODE && !/\S/.test(n.nodeValue || '')) { d.removeChild(n); continue; }
+    if (n.nodeType === Node.ELEMENT_NODE && n.nodeName === 'BR') { d.removeChild(n); continue; }
+    break;
+  }
+  return d;
+};
+
 const performCalculation = async (spells, cardSize) => {
   if (!spells || spells.length === 0) {
     return [];
@@ -69,13 +82,26 @@ const performCalculation = async (spells, cardSize) => {
       return Math.max(0, heightPx - constrainedPx);
     };
 
-    // Count words in HTML
+    // Count words in HTML using the same DOM walk as slicing
     const countWordsInHTML = (html) => {
-      const c = document.createElement('div');
-      c.innerHTML = html || '';
-      const text = c.textContent || c.innerText || '';
-      const matches = text.trim().match(/\S+/g);
-      return matches ? matches.length : 0;
+      const container = normalizeLeading(html || '');
+      const walker = document.createTreeWalker(
+        container,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: (node) => (node.nodeValue && /\S/.test(node.nodeValue)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+        }
+      );
+      let words = 0;
+      while (walker.nextNode()) {
+        const str = walker.currentNode.nodeValue || '';
+        const regex = /\S+/g;
+        let m;
+        while ((m = regex.exec(str)) !== null) {
+          words += 1;
+        }
+      }
+      return words;
     };
 
     const textPreview = (html, tailCount = 5) => {
@@ -88,24 +114,10 @@ const performCalculation = async (spells, cardSize) => {
 
     // Slice HTML by word count without breaking tags using DOM Range
     const sliceHTMLByWords = (html, wordLimit) => {
-      // Normalize leading breaks/whitespace before slicing
-      const normalizeLeading = (fragmentHtml) => {
-        const d = document.createElement('div');
-        d.innerHTML = fragmentHtml || '';
-        while (d.firstChild) {
-          const n = d.firstChild;
-          if (n.nodeType === Node.TEXT_NODE && !/\S/.test(n.nodeValue || '')) { d.removeChild(n); continue; }
-          if (n.nodeType === Node.ELEMENT_NODE && n.nodeName === 'BR') { d.removeChild(n); continue; }
-          break;
-        }
-        return d.innerHTML;
-      };
-
-      const container = document.createElement('div');
-      container.innerHTML = normalizeLeading(html || '');
+      const container = normalizeLeading(html || '');
 
       if (wordLimit <= 0) {
-        return { firstHTML: '', restHTML: normalizeLeading(html || '') };
+        return { firstHTML: '', restHTML: container.innerHTML };
       }
 
       const walker = document.createTreeWalker(
@@ -122,7 +134,7 @@ const performCalculation = async (spells, cardSize) => {
 
       while (walker.nextNode()) {
         const t = walker.currentNode;
-        const str = t.nodeValue;
+        const str = t.nodeValue || '';
         const regex = /\S+/g;
         let m;
         while ((m = regex.exec(str)) !== null) {
@@ -137,8 +149,7 @@ const performCalculation = async (spells, cardSize) => {
       }
 
       if (!targetNode) {
-        const normalized = normalizeLeading(html || '');
-        return { firstHTML: normalized, restHTML: '' };
+        return { firstHTML: container.innerHTML, restHTML: '' };
       }
 
       const r1 = document.createRange();
@@ -147,7 +158,7 @@ const performCalculation = async (spells, cardSize) => {
       const frag1 = r1.cloneContents();
       const wrap1 = document.createElement('div');
       wrap1.appendChild(frag1);
-      const rawFirst = wrap1.innerHTML;
+      const firstHTML = wrap1.innerHTML;
 
       const r2 = document.createRange();
       r2.setStart(targetNode, targetOffset);
@@ -155,11 +166,7 @@ const performCalculation = async (spells, cardSize) => {
       const frag2 = r2.cloneContents();
       const wrap2 = document.createElement('div');
       wrap2.appendChild(frag2);
-      const rawRest = wrap2.innerHTML;
-
-      // Trim leading breaks/whitespace on both outputs
-      const firstHTML = normalizeLeading(rawFirst);
-      const restHTML = normalizeLeading(rawRest);
+      const restHTML = wrap2.innerHTML;
 
       return { firstHTML, restHTML };
     };
@@ -185,7 +192,7 @@ const performCalculation = async (spells, cardSize) => {
         rest = sliceRes.restHTML;
 
         const overflow = measureOverflow(probeData);
-        console.debug('[reflow] probe', { words: mid, tail: textPreview(sliceRes.firstHTML), overflow });
+        console.debug('[reflow] probe', { lo: lo, hi: hi, words: mid, tail: textPreview(sliceRes.firstHTML), overflow });
         if (overflow <= 0) {
           best = mid;
           lo = mid + 1;
