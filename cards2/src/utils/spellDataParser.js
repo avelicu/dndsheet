@@ -134,7 +134,7 @@ export class SpellDataParser {
  */
 export async function loadSpellData() {
   try {
-    const response = await fetch('/all_spells.csv');
+    const response = await fetch('./all_spells.csv');
     
     if (!response.ok) {
       throw new Error(`Failed to fetch CSV: ${response.status} ${response.statusText}`);
