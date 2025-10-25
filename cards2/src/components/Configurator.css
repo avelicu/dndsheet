@@ -40,9 +40,11 @@
   .configurator-content {
     flex-direction: column;
     gap: 1.5rem;
+    overflow-y: visible;
   }
   
   .configurator {
     padding: 1rem;
+    max-height: none;
   }
 }

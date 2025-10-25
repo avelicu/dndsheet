@@ -8,11 +8,12 @@ export function SourceSelector({ onSourcesChange, selectedSources = [], hasUserC
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Load sources only once on mount
   useEffect(() => {
     loadSources();
   }, []);
 
-  // Sync with parent state when selectedSources prop changes
+  // Initialize with defaults only once when sources are loaded
   useEffect(() => {
     if (sources.length > 0 && selectedSources.length === 0 && !hasUserChoice) {
       // Only initialize with defaults if user hasn't made an explicit choice yet
@@ -21,7 +22,8 @@ export function SourceSelector({ onSourcesChange, selectedSources = [], hasUserC
         .map(source => source.id);
       onSourcesChange(defaultSources);
     }
-  }, [sources, selectedSources, hasUserChoice, onSourcesChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sources]); // Only run when sources are loaded, not when selectedSources changes
 
   const loadSources = async () => {
     try {

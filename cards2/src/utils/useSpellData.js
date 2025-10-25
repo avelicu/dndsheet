@@ -14,13 +14,14 @@ export function useSpellData(enabledSources = null) {
   const [error, setError] = useState(null);
   const [stats, setStats] = useState(null);
 
-  // Load spell data when component mounts or enabledSources change
+  // Load spell data when enabledSources changes
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
         setError(null);
         
+        // Load spell data based on enabled sources
         const data = await loadSpellData(enabledSources);
         
         setSpells(data.spells);

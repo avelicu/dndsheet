@@ -136,22 +136,6 @@ const Configurator = ({ onSelectionChange, onLayoutChange, enabledSources = [], 
     });
   };
 
-  if (loading) {
-    return (
-      <div className="configurator">
-        <div className="loading">Loading spell data...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="configurator">
-        <div className="error">Error loading spell data: {error}</div>
-      </div>
-    );
-  }
-
   return (
     <div className="configurator">
       <div className="configurator-content">
@@ -161,31 +145,39 @@ const Configurator = ({ onSelectionChange, onLayoutChange, enabledSources = [], 
           hasUserChoice={hasUserChoice}
         />
         
-        <ClassSelector
-          classes={classes}
-          selectedClasses={selectedClasses}
-          onClassChange={handleClassChange}
-        />
-        
-        <LevelSelector
-          levels={levels}
-          selectedLevels={selectedLevels}
-          onLevelChange={handleLevelChange}
-        />
-        
-        <AdditionalSpells
-          allSpells={spells}
-          activeSpellNames={activeFilteredSpellNames}
-          selectedNames={additionalSpellNames}
-          onChange={handleAdditionalSpellsChange}
-        />
-        
-        <LayoutSelector
-          pageSize={pageSize}
-          cardSize={cardSize}
-          onPageSizeChange={handlePageSizeChange}
-          onCardSizeChange={handleCardSizeChange}
-        />
+        {loading ? (
+          <div className="loading">Loading spell data...</div>
+        ) : error ? (
+          <div className="error">Error loading spell data: {error}</div>
+        ) : (
+          <>
+            <ClassSelector
+              classes={classes}
+              selectedClasses={selectedClasses}
+              onClassChange={handleClassChange}
+            />
+            
+            <LevelSelector
+              levels={levels}
+              selectedLevels={selectedLevels}
+              onLevelChange={handleLevelChange}
+            />
+            
+            <AdditionalSpells
+              allSpells={spells}
+              activeSpellNames={activeFilteredSpellNames}
+              selectedNames={additionalSpellNames}
+              onChange={handleAdditionalSpellsChange}
+            />
+            
+            <LayoutSelector
+              pageSize={pageSize}
+              cardSize={cardSize}
+              onPageSizeChange={handlePageSizeChange}
+              onCardSizeChange={handleCardSizeChange}
+            />
+          </>
+        )}
       </div>
     </div>
   );
