@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import './AdditionalSpells.css';
+import './SelectorCommon.css';
 
 /**
  * AdditionalSpells selector
@@ -31,7 +32,7 @@ const AdditionalSpells = ({ allSpells = [], activeSpellNames = new Set(), select
 
   return (
     <div className="additional-spells selector-panel">
-      <h3 className="selector-title">Additional Spells</h3>
+      <h3 className="selector-group-header">Additional Spells</h3>
       <div className="selector-search">
         <input
           type="text"
@@ -41,24 +42,26 @@ const AdditionalSpells = ({ allSpells = [], activeSpellNames = new Set(), select
           className="selector-search-input"
         />
       </div>
-      <div className="selector-list" role="listbox" aria-multiselectable="true">
+      <ul className="selector-checkbox-list">
         {items.map(({ name }) => {
           const isActive = activeSpellNames.has(name);
           const isSelected = selectedSet.has(name);
           const disabled = isActive; // grey out and prevent changes if already included
           return (
-            <label key={name} className={`selector-item ${disabled ? 'disabled' : ''}`} title={name}>
-              <input
-                type="checkbox"
-                checked={isSelected}
-                onChange={() => toggle(name, disabled)}
-                disabled={disabled}
-              />
-              <span className="selector-item-label">{name}</span>
-            </label>
+            <li key={name}>
+              <label className={`selector-checkbox-label ${disabled ? 'disabled' : ''}`} title={name}>
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  onChange={() => toggle(name, disabled)}
+                  disabled={disabled}
+                />
+                <span className="selector-checkbox-text">{name}</span>
+              </label>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </div>
   );
 };

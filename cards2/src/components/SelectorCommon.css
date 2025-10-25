@@ -20,11 +20,12 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 200px;
+  flex: 1;
   overflow-y: auto;
   border: 1px solid #2c3e50;
   border-radius: 4px;
   background: #2c3e50;
+  min-height: 0;
 }
 
 .selector-checkbox-list li {
@@ -47,6 +48,15 @@
   background-color: #34495e;
 }
 
+.selector-checkbox-label.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.selector-checkbox-label.disabled:hover {
+  background-color: transparent;
+}
+
 .selector-checkbox-label input[type="checkbox"] {
   margin-right: 0.5rem;
   width: 16px;
@@ -56,6 +66,9 @@
 .selector-checkbox-text {
   font-size: 0.9rem;
   color: #ecf0f1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Form elements */
@@ -63,7 +76,6 @@
   font-size: 0.9rem;
   font-weight: 500;
   color: #bdc3c7;
-  white-space: nowrap;
 }
 
 .selector-dropdown {
