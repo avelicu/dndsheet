@@ -1,0 +1,32 @@
+{
+  "sources": [
+    {
+      "id": "srd",
+      "name": "System Reference Document",
+      "description": "Core spells from the 5e SRD",
+      "file": "data/5e-SRD-Spells.json",
+      "default": true
+    },
+    {
+      "id": "core",
+      "name": "Core Rulebooks",
+      "description": "Additional spells from Player's Handbook and other core sources",
+      "file": "data/Core.json",
+      "default": true
+    },
+    {
+      "id": "xanathar",
+      "name": "Xanathar's Guide to Everything",
+      "description": "Spells from Xanathar's Guide to Everything",
+      "file": "data/XanatharsGuide.json",
+      "default": false
+    },
+    {
+      "id": "tasha",
+      "name": "Tasha's Cauldron of Everything",
+      "description": "Spells from Tasha's Cauldron of Everything",
+      "file": "data/TashasCauldron.json",
+      "default": false
+    }
+  ]
+}

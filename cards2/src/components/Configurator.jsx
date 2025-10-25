@@ -3,12 +3,13 @@ import ClassSelector from './ClassSelector';
 import LevelSelector from './LevelSelector';
 import LayoutSelector from './LayoutSelector';
 import AdditionalSpells from './AdditionalSpells';
+import { SourceSelector } from './SourceSelector';
 import { useSpellData } from '../utils/useSpellData';
 import stateManager from '../utils/stateManager';
 import './Configurator.css';
 
-const Configurator = ({ onSelectionChange, onLayoutChange }) => {
-  const { spells, classes, levels, filterSpells, loading, error } = useSpellData();
+const Configurator = ({ onSelectionChange, onLayoutChange, enabledSources = [], onSourcesChange, selectedSources = [], hasUserChoice = false }) => {
+  const { spells, classes, levels, filterSpells, loading, error } = useSpellData(enabledSources);
   
   // Initialize with saved state - only once
   const [selectedClasses, setSelectedClasses] = useState(() => {
@@ -154,6 +155,12 @@ const Configurator = ({ onSelectionChange, onLayoutChange }) => {
   return (
     <div className="configurator">
       <div className="configurator-content">
+        <SourceSelector 
+          onSourcesChange={onSourcesChange}
+          selectedSources={selectedSources}
+          hasUserChoice={hasUserChoice}
+        />
+        
         <ClassSelector
           classes={classes}
           selectedClasses={selectedClasses}

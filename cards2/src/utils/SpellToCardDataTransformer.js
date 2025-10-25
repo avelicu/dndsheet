@@ -15,11 +15,15 @@ export class SpellToCardDataTransformer {
       return new CardData();
     }
 
-    // Process spell name for ritual detection
-    const { formatted: title, isRitual } = this.processSpellName(spell.name);
+    // Use ritual and concentration flags from JSON data
+    const isRitual = spell.isRitualSpell();
+    const isConcentration = spell.requiresConcentration();
     
-    // Process duration for concentration detection
-    const { formatted: duration, isConcentration } = this.processDuration(spell.duration);
+    // Process spell name for ritual detection (for backward compatibility with CSV data)
+    const { formatted: title } = this.processSpellName(spell.name);
+    
+    // Process duration for concentration detection (for backward compatibility with CSV data)
+    const { formatted: duration } = this.processDuration(spell.duration);
 
     // Create specs array from spell properties
     const specs = [
@@ -128,13 +132,48 @@ export class SpellToCardDataTransformer {
   }
 
   /**
-   * Format spell description HTML: bold dice, bold saves, bold dice+damage, color damage types
-   * @param {string} html
-   * @returns {string}
+   * Convert markdown to HTML
+   * @param {string} markdown - Markdown text
+   * @returns {string} HTML text
    */
-  static formatDescription(html) {
-    if (!html) return '';
+  static markdownToHtml(markdown) {
+    if (!markdown) return '';
+    
+    let html = markdown;
+    
+    // Convert markdown bold italic ***text*** to <strong><em>text</em></strong>
+    html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+    
+    // Convert markdown bold **text** to <strong>text</strong>
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Convert markdown italic *text* to <em>text</em>
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Convert markdown code `text` to <code>text</code>
+    html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+    
+    // Convert markdown line breaks (double newline) to <br/><br/>
+    html = html.replace(/\n\n/g, '<br/><br/>');
+    
+    // Convert single newlines to <br/>
+    html = html.replace(/\n/g, '<br/>');
+    
+    return html;
+  }
 
+  /**
+   * Format spell description: convert markdown to HTML, then apply D&D-specific formatting
+   * @param {string} text - Raw text (may contain markdown)
+   * @returns {string} Formatted HTML
+   */
+  static formatDescription(text) {
+    if (!text) return '';
+
+    // First convert markdown to HTML
+    let html = this.markdownToHtml(text);
+    
+    // Then apply D&D-specific formatting
     let out = html;
 
     const damageTypes = '(acid|cold|fire|force|lightning|necrotic|poison|psychic|radiant|thunder|piercing|slashing|bludgeoning)';

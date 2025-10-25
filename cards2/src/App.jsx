@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import Configurator from './components/Configurator';
 import PageContainer from './components/PageContainer';
 import DebugPanel from './components/DebugPanel';
+import { SourceSelector } from './components/SourceSelector';
 import { useAppState } from './utils/useAppState';
 import './App.css';
 
@@ -11,7 +12,9 @@ function App() {
     updateSpellSelection, 
     layoutConfig, 
     updateLayoutConfig,
-    debug
+    debug,
+    sourceSelection,
+    updateSourceSelection
   } = useAppState();
 
   // Runtime-only selected spells (not persisted)
@@ -21,6 +24,10 @@ function App() {
     // Only keep final computed list in runtime state
     setSelectedSpells(selection.spells || []);
   }, []);
+
+  const handleSourcesChange = useCallback((sources) => {
+    updateSourceSelection({ enabledSources: sources });
+  }, [updateSourceSelection]);
 
   const handleLayoutChange = useCallback((layout) => {
     updateLayoutConfig(layout);
@@ -37,6 +44,10 @@ function App() {
       <Configurator 
         onSelectionChange={handleSelectionChange}
         onLayoutChange={handleLayoutChange}
+        enabledSources={sourceSelection.enabledSources}
+        onSourcesChange={handleSourcesChange}
+        selectedSources={sourceSelection.enabledSources}
+        hasUserChoice={sourceSelection.hasUserChoice}
       />
       <PageContainer 
         spells={selectedSpells}

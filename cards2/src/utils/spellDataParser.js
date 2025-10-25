@@ -1,9 +1,8 @@
-import Papa from 'papaparse';
 import { Spell } from './Spell.js';
 
 /**
- * CSV Parser Utility for D&D Spells using PapaParse
- * Handles parsing and data extraction from the spells CSV file
+ * JSON Parser Utility for D&D Spells
+ * Handles parsing and data extraction from the 5e-SRD-Spells.json file
  */
 export class SpellDataParser {
   constructor() {
@@ -13,30 +12,18 @@ export class SpellDataParser {
   }
 
   /**
-   * Parse CSV text into structured spell data
-   * @param {string} csvText - Raw CSV content
+   * Parse JSON data into structured spell data
+   * @param {Array} jsonData - Array of spell objects from 5e-SRD-Spells.json
    * @returns {Object} Parsed data with spells, classes, and levels
    */
-  parseCSV(csvText) {
+  parseJSON(jsonData) {
     try {
-      const result = Papa.parse(csvText, {
-        header: true,
-        delimiter: ';',
-        skipEmptyLines: true,
-        transformHeader: (header) => header.trim(),
-        transform: (value) => value.trim()
-      });
-
-      if (result.errors.length > 0) {
-        console.warn('CSV parsing warnings:', result.errors);
-      }
-
       this.spells = [];
       this.classes.clear();
       this.levels.clear();
 
       // Process each spell
-      result.data.forEach((spellData) => {
+      jsonData.forEach((spellData) => {
         if (spellData.name && spellData.level !== undefined) {
           const spell = new Spell(spellData);
           this.spells.push(spell);
@@ -50,8 +37,8 @@ export class SpellDataParser {
         levels: Array.from(this.levels).sort((a, b) => a - b)
       };
     } catch (error) {
-      console.error('Error parsing CSV:', error);
-      throw new Error(`Failed to parse CSV data: ${error.message}`);
+      console.error('Error parsing JSON:', error);
+      throw new Error(`Failed to parse JSON data: ${error.message}`);
     }
   }
 
@@ -129,23 +116,90 @@ export class SpellDataParser {
 }
 
 /**
- * Fetch and parse spell data from CSV file
- * @returns {Promise<Object>} Parsed spell data
+ * Fetch spell sources configuration
+ * @returns {Promise<Object>} Spell sources configuration
  */
-export async function loadSpellData() {
+export async function loadSpellSources() {
   try {
-    const response = await fetch('./all_spells.csv');
+    const response = await fetch('./spells.json');
     
     if (!response.ok) {
-      throw new Error(`Failed to fetch CSV: ${response.status} ${response.statusText}`);
+      throw new Error(`Failed to fetch spells.json: ${response.status} ${response.statusText}`);
     }
     
-    const csvText = await response.text();
-    const parser = new SpellDataParser();
-    const data = parser.parseCSV(csvText);
+    const sourcesConfig = await response.json();
+    console.log('Spell sources loaded:', sourcesConfig.sources.length, 'sources');
+    return sourcesConfig;
+  } catch (error) {
+    console.error('Error loading spell sources:', error);
+    throw new Error(`Failed to load spell sources: ${error.message}`);
+  }
+}
+
+/**
+ * Load spell data from a specific source file
+ * @param {string} filePath - Path to the spell data file
+ * @returns {Promise<Array>} Array of spell objects
+ */
+async function loadSpellDataFromFile(filePath) {
+  try {
+    const response = await fetch(`./${filePath}`);
     
-    console.log('Spell data loaded successfully:', data.spells.length, 'spells');
-    return data;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${filePath}: ${response.status} ${response.statusText}`);
+    }
+    
+    const jsonData = await response.json();
+    return jsonData;
+  } catch (error) {
+    console.error(`Error loading spell data from ${filePath}:`, error);
+    throw new Error(`Failed to load spell data from ${filePath}: ${error.message}`);
+  }
+}
+
+/**
+ * Fetch and parse spell data from multiple sources
+ * @param {Array<string>} enabledSources - Array of source IDs to load
+ * @returns {Promise<Object>} Parsed spell data
+ */
+export async function loadSpellData(enabledSources = null) {
+  try {
+    // Load sources configuration
+    const sourcesConfig = await loadSpellSources();
+    
+    // Determine which sources to load
+    let sourcesToLoad = sourcesConfig.sources;
+    if (enabledSources) {
+      sourcesToLoad = sourcesConfig.sources.filter(source => enabledSources.includes(source.id));
+    } else {
+      // Load default sources if none specified
+      sourcesToLoad = sourcesConfig.sources.filter(source => source.default);
+    }
+    
+    console.log('Loading spell data from sources:', sourcesToLoad.map(s => s.name));
+    
+    // Load data from all enabled sources
+    const allSpells = [];
+    for (const source of sourcesToLoad) {
+      try {
+        const spells = await loadSpellDataFromFile(source.file);
+        console.log(`Loaded ${spells.length} spells from ${source.name}`);
+        allSpells.push(...spells);
+      } catch (error) {
+        console.warn(`Failed to load ${source.name}:`, error.message);
+        // Continue loading other sources even if one fails
+      }
+    }
+    
+    // Parse combined spell data
+    const parser = new SpellDataParser();
+    const data = parser.parseJSON(allSpells);
+    
+    console.log('Total spell data loaded successfully:', data.spells.length, 'spells');
+    return {
+      ...data,
+      sources: sourcesToLoad.map(s => ({ id: s.id, name: s.name }))
+    };
   } catch (error) {
     console.error('Error loading spell data:', error);
     throw new Error(`Failed to load spell data: ${error.message}`);

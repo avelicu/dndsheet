@@ -247,6 +247,16 @@
   display: block;
 }
 
+.spell-description code {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 1px 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  color: #333;
+}
+
 .spell-description-content {
   overflow-y: auto;
   flex: 1;

@@ -20,6 +20,10 @@ const DEFAULT_STATE = {
   },
   debug: {
     showOutlines: false
+  },
+  sourceSelection: {
+    enabledSources: [],
+    hasUserChoice: false  // Track if user has made an explicit choice
   }
 };
 
@@ -27,7 +31,8 @@ const DEFAULT_STATE = {
 const STORAGE_KEYS = {
   SPELL_SELECTION: 'dnd-spell-creator-spell-selection',
   LAYOUT_CONFIG: 'dnd-spell-creator-layout-config',
-  DEBUG: 'dnd-spell-creator-debug'
+  DEBUG: 'dnd-spell-creator-debug',
+  SOURCE_SELECTION: 'dnd-spell-creator-source-selection'
 };
 
 /**
@@ -129,10 +134,17 @@ class StateManager {
     );
     const savedDebug = { ...DEFAULT_STATE.debug, ...loadedDebug };
 
+    const loadedSourceSelection = StorageUtils.load(
+      STORAGE_KEYS.SOURCE_SELECTION,
+      DEFAULT_STATE.sourceSelection
+    );
+    const savedSourceSelection = { ...DEFAULT_STATE.sourceSelection, ...loadedSourceSelection };
+
     this.state = {
       spellSelection: savedSpellSelection,
       layoutConfig: savedLayoutConfig,
-      debug: savedDebug
+      debug: savedDebug,
+      sourceSelection: savedSourceSelection
     };
 
     console.log('State loaded from localStorage:', this.state);
@@ -179,6 +191,19 @@ class StateManager {
   }
 
   /**
+   * Update source selection state
+   * @param {Object} sourceSelection - New source selection data
+   */
+  updateSourceSelection(sourceSelection) {
+    this.state.sourceSelection = { 
+      ...sourceSelection,
+      hasUserChoice: true  // Mark that user has made an explicit choice
+    };
+    this.saveSourceSelection();
+    this.notifyListeners('sourceSelection', this.state.sourceSelection);
+  }
+
+  /**
    * Save spell selection to localStorage
    */
   saveSpellSelection() {
@@ -196,6 +221,13 @@ class StateManager {
    */
   saveLayoutConfig() {
     StorageUtils.save(STORAGE_KEYS.LAYOUT_CONFIG, this.state.layoutConfig);
+  }
+
+  /**
+   * Save source selection to localStorage
+   */
+  saveSourceSelection() {
+    StorageUtils.save(STORAGE_KEYS.SOURCE_SELECTION, this.state.sourceSelection);
   }
 
   /**
@@ -246,6 +278,7 @@ class StateManager {
     StorageUtils.clearAll();
     this.notifyListeners('spellSelection', this.state.spellSelection);
     this.notifyListeners('layoutConfig', this.state.layoutConfig);
+    this.notifyListeners('sourceSelection', this.state.sourceSelection);
     console.log('State reset to defaults');
   }
 
@@ -300,8 +333,10 @@ class StateManager {
       typeof state === 'object' &&
       state.spellSelection &&
       state.layoutConfig &&
+      state.sourceSelection &&
       Array.isArray(state.spellSelection.selectedClasses) &&
       Array.isArray(state.spellSelection.selectedLevels) &&
+      Array.isArray(state.sourceSelection.enabledSources) &&
       typeof state.layoutConfig.pageSize === 'string'
     );
   }

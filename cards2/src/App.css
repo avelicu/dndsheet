@@ -25,7 +25,8 @@
 }
 
 .configurator {
-  max-width: 1200px;
+  width: 100%;
+  max-width: calc(100vw - 4rem);
   margin: 0 auto 2rem auto;
 }
 

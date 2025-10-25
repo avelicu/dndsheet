@@ -5,28 +5,42 @@ export class Spell {
   constructor(data) {
     this.level = parseInt(data.level, 10);
     this.name = data.name?.trim() || '';
-    this.schoolOfMagic = data.school_of_magic?.trim() || '';
+    this.schoolOfMagic = data.school?.name || data.school_of_magic?.trim() || '';
     this.castingTime = data.casting_time?.trim() || '';
     this.range = data.range?.trim() || '';
-    this.components = data.components?.trim() || '';
-    this.materialComponent = data.material_component?.trim() || '';
+    this.components = Array.isArray(data.components) ? data.components.join(', ') : (data.components?.trim() || '');
+    this.materialComponent = data.material?.trim() || data.material_component?.trim() || '';
     this.duration = data.duration?.trim() || '';
-    this.description = data.description?.trim() || '';
+    this.description = Array.isArray(data.desc) ? data.desc.join(' ') : (data.description?.trim() || '');
     this.classes = this.parseClasses(data.classes);
+    this.isRitual = data.ritual || false;
+    this.isConcentration = data.concentration || false;
   }
 
   /**
-   * Parse classes string into array
-   * @param {string} classesString - Comma-separated class names
+   * Parse classes string or array into array
+   * @param {string|Array} classesData - Comma-separated class names or array of class objects
    * @returns {Array<string>} Array of class names
    */
-  parseClasses(classesString) {
-    if (!classesString) return [];
+  parseClasses(classesData) {
+    if (!classesData) return [];
     
-    return classesString
-      .split(',')
-      .map(cls => cls.trim())
-      .filter(cls => cls.length > 0);
+    // Handle JSON format (array of objects with name property)
+    if (Array.isArray(classesData)) {
+      return classesData
+        .map(cls => typeof cls === 'object' ? cls.name : cls)
+        .filter(cls => cls && cls.trim().length > 0);
+    }
+    
+    // Handle CSV format (comma-separated string)
+    if (typeof classesData === 'string') {
+      return classesData
+        .split(',')
+        .map(cls => cls.trim())
+        .filter(cls => cls.length > 0);
+    }
+    
+    return [];
   }
 
   /**
@@ -45,6 +59,22 @@ export class Spell {
    */
   isLevel(level) {
     return this.level === level;
+  }
+
+  /**
+   * Check if this spell is a ritual
+   * @returns {boolean} True if spell is a ritual
+   */
+  isRitualSpell() {
+    return this.isRitual;
+  }
+
+  /**
+   * Check if this spell requires concentration
+   * @returns {boolean} True if spell requires concentration
+   */
+  requiresConcentration() {
+    return this.isConcentration;
   }
 
 
@@ -102,7 +132,9 @@ export class Spell {
       materialComponent: this.materialComponent,
       duration: this.duration,
       description: this.description,
-      classes: this.classes
+      classes: this.classes,
+      isRitual: this.isRitual,
+      isConcentration: this.isConcentration
     };
   }
 
@@ -122,7 +154,9 @@ export class Spell {
       material_component: obj.materialComponent,
       duration: obj.duration,
       description: obj.description,
-      classes: obj.classes?.join(', ') || ''
+      classes: obj.classes?.join(', ') || '',
+      ritual: obj.isRitual,
+      concentration: obj.isConcentration
     });
   }
 }

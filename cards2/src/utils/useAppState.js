@@ -76,6 +76,33 @@ export const useDebugFlags = () => {
 };
 
 /**
+ * Custom hook for managing source selection state with localStorage persistence
+ * @returns {Object} Source selection state and update function
+ */
+export const useSourceSelection = () => {
+  const [sourceSelection, setSourceSelection] = useState(() => stateManager.getState().sourceSelection);
+
+  useEffect(() => {
+    // Subscribe to state changes
+    const unsubscribe = stateManager.subscribe('sourceSelection', (newSourceSelection) => {
+      setSourceSelection(newSourceSelection);
+    });
+
+    // Cleanup subscription on unmount
+    return unsubscribe;
+  }, []);
+
+  const updateSourceSelection = useCallback((newSourceSelection) => {
+    stateManager.updateSourceSelection(newSourceSelection);
+  }, []);
+
+  return {
+    sourceSelection,
+    updateSourceSelection
+  };
+};
+
+/**
  * Custom hook for managing all application state
  * @returns {Object} Complete state and update functions
  */
@@ -83,6 +110,7 @@ export const useAppState = () => {
   const spellSelection = useSpellSelection();
   const layoutConfig = useLayoutConfig();
   const debugFlags = useDebugFlags();
+  const sourceSelection = useSourceSelection();
 
   const resetState = useCallback(() => {
     stateManager.reset();
@@ -100,6 +128,7 @@ export const useAppState = () => {
     ...spellSelection,
     ...layoutConfig,
     ...debugFlags,
+    ...sourceSelection,
     resetState,
     exportState,
     importState
