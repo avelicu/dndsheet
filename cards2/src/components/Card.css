@@ -9,7 +9,6 @@
   position: relative;
   overflow: hidden;
   font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  letter-spacing: -0.02em;
   /* Default title height and vertical padding */
   --title-h: 30px;
   --title-pad-y: 6px;
@@ -151,7 +150,6 @@
 .spell-header-bar {
   display: flex;
   border-bottom: 1px solid black;
-  background: white;
   height: 32px;
   overflow: hidden;
 }
@@ -223,7 +221,6 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: white;
   overflow: hidden;
 }
 

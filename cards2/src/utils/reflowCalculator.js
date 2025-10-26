@@ -17,6 +17,8 @@ export const reflowCalculator = async (spells, cardSize = 'standard') => {
 
 const MIN_SCALE = 0.7; // use minimal scale for all continuation cards
 const SCALE_STEP = 0.01;
+const LETTER_SPACING_STEP = -0.005; // em units
+const MIN_LETTER_SPACING = -0.02; // em units
 
 // Shared helper: normalize leading <br> and whitespace-only text nodes
 const normalizeLeading = (fragmentHtml) => {
@@ -66,9 +68,10 @@ const performCalculation = async (spells, cardSize) => {
     // Helper to measure overflow for a given CardData
     const measureOverflow = (cardData) => {
       flushSync(() => {
-        // include body length in key to avoid DOM reuse
+        // include body length and letterSpacing in key to avoid DOM reuse
+        const letterSpacing = cardData.letterSpacing || 0;
         root.render(React.createElement('div', null, React.createElement(Card, {
-          key: `measure-${cardData.title}-${cardData.fontScale}-${(cardData.body||'').length}`,
+          key: `measure-${cardData.title}-${cardData.fontScale}-${letterSpacing}-${(cardData.body||'').length}`,
           cardData,
           cardSize,
           unconstrained: true
@@ -220,12 +223,38 @@ const performCalculation = async (spells, cardSize) => {
       // Declare probeData outside, recreate per attempt
       let probeData;
 
-      for (let scale = 1.0; scale >= MIN_SCALE; scale -= SCALE_STEP) {
-        probeData = { ...original, fontScale: scale, sizeReduced: scale < 1.0 };
+      // First, try reducing letter spacing (0 to -0.02em in steps of -0.005em)
+      let letterSpacingAdjusted = false;
+      for (let spacing = 0; spacing >= MIN_LETTER_SPACING; spacing += LETTER_SPACING_STEP) {
+        probeData = { 
+          ...original, 
+          fontScale: 1.0, 
+          letterSpacing: spacing,
+          letterSpacingReduced: spacing < 0
+        };
         overflowPx = measureOverflow(probeData);
         if (overflowPx <= 0) {
           fits = true;
+          letterSpacingAdjusted = true;
           break;
+        }
+      }
+
+      // If letter spacing adjustment didn't work, try reducing font scale
+      if (!fits) {
+        for (let scale = 1.0; scale >= MIN_SCALE; scale -= SCALE_STEP) {
+          probeData = { 
+            ...original, 
+            fontScale: scale, 
+            letterSpacing: MIN_LETTER_SPACING, // use minimum letter spacing
+            sizeReduced: scale < 1.0,
+            letterSpacingReduced: true
+          };
+          overflowPx = measureOverflow(probeData);
+          if (overflowPx <= 0) {
+            fits = true;
+            break;
+          }
         }
       }
 

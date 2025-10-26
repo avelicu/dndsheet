@@ -14,6 +14,7 @@ const Card = ({ cardData, cardSize = 'standard', unconstrained = false, classNam
   const bottomLeft = cardData.bottomLeft; // school of magic
   const bottomRight = cardData.bottomRight; // classes
   const fontScale = typeof cardData.fontScale === 'number' ? cardData.fontScale : 1;
+  const letterSpacing = typeof cardData.letterSpacing === 'number' ? cardData.letterSpacing : 0;
 
   const showErrorOutline = !!(cardData.error || cardData.isOverflowing);
   const showSizeReducedOutline = !!cardData.sizeReduced;
@@ -63,7 +64,10 @@ const Card = ({ cardData, cardSize = 'standard', unconstrained = false, classNam
         {/* Description Body */}
         <div className="spell-body">
           <div className="spell-description">
-            <div className="spell-description-content" style={{ fontSize: `${fontScale * 100}%` }}>
+            <div className="spell-description-content" style={{ 
+              fontSize: `${fontScale * 100}%`,
+              letterSpacing: `${letterSpacing}em`
+            }}>
               <span 
                 className="description-content"
                 dangerouslySetInnerHTML={{ __html: body }}
