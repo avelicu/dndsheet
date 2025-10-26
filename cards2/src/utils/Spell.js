@@ -13,9 +13,9 @@ export class Spell {
     this.duration = data.duration?.trim() || '';
     
     // Build description, appending higher_level if present
-    let description = Array.isArray(data.desc) ? data.desc.join(' ') : (data.description?.trim() || '');
+    let description = Array.isArray(data.desc) ? data.desc.join('\n\n') : (data.description?.trim() || '');
     if (data.higher_level && Array.isArray(data.higher_level) && data.higher_level.length > 0) {
-      const higherLevelText = data.higher_level.join(' ');
+      const higherLevelText = data.higher_level.join('\n\n');
       description = description + '\n\n' + higherLevelText;
     }
     this.description = description;

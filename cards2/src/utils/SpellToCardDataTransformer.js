@@ -41,15 +41,13 @@ export class SpellToCardDataTransformer {
       { label: 'CASTING TIME', value: castingTime }
     ];
 
-    // Build main body content
-    let body = '';
+    // Apply formatting rules to description
+    let body = this.formatDescription(spell.description);
+    
+    // Prepend material component if present (after formatting to avoid double-wrapping)
     if (spell.materialComponent) {
-      body += `<em>Material Component:</em> ${spell.materialComponent}<br/><br/>`;
+      body = `<p><em>Material Component:</em> ${spell.materialComponent}</p>` + body;
     }
-    body += spell.description;
-
-    // Apply formatting rules to body
-    body = this.formatDescription(body);
 
     return new CardData({
       title: title,
@@ -180,11 +178,15 @@ export class SpellToCardDataTransformer {
     // Convert markdown code `text` to <code>text</code>
     html = html.replace(/`(.*?)`/g, '<code>$1</code>');
     
-    // Convert markdown line breaks (double newline) to <br/><br/>
-    html = html.replace(/\n\n/g, '<br/><br/>');
+    // Split by double newlines to get paragraphs
+    const paragraphs = html.split(/\n\n/);
     
-    // Convert single newlines to <br/>
-    html = html.replace(/\n/g, '<br/>');
+    // Wrap each paragraph in <p> tags, converting single newlines to <br/> within paragraphs
+    html = paragraphs
+      .map(p => p.trim())
+      .filter(p => p.length > 0)
+      .map(p => `<p>${p.replace(/\n/g, '<br/>')}</p>`)
+      .join('');
     
     return html;
   }

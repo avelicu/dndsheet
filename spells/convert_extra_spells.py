@@ -119,13 +119,29 @@ def infer_source_from_class(class_text):
     return "Core"  # Default for spells without source abbreviation
 
 def parse_components_from_csv(components_text):
-    """Parse components from CSV format to array."""
+    """
+    Parse components from CSV format to array.
+    Returns (components_array, material_description).
+    If material component has description in parentheses, extract it.
+    """
     if not components_text:
-        return []
+        return [], None
     
-    # Split by comma and clean up
+    material_description = None
+    
+    # Use regex to extract material component with parentheses
+    # Pattern: M followed by optional space, then parentheses with content
+    material_match = re.search(r'M\s*\(([^)]+)\)', components_text)
+    if material_match:
+        material_description = material_match.group(1).strip()
+        # Remove the entire M (...) part from the components text
+        components_text = re.sub(r'M\s*\([^)]+\)', 'M', components_text)
+    
+    # Now split by comma and clean up
     components = [comp.strip() for comp in components_text.split(',')]
-    return [comp for comp in components if comp]
+    components = [comp for comp in components if comp]
+    
+    return components, material_description
 
 def sanitize_class_name(class_text):
     """Extract base class name from class field, removing subclass and source info."""
@@ -321,6 +337,24 @@ def transform_casting_time_and_description(casting_time, description):
     
     return casting_time, description
 
+def convert_description_to_array(description):
+    """
+    Convert description string to array by splitting on <br> tags.
+    Matches SRD format where descriptions are arrays of paragraphs.
+    """
+    if not description:
+        return []
+    
+    # Split by both <br> and <br/> (case insensitive)
+    # Use regex to split on various br tag formats
+    parts = re.split(r'<br\s*/?>', description, flags=re.IGNORECASE)
+    
+    # Strip whitespace and remove empty elements
+    parts = [part.strip() for part in parts]
+    parts = [part for part in parts if part]
+    
+    return parts
+
 def create_spell_json(spell_data, unioned_classes=None):
     """Convert CSV spell data to JSON format."""
     # Clean the spell name and extract ritual flag
@@ -340,8 +374,12 @@ def create_spell_json(spell_data, unioned_classes=None):
         "index": school_name.lower(),
         "name": school_name
     } if school_name else None
-    components = parse_components_from_csv(spell_data['components'])
+    components, material_from_components = parse_components_from_csv(spell_data['components'])
     source = infer_source_from_class(spell_data['classes'])
+    
+    # Use material from components if not already extracted from description
+    if material_from_components and not material:
+        material = material_from_components
     
     # Use unioned classes if provided, otherwise sanitize single class
     if unioned_classes:
@@ -357,6 +395,9 @@ def create_spell_json(spell_data, unioned_classes=None):
         clean_description
     )
     
+    # Convert description to array (split by <br> tags to match SRD format)
+    description_array = convert_description_to_array(transformed_description)
+    
     # Create JSON structure
     spell_json = {
         'name': clean_name,
@@ -366,7 +407,7 @@ def create_spell_json(spell_data, unioned_classes=None):
         'range': transformed_range,
         'components': components,
         'duration': transformed_duration,
-        'description': transformed_description,
+        'desc': description_array,
         'classes': classes,
         'ritual': is_ritual,
         'concentration': is_concentration,

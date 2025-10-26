@@ -239,8 +239,16 @@
 }
 
 .spell-description br {
-  margin: 0.5em 0;
+  margin: 0.25em 0;
   display: block;
+}
+
+.spell-description p {
+  margin: 0 0 0.5em 0;
+}
+
+.spell-description p:last-child {
+  margin-bottom: 0;
 }
 
 .spell-description code {
