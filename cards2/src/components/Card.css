@@ -11,7 +11,7 @@
   font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   /* Default title height and vertical padding */
   --title-h: 30px;
-  --title-pad-y: 6px;
+  --title-pad-y: 3px;
   padding-top: calc(var(--title-h) / 2 + var(--title-pad-y));
   background: black; /* Changed to black */
   box-sizing: border-box;
