@@ -200,6 +200,15 @@ export class SpellToCardDataTransformer {
       return `<strong><span style=\"color:${color}\">${dtype} damage</span></strong>`;
     });
 
+    // Phase B.1: color and bold standalone damage type words (not already colored)
+    // Use a negative lookbehind to avoid matching types already in <span> tags
+    const standaloneTypeRegex = new RegExp(`(?<!<span[^>]*>)\\b(${damageTypes})\\b(?![^<]*</span>)`, 'gi');
+    out = out.replace(standaloneTypeRegex, (m, dtype) => {
+      const key = (dtype || '').toLowerCase();
+      const color = SpellToCardDataTransformer.DAMAGE_COLORS[key] || '#000';
+      return `<strong><span style=\"color:${color}\">${dtype}</span></strong>`;
+    });
+
     // Phase C: bold saves (e.g., "Dexterity saving throw", "Dex save")
     const saveRegex = /\b(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|Str|Dex|Con|Int|Wis|Cha)\s+(saving throw|save)\b/gi;
     out = out.replace(saveRegex, (m) => `<strong>${m}</strong>`);

@@ -272,6 +272,55 @@ def compare_spell_copies(spell_copies):
     
     return differences
 
+def transform_range(range_text):
+    """Transform range field: if 'Self (something)', extract just 'something'. 
+    Also remove 'hemisphere' suffix from radius descriptions."""
+    if not range_text:
+        return range_text
+    
+    # Match "Self (something)" pattern
+    match = re.match(r'^Self\s*\(([^)]+)\)$', range_text.strip(), re.IGNORECASE)
+    if match:
+        range_text = match.group(1)
+    
+    # Remove "hemisphere" suffix from radius descriptions
+    # e.g., "10-foot-radius hemisphere" -> "10-foot radius"
+    range_text = re.sub(r'-radius\s+hemisphere$', ' radius', range_text, flags=re.IGNORECASE)
+    
+    return range_text
+
+def transform_duration(duration_text):
+    """Transform duration field: if 'Instantaneous or X (see below)', extract 'X*'."""
+    if not duration_text:
+        return duration_text
+    
+    # Match "Instantaneous or X (see below)" pattern
+    match = re.match(r'^Instantaneous\s+or\s+([^(]+)\s*\(see below\)$', duration_text.strip(), re.IGNORECASE)
+    if match:
+        return match.group(1).strip() + '*'
+    
+    return duration_text
+
+def transform_casting_time_and_description(casting_time, description):
+    """
+    Transform casting time and description for special reaction spells.
+    If casting time is '1 reaction, which you take ...', 
+    set casting time to '1 reaction*' and prepend 'Reaction, ...' to description.
+    Returns (transformed_casting_time, transformed_description)
+    """
+    if not casting_time:
+        return casting_time, description
+    
+    # Match "1 reaction, which you take ..." pattern
+    match = re.match(r'^1\s+reaction,\s+which you take\s+(.+)$', casting_time.strip(), re.IGNORECASE)
+    if match:
+        reaction_condition = match.group(1)
+        new_casting_time = '1 reaction*'
+        new_description = f'Reaction, {reaction_condition}\n\n{description}' if description else f'Reaction, {reaction_condition}'
+        return new_casting_time, new_description
+    
+    return casting_time, description
+
 def create_spell_json(spell_data, unioned_classes=None):
     """Convert CSV spell data to JSON format."""
     # Clean the spell name and extract ritual flag
@@ -295,16 +344,24 @@ def create_spell_json(spell_data, unioned_classes=None):
     else:
         classes = [sanitize_class_name(spell_data['classes'])]
     
+    # Apply transformations
+    transformed_range = transform_range(spell_data['range'])
+    transformed_duration = transform_duration(spell_data['duration'])
+    transformed_casting_time, transformed_description = transform_casting_time_and_description(
+        spell_data['casting_time'], 
+        clean_description
+    )
+    
     # Create JSON structure
     spell_json = {
         'name': clean_name,
         'level': spell_data['level'],
         'school': school,
-        'casting_time': spell_data['casting_time'],
-        'range': spell_data['range'],
+        'casting_time': transformed_casting_time,
+        'range': transformed_range,
         'components': components,
-        'duration': spell_data['duration'],
-        'description': clean_description,
+        'duration': transformed_duration,
+        'description': transformed_description,
         'classes': classes,
         'ritual': is_ritual,
         'concentration': is_concentration,

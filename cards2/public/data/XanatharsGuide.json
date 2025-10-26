@@ -8,7 +8,7 @@
     "components": [
       "S"
     ],
-    "duration": "Instantaneous or 1 hour (see below)",
+    "duration": "1 hour*",
     "description": "You choose nonmagical flame that you can see within range and that fits within a 5-foot cube. You affect it in one of the following ways:<br> • You instantaneously expand the flame 5 feet in one direction, provided that wood or other fuel is present in the new location.<br> • You instantaneously extinguish the flames within the cube.<br> • You double or halve the area of bright light and dim light cast by the flame, change its color or both . The change lasts for 1 hour.<br> • You cause simple shapes-such as the vague form of a creature, an inanimate object, or a location- to appear within the flames and animate as you like. The shapes last for 1 hour.<br> If you cast this spell multiple times, you can have up to three non-instantaneous effects created by it active at a time, and you can dismiss such an effect as an action.",
     "classes": [
       "Druid",
@@ -79,7 +79,7 @@
     "components": [
       "S"
     ],
-    "duration": "Instantaneous or 1 hour (see below)",
+    "duration": "1 hour*",
     "description": "You choose a portion of dirt or stone that you can see within range and that fits within a 5-foot cube. You manipulate it in one of the following ways:<br> • If you target an area of loose earth, you can instantaneously excavate it, move it along the ground, and deposit it up to 5 feet away. This movement doesn't involve enough force to cause damage.<br> • You cause shapes, colors, or both to appear on the dirt or stone, spelling out words, creating images, or shaping patterns. The changes last for 1 hour.<br> • If the dirt or stone you target is on the ground, you cause it to become difficult terrain. Alternatively, you can cause the ground to become normal terrain if it is already difficult terrain . This change lasts for 1 hour.<br> If you cast this spell multiple times, you can have no more than two of its non-instantaneous effects active at a time, and you can dismiss such an effect as an action.",
     "classes": [
       "Druid",
@@ -121,7 +121,7 @@
     "components": [
       "S"
     ],
-    "duration": "Instantaneous or 1 hour (see below)",
+    "duration": "1 hour*",
     "description": "You choose an area of water that you can see within range and that fits within a 5-foot cube. You manipulate it in one of the following ways:<br> • You instantaneously move or otherwise change the flow of the water as you direct, up to 5 feet in any direction. This movement doesn't have enough force to cause damage.<br> • You cause the water to form into simple shapes and animate at your direction. This change lasts for 1 hour.<br> • You change the water's color or opacity. The water must be changed in the same way throughout. This change lasts for 1 hour.<br> • You freeze the water, provided that there are no creatures in it. The water unfreezes in 1 hour.<br> If you cast this spell multiple times,you can have no more than two of its non-instantaneous effects active at a time, and you can dismiss such an effect as an action.",
     "classes": [
       "Druid",
@@ -1537,7 +1537,7 @@
     "name": "Soul Cage",
     "level": 6,
     "school": "Necromancy",
-    "casting_time": "1 reaction, which you take when a humanoid you can see within 60 feet of you dies",
+    "casting_time": "1 reaction*",
     "range": "60 feet",
     "components": [
       "V",
@@ -1545,7 +1545,7 @@
       "M"
     ],
     "duration": "8 hours",
-    "description": "This spell snatches the soul of a humanoid as it dies and traps it inside the tiny cage you use for the material component. A stolen soul remains inside the cage until the spell ends or until you destroy the cage, which ends the spell. While you have a soul inside the cage, you can exploit it in any of the ways described below. You can use a trapped soul up to six times. Once you exploit a soul for the sixth time, it is released, and the spell ends. While a soul is trapped, the dead humanoid it came from can't be revived.<br> <b>Steal Life</b>: You can use a bonus action to drain vigor from the soul and regain 2d8 hit points.<br> <b> Query Soul</b>: You ask the soul a question (no action required) and receive a brief telepathic answer, which you can understand regardless of the language used. The soul knows only what it knew in life, but it must answer you truthfully and to the best of its ability. The answer is no more than a sentence or two and might be cryptic.<br> <b> Borrow Experience</b>: You can use a bonus action to bolster yourself with the soul's life experience, making your next attack roll, ability check, or saving throw with advantage. If you don't use this benefit before the start of your next turn, it is lost.<br> <b> Eyes of the Dead</b>: You can use an action to name a place the humanoid saw in life, which creates an invisible sensor somewhere in that place if it is on the plane of existence you're currently on. The sensor remains for as long as you concentrate, up to 10 minutes (as if you were concentrating on a spell). You receive visual and auditory information from the sensor as if you were in its space using your senses.<br> A creature that can see the sensor (such as one using <i>see invisibility</i> or truesight) sees a translucent image of the tormented humanoid whose soul you caged.",
+    "description": "Reaction, when a humanoid you can see within 60 feet of you dies\n\nThis spell snatches the soul of a humanoid as it dies and traps it inside the tiny cage you use for the material component. A stolen soul remains inside the cage until the spell ends or until you destroy the cage, which ends the spell. While you have a soul inside the cage, you can exploit it in any of the ways described below. You can use a trapped soul up to six times. Once you exploit a soul for the sixth time, it is released, and the spell ends. While a soul is trapped, the dead humanoid it came from can't be revived.<br> <b>Steal Life</b>: You can use a bonus action to drain vigor from the soul and regain 2d8 hit points.<br> <b> Query Soul</b>: You ask the soul a question (no action required) and receive a brief telepathic answer, which you can understand regardless of the language used. The soul knows only what it knew in life, but it must answer you truthfully and to the best of its ability. The answer is no more than a sentence or two and might be cryptic.<br> <b> Borrow Experience</b>: You can use a bonus action to bolster yourself with the soul's life experience, making your next attack roll, ability check, or saving throw with advantage. If you don't use this benefit before the start of your next turn, it is lost.<br> <b> Eyes of the Dead</b>: You can use an action to name a place the humanoid saw in life, which creates an invisible sensor somewhere in that place if it is on the plane of existence you're currently on. The sensor remains for as long as you concentrate, up to 10 minutes (as if you were concentrating on a spell). You receive visual and auditory information from the sensor as if you were in its space using your senses.<br> A creature that can see the sensor (such as one using <i>see invisibility</i> or truesight) sees a translucent image of the tormented humanoid whose soul you caged.",
     "classes": [
       "Warlock",
       "Wizard"

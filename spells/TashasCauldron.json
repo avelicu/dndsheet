@@ -4,7 +4,7 @@
     "level": 0,
     "school": "Evocation",
     "casting_time": "1 action",
-    "range": "Self (5-foot radius)",
+    "range": "5-foot radius",
     "components": [
       "S",
       "M"
@@ -29,7 +29,7 @@
     "level": 0,
     "school": "Evocation",
     "casting_time": "1 action",
-    "range": "Self (5-foot radius)",
+    "range": "5-foot radius",
     "components": [
       "S",
       "M"
@@ -100,7 +100,7 @@
     "level": 1,
     "school": "1St-Level",
     "casting_time": "1 action",
-    "range": "Self (30-foot line)",
+    "range": "30-foot line",
     "components": [
       "V",
       "S",
