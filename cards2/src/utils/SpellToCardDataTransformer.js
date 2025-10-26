@@ -29,8 +29,8 @@ export class SpellToCardDataTransformer {
     const range = this.abbreviateSpecValue(spell.range);
     const castingTime = this.abbreviateSpecValue(spell.castingTime);
 
-    // Create specs array from spell properties
-    const specs = [
+    // Create specs array from spell properties (wrap in array for new format: array of arrays)
+    const specs = [[
       { label: 'RANGE', value: range },
       { label: 'COMPONENTS', value: spell.components },
       { 
@@ -39,7 +39,7 @@ export class SpellToCardDataTransformer {
         hasConcentration: isConcentration
       },
       { label: 'CASTING TIME', value: castingTime }
-    ];
+    ]];
 
     // Apply formatting rules to description
     let body = this.formatDescription(spell.description);

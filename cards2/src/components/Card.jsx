@@ -9,7 +9,11 @@ const Card = ({ cardData, cardSize = 'standard', unconstrained = false, classNam
   const title = cardData.title;
   const leftIndicator = cardData.leftIndicator; // 'R' for ritual
   const rightIndicator = cardData.rightIndicator; // spell level
-  const specs = cardData.specs || [];
+  // Support both old format (array of specs) and new format (array of arrays of specs)
+  const specsRaw = cardData.specs || [];
+  const specsRows = Array.isArray(specsRaw) && specsRaw.length > 0 && Array.isArray(specsRaw[0]) 
+    ? specsRaw // New format: array of arrays
+    : [specsRaw]; // Old format: single array, wrap it in another array
   const body = cardData.body;
   const bottomLeft = cardData.bottomLeft; // school of magic
   const bottomRight = cardData.bottomRight; // classes
@@ -44,18 +48,22 @@ const Card = ({ cardData, cardSize = 'standard', unconstrained = false, classNam
 
       {/* Main Content */}
       <div className="spell-content">
-        {/* Header Bar with Details */}
-        {specs.length > 0 && (
-          <div className="spell-header-bar">
-            {specs.map((spec, index) => (
-              <div key={index} className="spell-header-column">
-                <div className="spell-header-label">{spec.label}</div>
-                <div className="spell-header-value">
-                  {spec.hasConcentration && (
-                    <span className="concentration-indicator-inline">C</span>
-                  )}
-                  {spec.value}
-                </div>
+        {/* Header Bar with Details - multiple rows */}
+        {specsRows.length > 0 && specsRows[0].length > 0 && (
+          <div className="spell-header-container">
+            {specsRows.map((specs, rowIndex) => (
+              <div key={rowIndex} className="spell-header-bar">
+                {specs.map((spec, specIndex) => (
+                  <div key={specIndex} className="spell-header-column">
+                    <div className="spell-header-label">{spec.label}</div>
+                    <div className="spell-header-value">
+                      {spec.hasConcentration && (
+                        <span className="concentration-indicator-inline">C</span>
+                      )}
+                      {spec.value}
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>

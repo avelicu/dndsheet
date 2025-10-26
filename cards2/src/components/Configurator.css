@@ -20,6 +20,7 @@
   overflow-y: auto;
   flex: 1;
   min-height: 0;
+  margin-top: 1.5rem;
 }
 
 .loading, .error {

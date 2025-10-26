@@ -8,6 +8,10 @@ import './App.css';
 
 function App() {
   const { 
+    cardMode,
+    updateCardMode,
+    creatureSelection,
+    updateCreatureSelection,
     spellSelection, 
     updateSpellSelection, 
     layoutConfig, 
@@ -17,12 +21,12 @@ function App() {
     updateSourceSelection
   } = useAppState();
 
-  // Runtime-only selected spells (not persisted)
-  const [selectedSpells, setSelectedSpells] = useState([]);
+  // Runtime-only selected cards (not persisted)
+  const [selectedCards, setSelectedCards] = useState([]);
 
   const handleSelectionChange = useCallback((selection) => {
     // Only keep final computed list in runtime state
-    setSelectedSpells(selection.spells || []);
+    setSelectedCards(selection.cards || []);
   }, []);
 
   const handleSourcesChange = useCallback((sources) => {
@@ -34,23 +38,31 @@ function App() {
     console.log('Layout config updated:', layout);
   }, [updateLayoutConfig]);
 
+  const handleCardModeChange = useCallback((newMode) => {
+    updateCardMode(newMode);
+  }, [updateCardMode]);
+
   return (
     <div className={`app ${debug?.showOutlines ? 'debug-outlines-enabled' : ''}`}>
       <header className="app-header">
-        <h1>D&D Spell Card Creator</h1>
-        <p>Create custom spell cards for your D&D adventures</p>
+        <h1>D&D Spell & Creature Card Creator</h1>
+        <p>Create custom spell cards and creature reference cards for your D&D adventures</p>
       </header>
       
       <Configurator 
+        cardMode={cardMode}
+        onCardModeChange={handleCardModeChange}
         onSelectionChange={handleSelectionChange}
         onLayoutChange={handleLayoutChange}
         enabledSources={sourceSelection.enabledSources}
         onSourcesChange={handleSourcesChange}
         selectedSources={sourceSelection.enabledSources}
         hasUserChoice={sourceSelection.hasUserChoice}
+        creatureSelection={creatureSelection}
+        updateCreatureSelection={updateCreatureSelection}
       />
       <PageContainer 
-        spells={selectedSpells}
+        cards={selectedCards}
         layoutConfig={layoutConfig}
       />
       

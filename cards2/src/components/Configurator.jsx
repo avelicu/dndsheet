@@ -4,12 +4,18 @@ import LevelSelector from './LevelSelector';
 import LayoutSelector from './LayoutSelector';
 import AdditionalSpells from './AdditionalSpells';
 import { SourceSelector } from './SourceSelector';
+import ModeSelector from './ModeSelector';
+import CreatureSelector from './CreatureSelector';
 import { useSpellData } from '../utils/useSpellData';
+import { useCreatureData } from '../utils/useCreatureData';
+import { SpellToCardDataTransformer } from '../utils/SpellToCardDataTransformer';
+import { CreatureToCardDataTransformer } from '../utils/CreatureToCardDataTransformer';
 import stateManager from '../utils/stateManager';
 import './Configurator.css';
 
-const Configurator = ({ onSelectionChange, onLayoutChange, enabledSources = [], onSourcesChange, selectedSources = [], hasUserChoice = false }) => {
-  const { spells, classes, levels, filterSpells, loading, error } = useSpellData(enabledSources);
+const Configurator = ({ cardMode, onCardModeChange, onSelectionChange, onLayoutChange, enabledSources = [], onSourcesChange, selectedSources = [], hasUserChoice = false, creatureSelection, updateCreatureSelection }) => {
+  const { spells, classes, levels, filterSpells, loading: spellsLoading, error: spellsError } = useSpellData(enabledSources);
+  const { creatures, types, sizes, challengeRatings, filterCreatures, loading: creaturesLoading, error: creaturesError } = useCreatureData();
   
   // Initialize with saved state - only once
   const [selectedClasses, setSelectedClasses] = useState(() => {
@@ -35,10 +41,26 @@ const Configurator = ({ onSelectionChange, onLayoutChange, enabledSources = [], 
     return initialState.spellSelection.additionalSpellNames || [];
   });
   const [activeFilteredSpellNames, setActiveFilteredSpellNames] = useState(new Set());
+  
+  // Creature selection state - initialize from persisted state
+  const [selectedTypes, setSelectedTypes] = useState(() => {
+    if (creatureSelection) {
+      return creatureSelection.selectedTypes || [];
+    }
+    const initialState = stateManager.getState();
+    return initialState.creatureSelection.selectedTypes || [];
+  });
+  const [selectedCR, setSelectedCR] = useState(() => {
+    if (creatureSelection) {
+      return creatureSelection.selectedCR || '';
+    }
+    const initialState = stateManager.getState();
+    return initialState.creatureSelection.selectedCR || '';
+  });
 
-  // Notify parent component of selection changes
+  // Handle spell selection and transformation
   useEffect(() => {
-    if (onSelectionChange) {
+    if (cardMode === 'spells' && onSelectionChange) {
       let filteredSpells = [];
       
       // AND logic: spells must match ALL selected classes AND ALL selected levels
@@ -70,15 +92,80 @@ const Configurator = ({ onSelectionChange, onLayoutChange, enabledSources = [], 
       const finalSpells = filteredSpells.concat(additional)
         .sort((a, b) => (a.level - b.level) || a.name.localeCompare(b.name));
 
-      // Emit ONLY final list
+      // Transform to cards
+      const cardData = SpellToCardDataTransformer.transformArray(finalSpells);
+
+      // Emit cards
       onSelectionChange({
-        spells: finalSpells,
-        spellCount: finalSpells.length
+        cards: cardData,
+        cardCount: cardData.length
       });
     }
   // Intentionally exclude onSelectionChange to avoid identity-triggered loops
-  }, [selectedClasses, selectedLevels, filterSpells, additionalSpellNames, spells]);
+  }, [cardMode, selectedClasses, selectedLevels, filterSpells, additionalSpellNames, spells, onSelectionChange]);
 
+  // Persist creature selection to state
+  useEffect(() => {
+    if (updateCreatureSelection) {
+      updateCreatureSelection({
+        selectedTypes,
+        selectedCR
+      });
+    }
+  }, [selectedTypes, selectedCR, updateCreatureSelection]);
+
+  // Handle creature selection and transformation
+  useEffect(() => {
+    if (cardMode === 'creatures' && onSelectionChange) {
+      // If no filters are selected, show nothing
+      if (!selectedCR && selectedTypes.length === 0) {
+        onSelectionChange({
+          cards: [],
+          cardCount: 0
+        });
+        return;
+      }
+      
+      // Handle CR range filtering
+      let filtered = creatures;
+      if (selectedCR) {
+        const parseCR = (cr) => {
+          if (typeof cr === 'string' && cr.includes('/')) {
+            const [num, den] = cr.split('/').map(Number);
+            return num / den;
+          }
+          return Number(cr);
+        };
+        
+        if (selectedCR.includes('-')) {
+          const [minCRStr, maxCRStr] = selectedCR.split('-');
+          const minCR = parseCR(minCRStr);
+          const maxCR = parseCR(maxCRStr);
+          
+          filtered = creatures.filter(c => {
+            const cr = parseCR(c.challengeRating);
+            return cr >= minCR && cr <= maxCR;
+          });
+        } else {
+          filtered = filterCreatures(selectedCR || null, null, null);
+        }
+      }
+      
+      // Apply type filter
+      if (selectedTypes.length > 0) {
+        filtered = filtered.filter(c => selectedTypes.includes(c.type));
+      }
+      
+      // Transform to cards
+      const cardData = CreatureToCardDataTransformer.transformArray(filtered);
+      
+      onSelectionChange({
+        cards: cardData,
+        cardCount: cardData.length
+      });
+    }
+  }, [cardMode, selectedCR, selectedTypes, creatures, filterCreatures, onSelectionChange]);
+  
   // Notify parent component of layout changes
   useEffect(() => {
     if (onLayoutChange) {
@@ -136,46 +223,69 @@ const Configurator = ({ onSelectionChange, onLayoutChange, enabledSources = [], 
     });
   };
 
+  const loading = cardMode === 'spells' ? spellsLoading : creaturesLoading;
+  const error = cardMode === 'spells' ? spellsError : creaturesError;
+
   return (
     <div className="configurator">
+      <ModeSelector mode={cardMode} onModeChange={onCardModeChange} />
       <div className="configurator-content">
-        <SourceSelector 
-          onSourcesChange={onSourcesChange}
-          selectedSources={selectedSources}
-          hasUserChoice={hasUserChoice}
-        />
-        
         {loading ? (
-          <div className="loading">Loading spell data...</div>
+          <div className="loading">Loading data...</div>
         ) : error ? (
-          <div className="error">Error loading spell data: {error}</div>
+          <div className="error">Error loading data: {error}</div>
         ) : (
           <>
-            <ClassSelector
-              classes={classes}
-              selectedClasses={selectedClasses}
-              onClassChange={handleClassChange}
-            />
-            
-            <LevelSelector
-              levels={levels}
-              selectedLevels={selectedLevels}
-              onLevelChange={handleLevelChange}
-            />
-            
-            <AdditionalSpells
-              allSpells={spells}
-              activeSpellNames={activeFilteredSpellNames}
-              selectedNames={additionalSpellNames}
-              onChange={handleAdditionalSpellsChange}
-            />
-            
-            <LayoutSelector
-              pageSize={pageSize}
-              cardSize={cardSize}
-              onPageSizeChange={handlePageSizeChange}
-              onCardSizeChange={handleCardSizeChange}
-            />
+            {cardMode === 'spells' && (
+              <SourceSelector 
+                onSourcesChange={onSourcesChange}
+                selectedSources={selectedSources}
+                hasUserChoice={hasUserChoice}
+              />
+            )}
+            {cardMode === 'spells' ? (
+              <>
+                <ClassSelector
+                  classes={classes}
+                  selectedClasses={selectedClasses}
+                  onClassChange={handleClassChange}
+                />
+                <LevelSelector
+                  levels={levels}
+                  selectedLevels={selectedLevels}
+                  onLevelChange={handleLevelChange}
+                />
+                <AdditionalSpells
+                  allSpells={spells}
+                  activeSpellNames={activeFilteredSpellNames}
+                  selectedNames={additionalSpellNames}
+                  onChange={handleAdditionalSpellsChange}
+                />
+                <LayoutSelector
+                  pageSize={pageSize}
+                  cardSize={cardSize}
+                  onPageSizeChange={handlePageSizeChange}
+                  onCardSizeChange={handleCardSizeChange}
+                />
+              </>
+            ) : (
+              <>
+                <CreatureSelector
+                  types={types}
+                  challengeRatings={challengeRatings}
+                  selectedTypes={selectedTypes}
+                  selectedCR={selectedCR}
+                  onTypesChange={setSelectedTypes}
+                  onCRChange={setSelectedCR}
+                />
+                <LayoutSelector
+                  pageSize={pageSize}
+                  cardSize={cardSize}
+                  onPageSizeChange={handlePageSizeChange}
+                  onCardSizeChange={handleCardSizeChange}
+                />
+              </>
+            )}
           </>
         )}
       </div>

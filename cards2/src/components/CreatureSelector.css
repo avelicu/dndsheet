@@ -1,0 +1,28 @@
+.creature-selector-creature-type {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.creature-selector-cr {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cr-range-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.cr-range-label {
+  color: #ecf0f1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-right: 8px;
+  min-width: 40px;
+}
+

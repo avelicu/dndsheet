@@ -103,11 +103,55 @@ export const useSourceSelection = () => {
 };
 
 /**
+ * Custom hook for managing card mode state with localStorage persistence
+ * @returns {Object} Card mode state and update function
+ */
+export const useCardMode = () => {
+  const [cardMode, setCardMode] = useState(() => stateManager.getState().cardMode);
+
+  useEffect(() => {
+    const unsubscribe = stateManager.subscribe('cardMode', (newCardMode) => {
+      setCardMode(newCardMode);
+    });
+    return unsubscribe;
+  }, []);
+
+  const updateCardMode = useCallback((newCardMode) => {
+    stateManager.updateCardMode(newCardMode);
+  }, []);
+
+  return { cardMode, updateCardMode };
+};
+
+/**
+ * Custom hook for managing creature selection state with localStorage persistence
+ * @returns {Object} Creature selection state and update function
+ */
+export const useCreatureSelection = () => {
+  const [creatureSelection, setCreatureSelection] = useState(() => stateManager.getState().creatureSelection);
+
+  useEffect(() => {
+    const unsubscribe = stateManager.subscribe('creatureSelection', (newCreatureSelection) => {
+      setCreatureSelection(newCreatureSelection);
+    });
+    return unsubscribe;
+  }, []);
+
+  const updateCreatureSelection = useCallback((newCreatureSelection) => {
+    stateManager.updateCreatureSelection(newCreatureSelection);
+  }, []);
+
+  return { creatureSelection, updateCreatureSelection };
+};
+
+/**
  * Custom hook for managing all application state
  * @returns {Object} Complete state and update functions
  */
 export const useAppState = () => {
+  const cardMode = useCardMode();
   const spellSelection = useSpellSelection();
+  const creatureSelection = useCreatureSelection();
   const layoutConfig = useLayoutConfig();
   const debugFlags = useDebugFlags();
   const sourceSelection = useSourceSelection();
@@ -125,6 +169,8 @@ export const useAppState = () => {
   }, []);
 
   return {
+    ...cardMode,
+    ...creatureSelection,
     ...spellSelection,
     ...layoutConfig,
     ...debugFlags,

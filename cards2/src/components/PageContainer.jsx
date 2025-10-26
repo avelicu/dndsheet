@@ -6,38 +6,51 @@ import { reflowCalculator } from '../utils/reflowCalculator';
 import { SpellToCardDataTransformer } from '../utils/SpellToCardDataTransformer';
 import './PageContainer.css';
 
-const PageContainer = ({ spells = [], layoutConfig }) => {
+const PageContainer = ({ cards = [], layoutConfig }) => {
   const [reflowedCardData, setReflowedCardData] = useState([]);
   const [isCalculating, setIsCalculating] = useState(false);
 
-  // Calculate reflowed spells when input spells or layout config changes
+  // Calculate reflowed cards when input cards or layout config changes
   useEffect(() => {
     const calculateReflow = async () => {
-      if (!spells || spells.length === 0) {
+      if (!cards || cards.length === 0) {
         setReflowedCardData([]);
         return;
       }
 
-      let config = layoutConfig?.cardSize
-
       setIsCalculating(true);
-      const reflowed = await reflowCalculator(
-        spells, 
-        layoutConfig?.cardSize || 'standard'
-      );
       
-      setReflowedCardData(reflowed);
+      // Check if cards are already CardData objects (from creature or spell transformer)
+      // If they have a 'body' property, they're already transformed CardData
+      const areAlreadyCards = cards.length > 0 && cards[0] && typeof cards[0] === 'object' && cards[0].hasOwnProperty('body');
+      
+      if (areAlreadyCards) {
+        // Already transformed, just pass through with reflow calculation
+        const reflowed = await reflowCalculator(
+          cards, 
+          layoutConfig?.cardSize || 'standard'
+        );
+        setReflowedCardData(reflowed);
+      } else {
+        // Need transformation (shouldn't happen with new architecture)
+        const reflowed = await reflowCalculator(
+          cards, 
+          layoutConfig?.cardSize || 'standard'
+        );
+        setReflowedCardData(reflowed);
+      }
+      
       setIsCalculating(false);
     };
 
     calculateReflow();
-  }, [spells, layoutConfig?.cardSize]);
+  }, [cards, layoutConfig?.cardSize]);
 
-  if (!spells || spells.length === 0) {
+  if (!cards || cards.length === 0) {
     return (
       <div className="page-container">
         <div className="no-spells-message">
-          <p>No spells selected. Choose classes and/or levels to see spell cards.</p>
+          <p>No cards selected. Choose filters to see cards.</p>
         </div>
       </div>
     );

@@ -33,12 +33,21 @@ const normalizeLeading = (fragmentHtml) => {
   return d;
 };
 
-const performCalculation = async (spells, cardSize) => {
-  if (!spells || spells.length === 0) {
+const performCalculation = async (spellsOrCards, cardSize) => {
+  if (!spellsOrCards || spellsOrCards.length === 0) {
     return [];
   }
 
-  const cardDataArray = SpellToCardDataTransformer.transformArray(spells);
+  // Check if input is already CardData objects (have 'body' property)
+  // or if they're Spell objects that need transformation
+  let cardDataArray;
+  if (spellsOrCards[0] && spellsOrCards[0].hasOwnProperty('body')) {
+    // Already CardData, use directly
+    cardDataArray = spellsOrCards;
+  } else {
+    // Need transformation from Spell to CardData
+    cardDataArray = SpellToCardDataTransformer.transformArray(spellsOrCards);
+  }
 
   const hiddenContainer = document.createElement('div');
   hiddenContainer.style.position = 'absolute';

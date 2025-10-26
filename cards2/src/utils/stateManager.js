@@ -7,12 +7,18 @@
 
 // Define the shape of our application state
 const DEFAULT_STATE = {
+  cardMode: 'spells', // 'spells' or 'creatures'
   spellSelection: {
     selectedClasses: [],
     selectedLevels: [],
     filteredSpells: [],
     additionalSpellNames: [],
     spellCount: 0
+  },
+  creatureSelection: {
+    selectedTypes: [],
+    selectedCR: '',
+    cardCount: 0
   },
   layoutConfig: {
     pageSize: 'letter',
@@ -29,7 +35,9 @@ const DEFAULT_STATE = {
 
 // State keys for localStorage
 const STORAGE_KEYS = {
+  CARD_MODE: 'dnd-spell-creator-card-mode',
   SPELL_SELECTION: 'dnd-spell-creator-spell-selection',
+  CREATURE_SELECTION: 'dnd-spell-creator-creature-selection',
   LAYOUT_CONFIG: 'dnd-spell-creator-layout-config',
   DEBUG: 'dnd-spell-creator-debug',
   SOURCE_SELECTION: 'dnd-spell-creator-source-selection'
@@ -116,11 +124,23 @@ class StateManager {
    * Load state from localStorage on initialization
    */
   loadState() {
+    const loadedCardMode = StorageUtils.load(
+      STORAGE_KEYS.CARD_MODE,
+      DEFAULT_STATE.cardMode
+    );
+    const savedCardMode = loadedCardMode || DEFAULT_STATE.cardMode;
+    
     const loadedSpellSelection = StorageUtils.load(
       STORAGE_KEYS.SPELL_SELECTION, 
       DEFAULT_STATE.spellSelection
     );
     const savedSpellSelection = { ...DEFAULT_STATE.spellSelection, ...loadedSpellSelection };
+    
+    const loadedCreatureSelection = StorageUtils.load(
+      STORAGE_KEYS.CREATURE_SELECTION,
+      DEFAULT_STATE.creatureSelection
+    );
+    const savedCreatureSelection = { ...DEFAULT_STATE.creatureSelection, ...loadedCreatureSelection };
     
     const loadedLayoutConfig = StorageUtils.load(
       STORAGE_KEYS.LAYOUT_CONFIG, 
@@ -141,7 +161,9 @@ class StateManager {
     const savedSourceSelection = { ...DEFAULT_STATE.sourceSelection, ...loadedSourceSelection };
 
     this.state = {
+      cardMode: savedCardMode,
       spellSelection: savedSpellSelection,
+      creatureSelection: savedCreatureSelection,
       layoutConfig: savedLayoutConfig,
       debug: savedDebug,
       sourceSelection: savedSourceSelection
@@ -204,6 +226,30 @@ class StateManager {
   }
 
   /**
+   * Update card mode state
+   * @param {string} cardMode - New card mode ('spells' or 'creatures')
+   */
+  updateCardMode(cardMode) {
+    this.state.cardMode = cardMode;
+    this.saveCardMode();
+    this.notifyListeners('cardMode', this.state.cardMode);
+  }
+
+  /**
+   * Update creature selection state
+   * @param {Object} creatureSelection - New creature selection data
+   */
+  updateCreatureSelection(creatureSelection) {
+    const next = {
+      selectedTypes: creatureSelection.selectedTypes || [],
+      selectedCR: creatureSelection.selectedCR || ''
+    };
+    this.state.creatureSelection = { ...this.state.creatureSelection, ...next };
+    this.saveCreatureSelection();
+    this.notifyListeners('creatureSelection', this.state.creatureSelection);
+  }
+
+  /**
    * Save spell selection to localStorage
    */
   saveSpellSelection() {
@@ -228,6 +274,24 @@ class StateManager {
    */
   saveSourceSelection() {
     StorageUtils.save(STORAGE_KEYS.SOURCE_SELECTION, this.state.sourceSelection);
+  }
+
+  /**
+   * Save card mode to localStorage
+   */
+  saveCardMode() {
+    StorageUtils.save(STORAGE_KEYS.CARD_MODE, this.state.cardMode);
+  }
+
+  /**
+   * Save creature selection to localStorage
+   */
+  saveCreatureSelection() {
+    const toSave = {
+      selectedTypes: this.state.creatureSelection.selectedTypes || [],
+      selectedCR: this.state.creatureSelection.selectedCR || ''
+    };
+    StorageUtils.save(STORAGE_KEYS.CREATURE_SELECTION, toSave);
   }
 
   /**
@@ -276,7 +340,9 @@ class StateManager {
   reset() {
     this.state = { ...DEFAULT_STATE };
     StorageUtils.clearAll();
+    this.notifyListeners('cardMode', this.state.cardMode);
     this.notifyListeners('spellSelection', this.state.spellSelection);
+    this.notifyListeners('creatureSelection', this.state.creatureSelection);
     this.notifyListeners('layoutConfig', this.state.layoutConfig);
     this.notifyListeners('sourceSelection', this.state.sourceSelection);
     console.log('State reset to defaults');
@@ -331,11 +397,15 @@ class StateManager {
     return (
       state &&
       typeof state === 'object' &&
+      typeof state.cardMode === 'string' &&
       state.spellSelection &&
+      state.creatureSelection &&
       state.layoutConfig &&
       state.sourceSelection &&
       Array.isArray(state.spellSelection.selectedClasses) &&
       Array.isArray(state.spellSelection.selectedLevels) &&
+      Array.isArray(state.creatureSelection.selectedTypes) &&
+      typeof state.creatureSelection.selectedCR === 'string' &&
       Array.isArray(state.sourceSelection.enabledSources) &&
       typeof state.layoutConfig.pageSize === 'string'
     );
