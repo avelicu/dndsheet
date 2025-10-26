@@ -126,6 +126,15 @@ const Configurator = ({ cardMode, onCardModeChange, onSelectionChange, onLayoutC
         return;
       }
       
+      // If there are no types selected, show nothing (AND logic)
+      if (selectedTypes.length === 0) {
+        onSelectionChange({
+          cards: [],
+          cardCount: 0
+        });
+        return;
+      }
+      
       // Handle CR range filtering
       let filtered = creatures;
       if (selectedCR) {
@@ -139,13 +148,30 @@ const Configurator = ({ cardMode, onCardModeChange, onSelectionChange, onLayoutC
         
         if (selectedCR.includes('-')) {
           const [minCRStr, maxCRStr] = selectedCR.split('-');
-          const minCR = parseCR(minCRStr);
-          const maxCR = parseCR(maxCRStr);
+          
+          // Convert fraction symbols to numeric values
+          const convertFractionSymbol = (str) => {
+            if (str === '∞') return Infinity;
+            if (str === '⅛') return 0.125;
+            if (str === '¼') return 0.25;
+            if (str === '½') return 0.5;
+            if (str === '¾') return 0.75;
+            if (str === '') return 0;
+            return parseCR(str);
+          };
+          
+          const minCR = convertFractionSymbol(minCRStr);
+          const maxCR = convertFractionSymbol(maxCRStr);
+          
+          console.log(`Filtering creatures: CR range ${minCRStr}-${maxCRStr} (${minCR}-${maxCR})`);
           
           filtered = creatures.filter(c => {
             const cr = parseCR(c.challengeRating);
-            return cr >= minCR && cr <= maxCR;
+            const isInRange = cr >= minCR && cr <= maxCR;
+            return isInRange;
           });
+          
+          console.log(`Filtered to ${filtered.length} creatures`);
         } else {
           filtered = filterCreatures(selectedCR || null, null, null);
         }
@@ -153,8 +179,13 @@ const Configurator = ({ cardMode, onCardModeChange, onSelectionChange, onLayoutC
       
       // Apply type filter
       if (selectedTypes.length > 0) {
+        console.log(`Applying type filter: ${selectedTypes.join(', ')}`);
+        const beforeCount = filtered.length;
         filtered = filtered.filter(c => selectedTypes.includes(c.type));
+        console.log(`After type filter: ${filtered.length} creatures (was ${beforeCount})`);
       }
+      
+      console.log(`Final filtered count: ${filtered.length} creatures`);
       
       // Transform to cards
       const cardData = CreatureToCardDataTransformer.transformArray(filtered);
