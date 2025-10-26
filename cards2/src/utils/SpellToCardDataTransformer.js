@@ -25,16 +25,20 @@ export class SpellToCardDataTransformer {
     // Process duration for concentration detection (for backward compatibility with CSV data)
     const { formatted: duration } = this.processDuration(spell.duration);
 
+    // Apply abbreviations to range and casting time
+    const range = this.abbreviateSpecValue(spell.range);
+    const castingTime = this.abbreviateSpecValue(spell.castingTime);
+
     // Create specs array from spell properties
     const specs = [
-      { label: 'RANGE', value: spell.range },
+      { label: 'RANGE', value: range },
       { label: 'COMPONENTS', value: spell.components },
       { 
         label: 'DURATION', 
         value: duration,
         hasConcentration: isConcentration
       },
-      { label: 'CASTING TIME', value: spell.castingTime }
+      { label: 'CASTING TIME', value: castingTime }
     ];
 
     // Build main body content
@@ -105,7 +109,30 @@ export class SpellToCardDataTransformer {
     // Replace "up to" with less-than-or-equal-to symbol
     formatted = formatted.replace(/up to/gi, '≤');
     
+    // Apply abbreviations
+    formatted = this.abbreviateSpecValue(formatted);
+    
     return { formatted, isConcentration };
+  }
+
+  /**
+   * Apply abbreviations to spec values (range, duration, casting time)
+   * @param {string} value - Original spec value
+   * @returns {string} Abbreviated value
+   */
+  static abbreviateSpecValue(value) {
+    if (!value) return value;
+    
+    let abbreviated = value;
+    
+    // Replace "feet" and "foot" with "ft"
+    abbreviated = abbreviated.replace(/\bfeet\b/gi, 'ft');
+    abbreviated = abbreviated.replace(/\bfoot\b/gi, 'ft');
+    
+    // Replace "Instantaneous" with "Instant"
+    abbreviated = abbreviated.replace(/\bInstantaneous\b/gi, 'Instant');
+    
+    return abbreviated;
   }
 
   /** Inline color palette for damage types */

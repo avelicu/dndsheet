@@ -61,8 +61,8 @@ def parse_school_from_csv(school_text):
         # This is a level, not a school - return empty string
         return ""
     
-    # Try to extract school from "Xth level School" pattern first (most specific)
-    level_school_match = re.search(r'\d+(st|nd|rd|th)\s+level\s+(\w+)', school_text, re.IGNORECASE)
+    # Try to extract school from "Xth level School" or "Xth-level School" pattern first (most specific)
+    level_school_match = re.search(r'\d+(st|nd|rd|th)[-\s]+level\s+(\w+)', school_text, re.IGNORECASE)
     if level_school_match:
         return level_school_match.group(2).title()
     
@@ -334,7 +334,12 @@ def create_spell_json(spell_data, unioned_classes=None):
     is_concentration = extract_concentration_from_duration(spell_data['duration'])
     
     # Parse other fields
-    school = parse_school_from_csv(spell_data['school'])
+    school_name = parse_school_from_csv(spell_data['school'])
+    # Convert school to SRD format (object with index and name)
+    school = {
+        "index": school_name.lower(),
+        "name": school_name
+    } if school_name else None
     components = parse_components_from_csv(spell_data['components'])
     source = infer_source_from_class(spell_data['classes'])
     

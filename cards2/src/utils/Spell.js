@@ -11,7 +11,15 @@ export class Spell {
     this.components = Array.isArray(data.components) ? data.components.join(', ') : (data.components?.trim() || '');
     this.materialComponent = data.material?.trim() || data.material_component?.trim() || '';
     this.duration = data.duration?.trim() || '';
-    this.description = Array.isArray(data.desc) ? data.desc.join(' ') : (data.description?.trim() || '');
+    
+    // Build description, appending higher_level if present
+    let description = Array.isArray(data.desc) ? data.desc.join(' ') : (data.description?.trim() || '');
+    if (data.higher_level && Array.isArray(data.higher_level) && data.higher_level.length > 0) {
+      const higherLevelText = data.higher_level.join(' ');
+      description = description + '\n\n' + higherLevelText;
+    }
+    this.description = description;
+    
     this.classes = this.parseClasses(data.classes);
     this.isRitual = data.ritual || false;
     this.isConcentration = data.concentration || false;

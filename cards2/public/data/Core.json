@@ -2,7 +2,10 @@
   {
     "name": "Blade Ward",
     "level": 0,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -25,7 +28,10 @@
   {
     "name": "Create Bonfire",
     "level": 0,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -50,7 +56,10 @@
   {
     "name": "Friends",
     "level": 0,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -73,7 +82,10 @@
   {
     "name": "Frostbite",
     "level": 0,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -98,7 +110,10 @@
   {
     "name": "Magic Stone",
     "level": 0,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 bonus action",
     "range": "Touch",
     "components": [
@@ -121,7 +136,10 @@
   {
     "name": "Mind Sliver",
     "level": 0,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -143,7 +161,10 @@
   {
     "name": "Thorn Whip",
     "level": 0,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -167,7 +188,10 @@
   {
     "name": "Thunderclap",
     "level": 0,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "5 feet",
     "components": [
@@ -191,7 +215,10 @@
   {
     "name": "Absorb Elements",
     "level": 1,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 reaction*",
     "range": "Self",
     "components": [
@@ -215,7 +242,10 @@
   {
     "name": "Armor of Agathys",
     "level": 1,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -239,7 +269,10 @@
   {
     "name": "Arms of Hadar",
     "level": 1,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "10-foot radius",
     "components": [
@@ -261,7 +294,10 @@
   {
     "name": "Catapult",
     "level": 1,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -283,7 +319,10 @@
   {
     "name": "Chromatic Orb",
     "level": 1,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -307,7 +346,10 @@
   {
     "name": "Compelled Duel",
     "level": 1,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 bonus action",
     "range": "30 feet",
     "components": [
@@ -327,7 +369,10 @@
   {
     "name": "Dissonant Whispers",
     "level": 1,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -348,7 +393,10 @@
   {
     "name": "Ensnaring Strike",
     "level": 1,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -369,7 +417,10 @@
   {
     "name": "Hail of Thorns",
     "level": 1,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -389,7 +440,10 @@
   {
     "name": "Hex",
     "level": 1,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 bonus action",
     "range": "90 feet",
     "components": [
@@ -412,7 +466,10 @@
   {
     "name": "Ray of Sickness",
     "level": 1,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -437,7 +494,10 @@
   {
     "name": "Searing Smite",
     "level": 1,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -459,7 +519,10 @@
   {
     "name": "Silvery Barbs",
     "level": 1,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 reaction",
     "range": "60 feet",
     "components": [
@@ -479,7 +542,10 @@
   {
     "name": "Snare",
     "level": 1,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 minute",
     "range": "Touch",
     "components": [
@@ -503,7 +569,10 @@
   {
     "name": "Tasha's Hideous Laughter",
     "level": 1,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -527,7 +596,10 @@
   {
     "name": "Tenser's Floating Disk",
     "level": 1,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -550,7 +622,10 @@
   {
     "name": "Thunderous Smite",
     "level": 1,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -570,7 +645,10 @@
   {
     "name": "Witch Bolt",
     "level": 1,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -595,7 +673,10 @@
   {
     "name": "Wrathful Smite",
     "level": 1,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -618,7 +699,10 @@
   {
     "name": "Beast Sense",
     "level": 2,
-    "school": "Divination",
+    "school": {
+      "index": "divination",
+      "name": "Divination"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
@@ -639,7 +723,10 @@
   {
     "name": "Cloud of Daggers",
     "level": 2,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -664,7 +751,10 @@
   {
     "name": "Cordon of Arrows",
     "level": 2,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "5 feet",
     "components": [
@@ -687,7 +777,10 @@
   {
     "name": "Crown of Madness",
     "level": 2,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -711,7 +804,10 @@
   {
     "name": "Melf's Acid Arrow",
     "level": 2,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -736,7 +832,10 @@
   {
     "name": "Nathair's Mischief",
     "level": 2,
-    "school": "Illusion",
+    "school": {
+      "index": "illusion",
+      "name": "Illusion"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -758,7 +857,10 @@
   {
     "name": "Nystul's Magic Aura",
     "level": 2,
-    "school": "Illusion",
+    "school": {
+      "index": "illusion",
+      "name": "Illusion"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
@@ -782,7 +884,10 @@
   {
     "name": "Phantasmal Force",
     "level": 2,
-    "school": "Illusion",
+    "school": {
+      "index": "illusion",
+      "name": "Illusion"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -807,7 +912,10 @@
   {
     "name": "Pyrotechnics",
     "level": 2,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -830,7 +938,10 @@
   {
     "name": "Rime's Binding Ice",
     "level": 2,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "30-foot cone",
     "components": [
@@ -852,7 +963,10 @@
   {
     "name": "Skywrite",
     "level": 2,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Sight",
     "components": [
@@ -875,7 +989,10 @@
   {
     "name": "Tasha's Mind Whip",
     "level": 2,
-    "school": "2Nd-Level",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -896,7 +1013,10 @@
   {
     "name": "Ashardalon’s Stride",
     "level": 3,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -920,7 +1040,10 @@
   {
     "name": "Aura of Vitality",
     "level": 3,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "30-foot radius",
     "components": [
@@ -943,7 +1066,10 @@
   {
     "name": "Blinding Smite",
     "level": 3,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -963,7 +1089,10 @@
   {
     "name": "Catnap",
     "level": 3,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -987,7 +1116,10 @@
   {
     "name": "Conjure Barrage",
     "level": 3,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "60-foot cone",
     "components": [
@@ -1011,7 +1143,10 @@
   {
     "name": "Crusader's Mantle",
     "level": 3,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -1033,7 +1168,10 @@
   {
     "name": "Elemental Weapon",
     "level": 3,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
@@ -1058,7 +1196,10 @@
   {
     "name": "Feign Death",
     "level": 3,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
@@ -1084,7 +1225,10 @@
   {
     "name": "Flame Arrows",
     "level": 3,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
@@ -1109,7 +1253,10 @@
   {
     "name": "Hunger of Hadar",
     "level": 3,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "150 feet",
     "components": [
@@ -1133,7 +1280,10 @@
   {
     "name": "Leomund's Tiny Hut",
     "level": 3,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 minute",
     "range": "10-foot radius",
     "components": [
@@ -1157,7 +1307,10 @@
   {
     "name": "Lightning Arrow",
     "level": 3,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -1178,7 +1331,10 @@
   {
     "name": "Meld into Stone",
     "level": 3,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
@@ -1202,7 +1358,10 @@
   {
     "name": "Protection from Energy",
     "level": 3,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
@@ -1229,7 +1388,10 @@
   {
     "name": "Tiny Servant",
     "level": 3,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 minute",
     "range": "Touch",
     "components": [
@@ -1251,7 +1413,10 @@
   {
     "name": "Aura of Life",
     "level": 4,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 action",
     "range": "30-foot radius",
     "components": [
@@ -1274,7 +1439,10 @@
   {
     "name": "Aura of Purity",
     "level": 4,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 action",
     "range": "30-foot radius",
     "components": [
@@ -1296,7 +1464,10 @@
   {
     "name": "Elemental Bane",
     "level": 4,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -1320,7 +1491,10 @@
   {
     "name": "Evard's Black Tentacles",
     "level": 4,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -1345,7 +1519,10 @@
   {
     "name": "Grasping Vine",
     "level": 4,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 bonus action",
     "range": "30 feet",
     "components": [
@@ -1368,7 +1545,10 @@
   {
     "name": "Leomund's Secret Chest",
     "level": 4,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
@@ -1393,7 +1573,10 @@
   {
     "name": "Mordenkainen's Faithful Hound",
     "level": 4,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -1417,7 +1600,10 @@
   {
     "name": "Mordenkainen's Private Sanctum",
     "level": 4,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "10 minutes",
     "range": "120 feet",
     "components": [
@@ -1440,7 +1626,10 @@
   {
     "name": "Otiluke's Resilient Sphere",
     "level": 4,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -1466,7 +1655,10 @@
   {
     "name": "Raulothim's Psychic Lance",
     "level": 4,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1488,7 +1680,10 @@
   {
     "name": "Staggering Smite",
     "level": 4,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -1509,7 +1704,10 @@
   {
     "name": "Summon Aberration",
     "level": 4,
-    "school": "4Th-Level",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -1534,7 +1732,10 @@
   {
     "name": "Banishing Smite",
     "level": 5,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -1556,7 +1757,10 @@
   {
     "name": "Bigby's Hand",
     "level": 5,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1581,7 +1785,10 @@
   {
     "name": "Bigby's Hand (appears as a tentacle)",
     "level": 5,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1604,7 +1811,10 @@
   {
     "name": "Circle of Power",
     "level": 5,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 action",
     "range": "30-foot radius",
     "components": [
@@ -1625,7 +1835,10 @@
   {
     "name": "Commune with Nature",
     "level": 5,
-    "school": "Divination",
+    "school": {
+      "index": "divination",
+      "name": "Divination"
+    },
     "casting_time": "1 minute",
     "range": "Self",
     "components": [
@@ -1648,7 +1861,10 @@
   {
     "name": "Conjure Volley",
     "level": 5,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "150 feet",
     "components": [
@@ -1671,7 +1887,10 @@
   {
     "name": "Destructive Wave",
     "level": 5,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "30-foot radius",
     "components": [
@@ -1692,7 +1911,10 @@
   {
     "name": "Rary's Telepathic Bond",
     "level": 5,
-    "school": "Divination",
+    "school": {
+      "index": "divination",
+      "name": "Divination"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -1717,7 +1939,10 @@
   {
     "name": "Skill Empowerment",
     "level": 5,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
@@ -1740,7 +1965,10 @@
   {
     "name": "Summon Draconic Spirit",
     "level": 5,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -1765,7 +1993,10 @@
   {
     "name": "Swift Quiver",
     "level": 5,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 bonus action",
     "range": "Touch",
     "components": [
@@ -1788,7 +2019,10 @@
   {
     "name": "Transmute Rock",
     "level": 5,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1813,7 +2047,10 @@
   {
     "name": "Arcane Gate",
     "level": 6,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "500 feet",
     "components": [
@@ -1836,7 +2073,10 @@
   {
     "name": "Drawmij's Instant Summon",
     "level": 6,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 minute",
     "range": "Touch",
     "components": [
@@ -1859,7 +2099,10 @@
   {
     "name": "Fizban's Platinum Shield",
     "level": 6,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 bonus action",
     "range": "60 feet",
     "components": [
@@ -1883,7 +2126,10 @@
   {
     "name": "Otiluke's Freezing Sphere",
     "level": 6,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "300 feet",
     "components": [
@@ -1907,7 +2153,10 @@
   {
     "name": "Otto's Irresistible Dance",
     "level": 6,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -1927,7 +2176,10 @@
   {
     "name": "Draconic Transformation",
     "level": 7,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 bonus action",
     "range": "60-foot cone",
     "components": [
@@ -1952,7 +2204,10 @@
   {
     "name": "Mordenkainen's Magnificent Mansion",
     "level": 7,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 minute",
     "range": "300 feet",
     "components": [
@@ -1975,7 +2230,10 @@
   {
     "name": "Mordenkainen's Sword",
     "level": 7,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -1998,7 +2256,10 @@
   {
     "name": "Telepathy",
     "level": 8,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "Unlimited",
     "components": [
@@ -2021,7 +2282,10 @@
   {
     "name": "Tsunami",
     "level": 8,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 minute",
     "range": "Sight",
     "components": [

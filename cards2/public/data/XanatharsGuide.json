@@ -2,7 +2,10 @@
   {
     "name": "Control Flames",
     "level": 0,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -24,7 +27,10 @@
   {
     "name": "Gust",
     "level": 0,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -47,7 +53,10 @@
   {
     "name": "Infestation",
     "level": 0,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -73,7 +82,10 @@
   {
     "name": "Mold Earth",
     "level": 0,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -95,7 +107,10 @@
   {
     "name": "Primal Savagery",
     "level": 0,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -115,7 +130,10 @@
   {
     "name": "Shape Water",
     "level": 0,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -137,7 +155,10 @@
   {
     "name": "Toll the Dead",
     "level": 0,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -160,7 +181,10 @@
   {
     "name": "Word of Radiance",
     "level": 0,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "5 feet",
     "components": [
@@ -182,7 +206,10 @@
   {
     "name": "Beast Bond",
     "level": 1,
-    "school": "Divination",
+    "school": {
+      "index": "divination",
+      "name": "Divination"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
@@ -206,7 +233,10 @@
   {
     "name": "Cause Fear",
     "level": 1,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -227,7 +257,10 @@
   {
     "name": "Ceremony",
     "level": 1,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 hour",
     "range": "Touch",
     "components": [
@@ -251,7 +284,10 @@
   {
     "name": "Chaos Bolt",
     "level": 1,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -272,7 +308,10 @@
   {
     "name": "Earth Tremor",
     "level": 1,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "10 feet",
     "components": [
@@ -295,7 +334,10 @@
   {
     "name": "Ice Knife",
     "level": 1,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -319,7 +361,10 @@
   {
     "name": "Zephyr Strike",
     "level": 1,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -339,7 +384,10 @@
   {
     "name": "Aganazzar's Scorcher",
     "level": 2,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -363,7 +411,10 @@
   {
     "name": "Dragon's Breath",
     "level": 2,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 bonus action",
     "range": "Touch",
     "components": [
@@ -387,7 +438,10 @@
   {
     "name": "Dust Devil",
     "level": 2,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -412,7 +466,10 @@
   {
     "name": "Earthbind",
     "level": 2,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "300 feet",
     "components": [
@@ -435,7 +492,10 @@
   {
     "name": "Healing Spirit",
     "level": 2,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 bonus action",
     "range": "60 feet",
     "components": [
@@ -456,7 +516,10 @@
   {
     "name": "Maximilian's Earthen Grasp",
     "level": 2,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -480,7 +543,10 @@
   {
     "name": "Mind Spike",
     "level": 2,
-    "school": "Divination",
+    "school": {
+      "index": "divination",
+      "name": "Divination"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -502,7 +568,10 @@
   {
     "name": "Shadow Blade",
     "level": 2,
-    "school": "Illusion",
+    "school": {
+      "index": "illusion",
+      "name": "Illusion"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -525,7 +594,10 @@
   {
     "name": "Snilloc's Snowball Swarm",
     "level": 2,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -549,7 +621,10 @@
   {
     "name": "Warding Wind",
     "level": 2,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -571,7 +646,10 @@
   {
     "name": "Enemies Abound",
     "level": 3,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -594,7 +672,10 @@
   {
     "name": "Erupting Earth",
     "level": 3,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -619,7 +700,10 @@
   {
     "name": "Life Transference",
     "level": 3,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -641,7 +725,10 @@
   {
     "name": "Melf's Minute Meteors",
     "level": 3,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -665,7 +752,10 @@
   {
     "name": "Summon Lesser demons",
     "level": 3,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -689,7 +779,10 @@
   {
     "name": "Thunder Step",
     "level": 3,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -711,7 +804,10 @@
   {
     "name": "Tidal Wave",
     "level": 3,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -736,7 +832,10 @@
   {
     "name": "Wall of Sand",
     "level": 3,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -759,7 +858,10 @@
   {
     "name": "Wall of Water",
     "level": 3,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -784,7 +886,10 @@
   {
     "name": "Charm Monster",
     "level": 4,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -808,7 +913,10 @@
   {
     "name": "Find Greater Steed",
     "level": 4,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "10 minutes",
     "range": "30 feet",
     "components": [
@@ -829,7 +937,10 @@
   {
     "name": "Guardian of Nature",
     "level": 4,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -849,7 +960,10 @@
   {
     "name": "Shadow of Moil",
     "level": 4,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -872,7 +986,10 @@
   {
     "name": "Sickening Radiance",
     "level": 4,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -895,7 +1012,10 @@
   {
     "name": "Storm Sphere",
     "level": 4,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "150 feet",
     "components": [
@@ -917,7 +1037,10 @@
   {
     "name": "Summon Greater Demon",
     "level": 4,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -941,7 +1064,10 @@
   {
     "name": "Vitriolic Sphere",
     "level": 4,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "150 feet",
     "components": [
@@ -965,7 +1091,10 @@
   {
     "name": "Watery Sphere",
     "level": 4,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -990,7 +1119,10 @@
   {
     "name": "Control Winds",
     "level": 5,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "300 feet",
     "components": [
@@ -1013,7 +1145,10 @@
   {
     "name": "Danse Macabre",
     "level": 5,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -1035,7 +1170,10 @@
   {
     "name": "Dawn",
     "level": 5,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -1059,7 +1197,10 @@
   {
     "name": "Enervation",
     "level": 5,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -1082,7 +1223,10 @@
   {
     "name": "Far Step",
     "level": 5,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -1104,7 +1248,10 @@
   {
     "name": "Holy Weapon",
     "level": 5,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 bonus action",
     "range": "Touch",
     "components": [
@@ -1126,7 +1273,10 @@
   {
     "name": "Immolation",
     "level": 5,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -1147,7 +1297,10 @@
   {
     "name": "Infernal Calling",
     "level": 5,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 minute",
     "range": "90 feet",
     "components": [
@@ -1171,7 +1324,10 @@
   {
     "name": "Maelstrom",
     "level": 5,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1194,7 +1350,10 @@
   {
     "name": "Negative Energy Flood",
     "level": 5,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -1217,7 +1376,10 @@
   {
     "name": "Steel Wind Strike",
     "level": 5,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -1239,7 +1401,10 @@
   {
     "name": "Synaptic Static",
     "level": 5,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1262,7 +1427,10 @@
   {
     "name": "Wall of Light",
     "level": 5,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1287,7 +1455,10 @@
   {
     "name": "Wrath of Nature",
     "level": 5,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1308,7 +1479,10 @@
   {
     "name": "Bones of the Earth",
     "level": 6,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1329,7 +1503,10 @@
   {
     "name": "Create Homunculus",
     "level": 6,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 hour",
     "range": "Touch",
     "components": [
@@ -1352,7 +1529,10 @@
   {
     "name": "Druid Grove",
     "level": 6,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "10 minutes",
     "range": "Touch",
     "components": [
@@ -1375,7 +1555,10 @@
   {
     "name": "Investiture of Flame",
     "level": 6,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -1399,7 +1582,10 @@
   {
     "name": "Investiture of Ice",
     "level": 6,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -1423,7 +1609,10 @@
   {
     "name": "Investiture of Stone",
     "level": 6,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -1447,7 +1636,10 @@
   {
     "name": "Investiture of Wind",
     "level": 6,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -1471,7 +1663,10 @@
   {
     "name": "Mental Prison",
     "level": 6,
-    "school": "Illusion",
+    "school": {
+      "index": "illusion",
+      "name": "Illusion"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -1493,7 +1688,10 @@
   {
     "name": "Primordial Ward",
     "level": 6,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -1514,7 +1712,10 @@
   {
     "name": "Scatter",
     "level": 6,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -1536,7 +1737,10 @@
   {
     "name": "Soul Cage",
     "level": 6,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 reaction*",
     "range": "60 feet",
     "components": [
@@ -1560,7 +1764,10 @@
   {
     "name": "Tenser's Transformation",
     "level": 6,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -1583,7 +1790,10 @@
   {
     "name": "Crown of Stars",
     "level": 7,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -1606,7 +1816,10 @@
   {
     "name": "Power Word Pain",
     "level": 7,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "60 feet",
     "components": [
@@ -1628,7 +1841,10 @@
   {
     "name": "Temple of the Gods",
     "level": 7,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 hour",
     "range": "120 feet",
     "components": [
@@ -1650,7 +1866,10 @@
   {
     "name": "Whirlwind",
     "level": 7,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "300 feet",
     "components": [
@@ -1674,7 +1893,10 @@
   {
     "name": "Abi-Dalzim's Horrid Wilting",
     "level": 8,
-    "school": "Necromancy",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "150 feet",
     "components": [
@@ -1698,7 +1920,10 @@
   {
     "name": "Illusory Dragon",
     "level": 8,
-    "school": "Illusion",
+    "school": {
+      "index": "illusion",
+      "name": "Illusion"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1718,7 +1943,10 @@
   {
     "name": "Maddening Darkness",
     "level": 8,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "150 feet",
     "components": [
@@ -1741,7 +1969,10 @@
   {
     "name": "Mighty Fortress",
     "level": 8,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 minute",
     "range": "1 mile",
     "components": [
@@ -1764,7 +1995,10 @@
   {
     "name": "Invulnerability",
     "level": 9,
-    "school": "Abjuration",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 action",
     "range": "Self",
     "components": [
@@ -1787,7 +2021,10 @@
   {
     "name": "Mass Polymorph",
     "level": 9,
-    "school": "Transmutation",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 action",
     "range": "120 feet",
     "components": [
@@ -1811,7 +2048,10 @@
   {
     "name": "Psychic Scream",
     "level": 9,
-    "school": "Enchantment",
+    "school": {
+      "index": "enchantment",
+      "name": "Enchantment"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [

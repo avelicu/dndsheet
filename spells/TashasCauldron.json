@@ -2,7 +2,10 @@
   {
     "name": "Booming Blade",
     "level": 0,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "5-foot radius",
     "components": [
@@ -27,7 +30,10 @@
   {
     "name": "Green-Flame Blade",
     "level": 0,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "5-foot radius",
     "components": [
@@ -52,7 +58,10 @@
   {
     "name": "Lightning Lure",
     "level": 0,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "15 feet",
     "components": [
@@ -75,7 +84,10 @@
   {
     "name": "Sword Burst",
     "level": 0,
-    "school": "Conjuration",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "5 feet",
     "components": [
@@ -98,7 +110,10 @@
   {
     "name": "Tasha's Caustic Brew",
     "level": 1,
-    "school": "1St-Level",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "30-foot line",
     "components": [
@@ -123,7 +138,10 @@
   {
     "name": "Summon Beast",
     "level": 2,
-    "school": "2Nd-Level",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -147,7 +165,10 @@
   {
     "name": "Intellect Fortress",
     "level": 3,
-    "school": "3Rd-Level",
+    "school": {
+      "index": "abjuration",
+      "name": "Abjuration"
+    },
     "casting_time": "1 action",
     "range": "30 feet",
     "components": [
@@ -170,7 +191,10 @@
   {
     "name": "Spirit Shroud",
     "level": 3,
-    "school": "3Rd-Level",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -194,7 +218,10 @@
   {
     "name": "Summon Fey",
     "level": 3,
-    "school": "3Rd-Level",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -220,7 +247,10 @@
   {
     "name": "Summon Shadowspawn",
     "level": 3,
-    "school": "3Rd-Level",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -244,7 +274,10 @@
   {
     "name": "Summon Undead",
     "level": 3,
-    "school": "3Rd-Level",
+    "school": {
+      "index": "necromancy",
+      "name": "Necromancy"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -268,7 +301,10 @@
   {
     "name": "Summon Construct",
     "level": 4,
-    "school": "4Th-Level",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -293,7 +329,10 @@
   {
     "name": "Summon Elemental",
     "level": 4,
-    "school": "4Th-Level",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -319,7 +358,10 @@
   {
     "name": "Summon Celestial",
     "level": 5,
-    "school": "5Th-Level",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -343,7 +385,10 @@
   {
     "name": "Summon Fiend",
     "level": 6,
-    "school": "6Th-Level",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 action",
     "range": "90 feet",
     "components": [
@@ -367,7 +412,10 @@
   {
     "name": "Tasha's Otherworldly Guise",
     "level": 6,
-    "school": "6Th-Level",
+    "school": {
+      "index": "transmutation",
+      "name": "Transmutation"
+    },
     "casting_time": "1 bonus action",
     "range": "Self",
     "components": [
@@ -392,7 +440,10 @@
   {
     "name": "Dream of the Blue Veil",
     "level": 7,
-    "school": "7Th-Level",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "10 minutes",
     "range": "20 feet",
     "components": [
@@ -417,7 +468,10 @@
   {
     "name": "Blade of Disaster",
     "level": 9,
-    "school": "9Th-Level",
+    "school": {
+      "index": "conjuration",
+      "name": "Conjuration"
+    },
     "casting_time": "1 bonus action",
     "range": "60 feet",
     "components": [
@@ -440,7 +494,10 @@
   {
     "name": "Power Word Heal",
     "level": 9,
-    "school": "Evocation",
+    "school": {
+      "index": "evocation",
+      "name": "Evocation"
+    },
     "casting_time": "1 action",
     "range": "Touch",
     "components": [
