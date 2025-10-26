@@ -43,10 +43,22 @@ export const PAGE_SIZES = {
 };
 
 export const CARD_SIZES = {
+  mini: { 
+    id: 'mini', 
+    name: 'Mini Cards (1.75" × 2.5")', 
+    width: '1.75in', 
+    height: '2.5in' 
+  },
   standard: { 
     id: 'standard', 
     name: 'Standard Playing Cards (2.5" × 3.5")', 
     width: '2.5in', 
+    height: '3.5in' 
+  },
+  standardPlus: { 
+    id: 'standardPlus', 
+    name: 'Standard+ Playing Cards (2.625" × 3.5")', 
+    width: '2.625in', 
     height: '3.5in' 
   },
   large: { 
@@ -54,12 +66,6 @@ export const CARD_SIZES = {
     name: 'Large Cards (3.5" × 5")', 
     width: '3.5in', 
     height: '5in' 
-  },
-  mini: { 
-    id: 'mini', 
-    name: 'Mini Cards (1.75" × 2.5")', 
-    width: '1.75in', 
-    height: '2.5in' 
   }
 };
 

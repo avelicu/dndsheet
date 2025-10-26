@@ -20,6 +20,7 @@
 /* Size variants set the title height variable */
 .spell-card.card--mini { --title-h: 25px; }
 .spell-card.card--standard { --title-h: 40px; }
+.spell-card.card--standardPlus { --title-h: 42px; }
 .spell-card.card--large { --title-h: 45px; }
 
 /* Error state - red outline to indicate persistent overflow - gated by debug flag */
@@ -337,6 +338,7 @@
   font-size: 0.4em;
   line-height: 8px;
 }
+
 
 .spell-card.card--large .spell-name { /* Large Cards */
   font-size: 1.4rem;
